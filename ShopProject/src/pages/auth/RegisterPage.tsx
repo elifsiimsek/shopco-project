@@ -244,7 +244,7 @@ export default function RegisterPage() {
                 disabled={isLoading}
                 className="w-full md:w-auto px-16 py-5 bg-black text-white rounded-full font-[1000] uppercase italic tracking-widest text-sm shadow-2xl hover:scale-[1.02] active:scale-95 transition-all border-none cursor-pointer"
               >
-                {isLoading ? "Validating..." : "Establish Identity"}{" "}
+                {isLoading ? "Validating..." : "Sign Up"}{" "}
                 <FiArrowRight className="ml-2" />
               </Button>
               <p className="text-[10px] font-black uppercase tracking-widest text-black/30 text-left text-black">

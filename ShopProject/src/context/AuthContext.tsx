@@ -123,18 +123,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const saveCard = (card: Card) => {
     setUser((prev) => {
       if (!prev) return null;
-      const updated: User = { ...prev, savedCard: card };
-      localStorage.setItem("shopco_user", JSON.stringify(updated));
-      return updated;
+      const updatedUser: User = { 
+        ...prev, 
+        savedCard: { ...card } 
+      };
+      localStorage.setItem("shopco_user", JSON.stringify(updatedUser));
+      return updatedUser;
     });
   };
 
   const saveAddress = (address: Address) => {
     setUser((prev) => {
       if (!prev) return null;
-      const updated: User = { ...prev, address: address };
-      localStorage.setItem("shopco_user", JSON.stringify(updated));
-      return updated;
+      const updatedUser: User = { 
+        ...prev, 
+        address: { ...address } 
+      };
+      localStorage.setItem("shopco_user", JSON.stringify(updatedUser));
+      return updatedUser;
     });
   };
 
@@ -150,14 +156,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const toggleFavorite = (productId: string) => {
     setUser((prev) => {
       if (!prev) return null;
-
       const currentFavs = prev.favorites || [];
       const isFav = currentFavs.includes(productId);
-
       const updatedFavs = isFav
         ? currentFavs.filter((id) => id !== productId)
         : [...currentFavs, productId];
-
       const updated: User = { ...prev, favorites: updatedFavs };
       localStorage.setItem("shopco_user", JSON.stringify(updated));
       return updated;

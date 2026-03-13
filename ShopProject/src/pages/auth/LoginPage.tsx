@@ -142,9 +142,9 @@ export default function LoginPage() {
               <Button
                 type="submit"
                 disabled={isLoading}
-                className="w-full md:w-auto px-16 py-5 bg-black text-white rounded-full font-[1000] uppercase italic tracking-widest text-sm shadow-2xl hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-4"
+                className="w-full md:w-auto px-16 py-5 bg-black text-white rounded-full font-[1000] uppercase tracking-widest text-sm shadow-2xl hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-4"
               >
-                {isLoading ? "Process..." : "Enter Vault"} <FiArrowRight />
+                {isLoading ? "Process..." : "Log İn"} <FiArrowRight />
               </Button>
               <p className="text-[10px] font-black uppercase tracking-widest text-black/30">
                 New?{" "}
@@ -152,7 +152,7 @@ export default function LoginPage() {
                   to="/register"
                   className="text-black underline underline-offset-8 ml-2 font-black"
                 >
-                  Join Club
+                  Sign Up
                 </Link>
               </p>
             </div>

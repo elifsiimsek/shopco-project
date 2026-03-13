@@ -1,677 +1,347 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
 import {
-  FiTrash2,
-  FiChevronRight,
-  FiTag,
-  FiShoppingCart,
-  FiPlus,
-  FiMinus,
-  FiArrowRight,
-  FiX,
-  FiShoppingBag,
-  FiCheckCircle,
-  FiCreditCard,
+  useAuth,
+  type Order,
+  type Card,
+  type Address,
+} from "../context/AuthContext";
+import { useCart } from "../context/CartContext";
+import { useState } from "react";
+import {
+  FiPackage,
+  FiUser,
   FiMapPin,
+  FiCreditCard,
+  FiLogOut,
+  FiCheckCircle,
+  FiPlus,
+  FiChevronRight,
+  FiShoppingBag,
   FiShield,
-  FiGift,
+  FiCalendar,
+  FiMail,
+  FiEdit3, // Hatalı import düzeltildi
 } from "react-icons/fi";
-import { useCart, type CartItem } from "../context/CartContext";
-import { useAuth, type Order, type OrderItem } from "../context/AuthContext";
-import Button from "../components/ui/Button";
+import { TURKEY_CITIES } from "../data/cities"; 
 
-export default function CartPage() {
-  const {
-    cart,
-    removeFromCart,
-    increase,
-    decrease,
-    clearCart,
-    setNotification,
-  } = useCart();
-  const { user, addOrder, saveCard, saveAddress, updateProfile } = useAuth();
-  const navigate = useNavigate();
+export default function AccountPage() {
+  const { user, logout, saveCard, saveAddress, updateProfile } = useAuth();
+  const { addToCart, setNotification } = useCart();
+  const [activeTab, setActiveTab] = useState("profile");
+  const [isEditing, setIsEditing] = useState(false);
+  const [editData, setEditData] = useState({ birthDate: user?.birthDate || "" });
+  const [isAddingCard, setIsAddingCard] = useState(false);
+  const [isAddingAddress, setIsAddingAddress] = useState(false);
 
-  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
-  const [checkoutStep, setCheckoutStep] = useState(1);
-  const [isOrderSuccess, setIsOrderSuccess] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [saveAddressCheck, setSaveAddressCheck] = useState(false);
-  const [saveCardCheck, setSaveCardCheck] = useState(false);
-  const [useSavedCard, setUseSavedCard] = useState(false);
-  const [useSavedAddress, setUseSavedAddress] = useState(false);
-
-  const [formData, setFormData] = useState({
-    fullName: user?.name || "",
-    email: user?.email || "",
-    title: "",
-    city: "",
-    district: "",
-    fullAddress: "",
-    cardNumber: "",
-    expiryDate: "",
-    cvc: "",
+  const [newCard, setNewCard] = useState<Card & { cvc: string }>({ 
+    number: "", holder: "", expiry: "", cvc: "" 
+  });
+  const [newAddress, setNewAddress] = useState<Address>({ 
+    title: "", city: "", district: "", fullAddress: "" 
   });
 
-  const [promoCode, setPromoCode] = useState("");
-  const [activePromoDiscount, setActivePromoDiscount] = useState(0);
+  const calculateAge = (date: string | undefined): number | string => {
+    if (!date) return "N/A";
+    const today = new Date();
+    const birthDate = new Date(date);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) age--;
+    return age;
+  };
 
-  const subtotal = cart.reduce(
-    (acc: number, item: CartItem) =>
-      acc +
-      (item.oldPrice ? Number(item.oldPrice) : item.price) * item.quantity,
-    0,
-  );
-  const productSavings = cart.reduce(
-    (acc: number, item: CartItem) =>
-      acc +
-      (item.oldPrice
-        ? (Number(item.oldPrice) - item.price) * item.quantity
-        : 0),
-    0,
-  );
-  const promoDiscountAmount = (subtotal - productSavings) * activePromoDiscount;
-  const total =
-    subtotal - productSavings - promoDiscountAmount + (subtotal > 0 ? 15 : 0);
+  const handleProfileUpdate = () => {
+    const age = calculateAge(editData.birthDate);
+    if (typeof age === "number" && age < 18) {
+      setNotification("Access requires age 18+. 🔞");
+      return;
+    }
+    updateProfile(editData);
+    setIsEditing(false);
+    setNotification("Profile updated. ✨");
+  };
 
-  const applyPromoCode = (code: string) => {
-    const inputCode = code.toUpperCase();
-    if (inputCode === "WELCOME25" && user?.hasWelcomeCoupon) {
-      setActivePromoDiscount(0.25);
-      setNotification("25% Welcome Discount Applied! 🎉");
-      setPromoCode("");
-    } else if (inputCode === "SHOPCO20") {
-      setActivePromoDiscount(0.2);
-      setNotification("20% Promo Applied! 🏷️");
-      setPromoCode("");
+  const handleReOrder = (order: Order) => {
+    order.items.forEach((item: any) => addToCart(item, item.quantity));
+    setNotification("Items added to bag! 🛍️");
+  };
+
+  const handleCardSave = () => {
+    if (newCard.number.length === 16 && newCard.holder.trim() !== "" && newCard.expiry.length === 5 && newCard.cvc.length === 3) {
+      saveCard({ number: newCard.number, holder: newCard.holder, expiry: newCard.expiry });
+      setIsAddingCard(false);
+      setNotification("Card secured! 💳");
+      setNewCard({ number: "", holder: "", expiry: "", cvc: "" });
     } else {
-      setNotification("Invalid promo code. ❌");
+      setNotification("Invalid card details. ❌");
     }
   };
 
-  const toggleSavedAddress = () => {
-    if (user?.address) {
-      if (!useSavedAddress) {
-        setFormData({
-          ...formData,
-          fullAddress: user.address.fullAddress,
-          city: user.address.city,
-          district: user.address.district,
-          title: user.address.title,
-        });
-        setUseSavedAddress(true);
-      } else {
-        setFormData({
-          ...formData,
-          fullAddress: "",
-          city: "",
-          district: "",
-          title: "",
-        });
-        setUseSavedAddress(false);
-      }
+  const handleAddressSave = () => {
+    if (newAddress.fullAddress.trim() && newAddress.city !== "" && newAddress.district.trim() !== "") {
+      saveAddress(newAddress);
+      setIsAddingAddress(false);
+      setNewAddress({ title: "", city: "", district: "", fullAddress: "" });
+      setNotification("Location linked! 📍");
+    } else {
+      setNotification("Please fill all fields. ❌");
     }
-  };
-
-  const toggleSavedCard = () => {
-    if (user?.savedCard) {
-      if (!useSavedCard) {
-        setFormData({
-          ...formData,
-          fullName: user.savedCard.holder,
-          cardNumber: user.savedCard.number,
-          expiryDate: user.savedCard.expiry,
-          cvc: "***",
-        });
-        setUseSavedCard(true);
-      } else {
-        setFormData({ ...formData, cardNumber: "", expiryDate: "", cvc: "" });
-        setUseSavedCard(false);
-      }
-    }
-  };
-
-  const handleNextStep = () => {
-    if (!formData.fullAddress || !formData.city) {
-      setNotification("Address detail required. 📍");
-      return;
-    }
-    if (saveAddressCheck && !useSavedAddress) {
-      saveAddress({
-        title: formData.title || "Vault Shipping",
-        city: formData.city,
-        district: formData.district,
-        fullAddress: formData.fullAddress,
-      });
-    }
-    setCheckoutStep(2);
-  };
-
-  const handleProceedToCheckout = () => {
-    if (!user) {
-      setNotification("Login required for checkout. 🔐");
-      navigate("/login");
-      return;
-    }
-    setIsCheckoutOpen(true);
-  };
-
-  const handleOrderComplete = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    if (saveCardCheck && !useSavedCard) {
-      saveCard({
-        number: formData.cardNumber,
-        holder: formData.fullName,
-        expiry: formData.expiryDate,
-      });
-    }
-
-    const orderItems: OrderItem[] = cart.map((item) => ({
-      id: item.id.toString(),
-      name: item.name,
-      price: item.price,
-      quantity: item.quantity,
-      img: item.img,
-      size: item.selectedSize,
-      color: item.selectedColor,
-    }));
-
-    const newOrder: Order = {
-      id: "#" + Math.floor(10000 + Math.random() * 90000).toString(),
-      date: new Date().toLocaleDateString("tr-TR"),
-      total: Math.round(total),
-      itemsCount: cart.length,
-      status: "Confirmed",
-      items: orderItems,
-    };
-
-    setTimeout(() => {
-      if (activePromoDiscount === 0.25)
-        updateProfile({ hasWelcomeCoupon: false });
-      setIsLoading(false);
-      setIsOrderSuccess(true);
-      addOrder(newOrder);
-      setTimeout(() => {
-        setIsOrderSuccess(false);
-        clearCart();
-        setIsCheckoutOpen(false);
-        setCheckoutStep(1);
-      }, 3500);
-    }, 1500);
   };
 
   return (
-    <div className="max-w-[1440px] mx-auto px-4 md:px-16 py-8 font-satoshi text-left text-black min-h-screen relative selection:bg-shopBlack selection:text-white">
-      {isOrderSuccess && (
-        <div className="fixed inset-0 z-[2000] flex items-center justify-center bg-white/95 backdrop-blur-3xl animate-in fade-in">
-          <div className="flex flex-col items-center space-y-8 text-center text-black">
-            <div className="w-32 h-32 bg-shopBlack rounded-[40px] flex items-center justify-center shadow-2xl animate-bounce">
-              <FiShoppingBag size={48} className="text-white" />
+    <div className="max-w-[1440px] mx-auto px-4 md:px-16 py-12 md:py-20 font-satoshi text-left text-black min-h-screen bg-white">
+      
+      {/* 🧭 HEADER SECTION */}
+      <div className="flex flex-col md:flex-row justify-between items-start mb-16 gap-6">
+        <div className="space-y-1">
+          <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-black/30 text-left">Management Terminal</p>
+          <h1 className="text-[40px] md:text-[52px] font-black uppercase italic tracking-tighter leading-none m-0 text-left">Account Info</h1>
+        </div>
+        <button onClick={logout} className="flex items-center gap-2 text-black/40 hover:text-red-500 font-bold text-[11px] uppercase tracking-widest transition-colors bg-transparent border-none cursor-pointer">
+          <FiLogOut /> Terminate Session
+        </button>
+      </div>
+
+      <div className="flex flex-col lg:flex-row gap-12 items-start">
+        
+        {/* 🛠 SIDEBAR */}
+        <aside className="w-full lg:w-64 space-y-8">
+          <div className="flex items-center gap-4 px-2">
+            <div className="w-12 h-12 bg-black rounded-full flex items-center justify-center text-white font-black italic">
+              {user?.name?.substring(0,1)}
             </div>
-            <h2 className="text-[40px] font-[1000] uppercase italic tracking-tighter">
-              Confirmed
-            </h2>
-            <p className="text-[11px] font-black uppercase tracking-[0.4em] opacity-30">
-              Order drop secured.
-            </p>
-          </div>
-        </div>
-      )}
-
-      {isCheckoutOpen && (
-        <div className="fixed inset-0 z-[1500] flex items-center justify-center bg-black/40 backdrop-blur-md p-4">
-          <div className="bg-white w-full max-w-[420px] rounded-[48px] p-10 relative shadow-2xl animate-fade-in-up text-left">
-            <button
-              onClick={() => setIsCheckoutOpen(false)}
-              className="absolute top-8 right-8 text-black/10 hover:text-black border-none bg-transparent cursor-pointer transition-colors"
-            >
-              <FiX size={24} />
-            </button>
-            <h2 className="text-2xl font-[1000] uppercase italic tracking-tighter mb-8 text-black">
-              {checkoutStep === 1 ? "Shipping" : "Payment"}
-            </h2>
-
-            {checkoutStep === 1 ? (
-              <div className="space-y-4">
-                {user?.address && (
-                  <div
-                    onClick={toggleSavedAddress}
-                    className={`flex items-center gap-4 p-4 rounded-2xl border-2 cursor-pointer transition-all ${useSavedAddress ? "border-shopBlack bg-shopGray-light" : "border-shopGray-border bg-white"}`}
-                  >
-                    <FiMapPin
-                      className={
-                        useSavedAddress ? "text-shopBlack" : "text-black/20"
-                      }
-                    />
-                    <div className="flex-1 text-[11px] font-bold opacity-40 italic text-black truncate">
-                      {user.address.title}: {user.address.city}
-                    </div>
-                    {useSavedAddress && (
-                      <FiCheckCircle size={14} className="text-shopBlack" />
-                    )}
-                  </div>
-                )}
-                <div
-                  className={`space-y-3 ${useSavedAddress ? "opacity-20 pointer-events-none" : ""}`}
-                >
-                  <input
-                    type="text"
-                    placeholder="ADDRESS TITLE"
-                    className="w-full bg-shopGray-light p-4 rounded-xl outline-none font-black text-[10px] border-none text-black"
-                    value={formData.title}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        title: e.target.value.toUpperCase(),
-                      })
-                    }
-                  />
-                  <div className="grid grid-cols-2 gap-3">
-                    <input
-                      type="text"
-                      placeholder="CITY"
-                      className="bg-shopGray-light p-4 rounded-xl outline-none font-black text-[10px] border-none text-black"
-                      value={formData.city}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          city: e.target.value.toUpperCase(),
-                        })
-                      }
-                    />
-                    <input
-                      type="text"
-                      placeholder="DISTRICT"
-                      className="bg-shopGray-light p-4 rounded-xl outline-none font-black text-[10px] border-none text-black"
-                      value={formData.district}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          district: e.target.value.toUpperCase(),
-                        })
-                      }
-                    />
-                  </div>
-                  <textarea
-                    placeholder="FULL DETAILS"
-                    className="w-full bg-shopGray-light p-4 rounded-xl outline-none font-black text-[10px] border-none h-24 resize-none text-black"
-                    value={formData.fullAddress}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        fullAddress: e.target.value.toUpperCase(),
-                      })
-                    }
-                  />
-                </div>
-                {!useSavedAddress && (
-                  <div
-                    className="flex items-center gap-3 px-1 cursor-pointer"
-                    onClick={() => setSaveAddressCheck(!saveAddressCheck)}
-                  >
-                    <div
-                      className={`w-5 h-5 rounded-md border-2 flex items-center justify-center ${saveAddressCheck ? "bg-black border-black" : "border-black/10"}`}
-                    >
-                      {saveAddressCheck && (
-                        <FiCheckCircle className="text-white text-xs" />
-                      )}
-                    </div>
-                    <span className="text-[10px] font-black uppercase opacity-40 text-black">
-                      Link Identity Adress
-                    </span>
-                  </div>
-                )}
-                <Button
-                  onClick={handleNextStep}
-                  className="w-full py-5 bg-shopBlack text-white rounded-full font-black text-xs uppercase border-none shadow-xl"
-                >
-                  Continue to Pay
-                </Button>
-              </div>
-            ) : (
-              <form onSubmit={handleOrderComplete} className="space-y-6">
-                <div className="bg-neutral-900 p-8 rounded-[35px] text-white aspect-[1.7/1] flex flex-col justify-between shadow-2xl relative overflow-hidden group">
-                  <div className="flex justify-between items-start z-10 text-white">
-                    <div className="w-12 h-8 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-md opacity-80" />
-                    <FiShield size={24} className="opacity-20 text-white" />
-                  </div>
-                  <p className="text-xl tracking-[0.25em] font-bold z-10 text-white leading-none text-left drop-shadow-md">
-                    {formData.cardNumber
-                      ? formData.cardNumber.replace(/(.{4})/g, "$1 ").trim()
-                      : "•••• •••• •••• ••••"}
-                  </p>
-                  <div className="flex justify-between items-end z-10 border-t border-white/10 pt-4">
-                    <div className="flex flex-col text-left">
-                      <span className="text-[7px] font-black opacity-30 uppercase text-white text-left">
-                        Holder
-                      </span>
-                      <span className="text-[10px] font-black uppercase tracking-widest truncate max-w-[150px] text-white">
-                        {formData.fullName || "NAME SURNAME"}
-                      </span>
-                    </div>
-                    <div className="text-right shrink-0">
-                      <span className="text-[7px] font-black opacity-30 uppercase text-white">
-                        Expiry
-                      </span>
-                      <p className="text-[10px] font-black uppercase tracking-widest m-0 leading-none text-white">
-                        {formData.expiryDate || "MM/YY"}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                {user?.savedCard && (
-                  <div
-                    onClick={toggleSavedCard}
-                    className={`flex items-center gap-4 p-4 rounded-2xl border-2 cursor-pointer transition-all ${useSavedCard ? "border-shopBlack bg-shopGray-light" : "border-shopGray-border bg-white"}`}
-                  >
-                    <FiCreditCard
-                      className={
-                        useSavedCard ? "text-shopBlack" : "text-black/20"
-                      }
-                    />
-                    <div className="flex-1 text-[11px] font-bold opacity-40 text-black text-left">
-                      •••• {user.savedCard.number.slice(-4)}
-                    </div>
-                    {useSavedCard && (
-                      <FiCheckCircle size={14} className="text-shopBlack" />
-                    )}
-                  </div>
-                )}
-                <div
-                  className={`grid grid-cols-2 gap-3 ${useSavedCard ? "opacity-20 pointer-events-none" : ""}`}
-                >
-                  <input
-                    type="text"
-                    placeholder="CARD NUMBER"
-                    maxLength={16}
-                    className="col-span-2 bg-shopGray-light p-4 rounded-xl outline-none font-black text-[10px] border-none text-black"
-                    value={formData.cardNumber}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        cardNumber: e.target.value.replace(/\D/g, ""),
-                      })
-                    }
-                  />
-                  <input
-                    type="text"
-                    placeholder="MM/YY"
-                    maxLength={5}
-                    className="bg-shopGray-light p-4 rounded-xl outline-none font-black text-[10px] border-none text-black"
-                    value={formData.expiryDate}
-                    onChange={(e) => {
-                      let v = e.target.value.replace(/\D/g, "");
-                      if (v.length >= 2) {
-                        let month = parseInt(v.substring(0, 2));
-                        if (month > 12) month = 12;
-                        else if (month === 0) month = 1;
-                        v =
-                          month.toString().padStart(2, "0") + v.substring(2, 4);
-                        v = v.substring(0, 2) + "/" + v.substring(2, 4);
-                      }
-                      setFormData({ ...formData, expiryDate: v });
-                    }}
-                  />
-                  <input
-                    type="text"
-                    placeholder="CVC"
-                    maxLength={3}
-                    className="bg-shopGray-light p-4 rounded-xl outline-none font-black text-[10px] border-none text-black"
-                    value={formData.cvc}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        cvc: e.target.value.replace(/\D/g, ""),
-                      })
-                    }
-                  />
-                </div>
-                {!useSavedCard && (
-                  <div
-                    className="flex items-center gap-3 px-1 cursor-pointer"
-                    onClick={() => setSaveCardCheck(!saveCardCheck)}
-                  >
-                    <div
-                      className={`w-5 h-5 rounded-md border-2 flex items-center justify-center ${saveCardCheck ? "bg-black border-black" : "border-black/10"}`}
-                    >
-                      {saveCardCheck && (
-                        <FiCheckCircle className="text-white text-xs" />
-                      )}
-                    </div>
-                    <span className="text-[10px] font-black uppercase opacity-40 text-black text-left">
-                      Establish Card
-                    </span>
-                  </div>
-                )}
-                <Button
-                  type="submit"
-                  disabled={isLoading}
-                  className="w-full py-5 bg-shopBlack text-white rounded-full font-black text-xs uppercase border-none shadow-xl hover:scale-[1.02] transition-all"
-                >
-                  {isLoading ? "Validating..." : `Confirm drop`}
-                </Button>
-                <button
-                  type="button"
-                  onClick={() => setCheckoutStep(1)}
-                  className="w-full text-[9px] font-black uppercase opacity-20 border-none bg-transparent cursor-pointer text-black"
-                >
-                  Back
-                </button>
-              </form>
-            )}
-          </div>
-        </div>
-      )}
-
-      <nav className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.3em] text-black/20 mb-12">
-        <Link
-          to="/"
-          className="hover:text-black transition-colors no-underline text-black/20 text-left"
-        >
-          Home
-        </Link>
-        <FiChevronRight size={12} />{" "}
-        <span className="text-black italic">Bag</span>
-      </nav>
-
-      <h1 className="text-[40px] md:text-[50px] font-[900] uppercase tracking-tighter mb-16 italic text-left text-black leading-none">
-        Your Bag
-      </h1>
-
-      {cart.length > 0 ? (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 animate-fade-in-up">
-          <div className="lg:col-span-7 space-y-6 text-left">
-            {user?.hasWelcomeCoupon && (
-              <div className="bg-black text-white p-8 rounded-[40px] flex justify-between items-center relative overflow-hidden group shadow-2xl animate-in zoom-in-95 text-left">
-                <div className="relative z-10 text-left text-white">
-                  <span className="text-[9px] font-black uppercase tracking-[0.4em] text-shopRed">
-                    New Member Perk
-                  </span>
-                  <h3 className="text-2xl font-[1000] italic uppercase tracking-tighter mt-1 text-white">
-                    25% Welcome Voucher
-                  </h3>
-                  <button
-                    onClick={() => applyPromoCode("WELCOME25")}
-                    className="mt-4 bg-white text-black px-6 py-2 rounded-full font-black text-[10px] uppercase hover:scale-105 transition-all cursor-pointer border-none shadow-xl"
-                  >
-                    Apply Now
-                  </button>
-                </div>
-                <FiGift
-                  size={100}
-                  className="absolute -right-4 -bottom-4 text-white/5 rotate-12 group-hover:scale-110 transition-transform"
-                />
-              </div>
-            )}
-            <div className="border border-shopGray-border rounded-[40px] bg-shopGray-muted/50 p-2 text-left">
-              {cart.map((item: CartItem, index: number) => (
-                <div
-                  key={`${item.id}-${index}`}
-                  className="flex gap-6 p-6 md:p-8 rounded-[32px] transition-all hover:bg-white mb-2 border-b border-shopGray-border/5 text-left"
-                >
-                  <div className="w-24 h-24 md:w-32 md:h-32 bg-shopGray-light rounded-[24px] overflow-hidden shrink-0">
-                    <img
-                      src={item.img}
-                      alt={item.name}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="flex-1 flex flex-col justify-between py-1 relative text-left">
-                    <button
-                      onClick={() =>
-                        removeFromCart(
-                          item.id.toString(),
-                          item.selectedSize,
-                          item.selectedColor,
-                        )
-                      }
-                      className="absolute top-0 right-0 p-2 text-black/10 hover:text-shopRed bg-transparent border-none cursor-pointer transition-colors text-black"
-                    >
-                      <FiTrash2 size={20} />
-                    </button>
-                    <div>
-                      <h3 className="font-[1000] text-base md:text-lg uppercase italic tracking-tight mb-2 leading-none text-black text-left pr-8">
-                        {item.name}
-                      </h3>
-                      <p className="text-[9px] font-black uppercase tracking-widest text-black/30 italic text-left text-black">
-                        Size: {item.selectedSize || "Standard"}
-                      </p>
-                    </div>
-                    <div className="flex justify-between items-end text-left text-black ">
-                      <div className="flex flex-col text-left text-black">
-                        <span className="text-xl font-[1000] tracking-tighter italic text-black leading-none">
-                          ${item.price}
-                        </span>
-                        {item.oldPrice && (
-                          <span className="text-black/20 line-through text-[12px] font-black italic mt-1 text-black leading-none">
-                            ${item.oldPrice}
-                          </span>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-4 bg-black/[0.03] px-5 py-2 rounded-full font-black text-black">
-                        <button
-                          onClick={() =>
-                            decrease(
-                              item.id.toString(),
-                              item.selectedSize,
-                              item.selectedColor,
-                            )
-                          }
-                          className="bg-transparent border-none cursor-pointer opacity-30 hover:opacity-100 text-black"
-                        >
-                          <FiMinus size={12} />
-                        </button>
-                        <span className="text-[10px] font-black tabular-nums">
-                          {item.quantity}
-                        </span>
-                        <button
-                          onClick={() =>
-                            increase(
-                              item.id.toString(),
-                              item.selectedSize,
-                              item.selectedColor,
-                            )
-                          }
-                          className="bg-transparent border-none cursor-pointer opacity-30 hover:opacity-100 text-black"
-                        >
-                          <FiPlus size={12} />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
+            <div className="flex flex-col text-left">
+              <span className="font-black text-sm uppercase italic tracking-tight">{user?.name}</span>
+              <span className="text-[10px] font-bold text-black/30 uppercase tracking-widest">Premium Member</span>
             </div>
           </div>
-          <div className="lg:col-span-5 text-black text-left">
-            <div className="border border-shopGray-border rounded-[48px] p-10 bg-white shadow-2xl sticky top-32 text-black text-left">
-              <h2 className="text-2xl font-[1000] uppercase italic tracking-tighter mb-10 text-black text-left leading-none">
-                Summary
-              </h2>
-              <div className="space-y-5 border-b border-shopGray-border pb-10 text-black text-left">
-                <div className="flex justify-between text-[11px] font-black uppercase tracking-widest text-black/30 text-left text-black">
-                  <span>Subtotal</span>
-                  <span className="text-black font-[1000] tracking-tighter text-base">
-                    ${subtotal}
-                  </span>
-                </div>
-                {productSavings > 0 && (
-                  <div className="flex justify-between text-[11px] font-black uppercase tracking-widest text-shopRed italic text-left">
-                    <span>Archive Discount</span>
-                    <span className="font-[1000] tracking-tighter text-base">
-                      -${Math.round(productSavings)}
-                    </span>
-                  </div>
-                )}
-                {activePromoDiscount > 0 && (
-                  <div className="flex justify-between text-[11px] font-black uppercase tracking-widest text-shopRed italic text-left">
-                    <span>Active Discount</span>
-                    <span className="font-[1000] tracking-tighter text-base">
-                      -${Math.round(promoDiscountAmount)}
-                    </span>
-                  </div>
-                )}
-                <div className="flex justify-between text-[11px] font-black uppercase tracking-widest text-black/30 text-left text-black">
-                  <span>Delivery</span>
-                  <span className="text-black font-[1000] tracking-tighter text-base">
-                    $15
-                  </span>
-                </div>
-                <div className="flex justify-between items-center pt-5 border-t border-shopGray-border text-left">
-                  <span className="text-xl font-[1000] uppercase italic tracking-tighter text-black text-left leading-none">
-                    Total
-                  </span>
-                  <span className="text-4xl font-[1000] tracking-tighter italic text-black leading-none">
-                    ${Math.round(total)}
-                  </span>
-                </div>
-              </div>
-              <div className="flex gap-3 mt-8">
-                <div className="flex-1 relative group text-left">
-                  <FiTag className="absolute left-5 top-1/2 -translate-y-1/2 text-black/20 group-focus-within:text-shopBlack" />
-                  <input
-                    type="text"
-                    placeholder="PROMO"
-                    value={promoCode}
-                    onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
-                    className="w-full bg-shopGray-light py-5 px-14 rounded-full outline-none font-black text-[10px] border-none text-black placeholder:text-black/20"
-                  />
-                </div>
-                <button
-                  onClick={() => applyPromoCode(promoCode)}
-                  className="bg-shopBlack text-white px-8 py-5 rounded-full font-black text-[10px] uppercase border-none cursor-pointer hover:scale-105 transition-all leading-none shadow-xl"
-                >
-                  Apply
-                </button>
-              </div>
-              <Button
-                onClick={handleProceedToCheckout}
-                className="w-full mt-8 py-6 bg-shopBlack text-white rounded-full font-black uppercase italic text-sm border-none shadow-xl hover:scale-[1.02] transition-all"
+
+          <nav className="flex flex-col gap-1">
+            {[
+              { id: "profile", label: "Identity", icon: <FiUser /> },
+              { id: "orders", label: "Orders", icon: <FiPackage /> },
+              { id: "address", label: "Logistics", icon: <FiMapPin /> },
+              { id: "payment", label: "Vault Pay", icon: <FiCreditCard /> },
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center gap-4 p-4 rounded-xl transition-all border-none cursor-pointer ${
+                  activeTab === tab.id ? "bg-black text-white shadow-lg" : "bg-transparent text-black/40 hover:text-black"
+                }`}
               >
-                Go to Checkout
-                <FiArrowRight className="ml-2" />
-              </Button>
+                <span className="text-lg">{tab.icon}</span>
+                <span className="font-black text-[10px] uppercase tracking-[0.2em]">{tab.label}</span>
+              </button>
+            ))}
+          </nav>
+        </aside>
+
+        {/* 📄 MAIN CONTENT */}
+        <div className="flex-1 w-full bg-[#F9F9F9] rounded-[40px] p-8 md:p-12 border border-black/[0.03] text-left">
+          
+          {activeTab === "profile" && (
+            <div className="animate-fade-in-up space-y-12">
+               <div className="flex justify-between items-center text-left">
+                  <h3 className="text-2xl font-black uppercase italic tracking-tighter">Identity Specs</h3>
+                  {!isEditing && (
+                    <button onClick={() => setIsEditing(true)} className="flex items-center gap-2 text-black/40 hover:text-black font-black text-[10px] uppercase tracking-widest transition-colors bg-transparent border-none cursor-pointer underline underline-offset-4">
+                      <FiEdit3 /> Modify Establishment
+                    </button>
+                  )}
+               </div>
+
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-y-12 gap-x-16">
+                  <IdentityItem icon={<FiUser />} label="Full Signature" value={user?.name} />
+                  <IdentityItem icon={<FiMail />} label="Secure Email" value={user?.email} />
+                  <IdentityItem icon={<FiCalendar />} label="Established" value={user?.birthDate} />
+                  <IdentityItem icon={<FiShield />} label="Archive Age" value={`${calculateAge(user?.birthDate)} Years`} />
+               </div>
+
+               {isEditing && (
+                <div className="bg-white p-8 rounded-3xl space-y-6 animate-in zoom-in-95 text-left shadow-sm border border-black/5">
+                  <p className="text-[9px] font-black uppercase tracking-[0.4em] text-black/30">Edit Birth Date</p>
+                  <input type="date" className="w-full bg-[#F5F5F5] p-4 rounded-xl font-black text-black border-none outline-none focus:ring-1 focus:ring-black transition-all" value={editData.birthDate} onChange={(e) => setEditData({ birthDate: e.target.value })} />
+                  <div className="flex gap-3">
+                    <button onClick={handleProfileUpdate} className="bg-black text-white px-8 py-4 rounded-full font-black text-[10px] uppercase border-none cursor-pointer hover:scale-105 transition-all">Update</button>
+                    <button onClick={() => setIsEditing(false)} className="px-6 text-[10px] font-black uppercase text-black/30 border-none bg-transparent cursor-pointer">Cancel</button>
+                  </div>
+                </div>
+               )}
             </div>
-          </div>
+          )}
+
+          {activeTab === "orders" && (
+            <div className="animate-fade-in-up space-y-8 text-left">
+              <h3 className="text-2xl font-black uppercase italic tracking-tighter">Order Archive</h3>
+              {user?.orders?.length ? (
+                user.orders.map((order) => (
+                  <div key={order.id} className="bg-white rounded-3xl border border-black/[0.05] p-6 md:p-8 hover:shadow-md transition-all mb-6">
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 pb-6 border-b border-black/[0.03]">
+                       <div className="flex items-center gap-4 text-left">
+                          <div className="w-10 h-10 bg-black text-white rounded-lg flex items-center justify-center"><FiPackage size={18} /></div>
+                          <div className="text-left">
+                            <p className="text-[8px] font-bold text-black/20 uppercase tracking-widest">{order.date}</p>
+                            <h4 className="text-sm font-black tracking-tight m-0 uppercase">{order.id}</h4>
+                          </div>
+                       </div>
+                       <div className="flex items-center gap-6">
+                          <span className="text-lg font-black italic">${order.total}</span>
+                          <span className="text-[9px] font-bold uppercase text-green-500 bg-green-50 px-3 py-1 rounded-full flex items-center gap-1">
+                            <FiCheckCircle size={10} /> Secured
+                          </span>
+                       </div>
+                    </div>
+                    <div className="space-y-4">
+                       {order.items?.map((item: any, idx: number) => (
+                         <div key={idx} className="flex items-center gap-4 opacity-70 hover:opacity-100 transition-all text-left">
+                            <div className="w-12 h-14 bg-[#F5F5F5] rounded-lg overflow-hidden shrink-0"><img src={item.img} className="w-full h-full object-cover" alt="" /></div>
+                            <div className="flex-1 text-left">
+                               <h5 className="font-bold text-[11px] uppercase italic tracking-tight m-0">{item.name}</h5>
+                               <p className="text-[9px] font-bold opacity-30 uppercase">Qty: {item.quantity} | {item.size}</p>
+                            </div>
+                         </div>
+                       ))}
+                       <div className="pt-6 flex justify-end">
+                          <button onClick={() => handleReOrder(order)} className="flex items-center gap-2 bg-transparent text-black font-black text-[10px] uppercase tracking-widest hover:underline border-none cursor-pointer">Re-Establish <FiChevronRight /></button>
+                       </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <EmptyState icon={<FiShoppingBag />} text="Your archive is empty." />
+              )}
+            </div>
+          )}
+
+          {activeTab === "payment" && (
+            <div className="animate-fade-in-up space-y-8 text-left">
+               <div className="flex justify-between items-center text-left">
+                <h2 className="text-2xl font-black uppercase italic tracking-tighter">Vault Pay</h2>
+                {!isAddingCard && (
+                  <button onClick={() => setIsAddingCard(true)} className="flex items-center gap-2 bg-black text-white px-5 py-2.5 rounded-full text-[10px] font-black uppercase border-none cursor-pointer hover:scale-105 transition-all shadow-md">
+                    <FiPlus /> New Card
+                  </button>
+                )}
+              </div>
+              
+              {user?.savedCard && !isAddingCard ? (
+                <div className="max-w-sm bg-white p-8 rounded-[30px] border border-black/5 flex flex-col justify-between shadow-sm relative overflow-hidden group aspect-[1.6/1]">
+                  <div className="flex justify-between items-start relative z-10 text-black">
+                    <FiCreditCard size={28} />
+                    <p className="text-[9px] font-black uppercase tracking-[0.2em] text-black/20 italic">Platinum Member</p>
+                  </div>
+                  <p className="text-lg font-black tracking-[0.2em] z-10 m-0 text-left">•••• •••• •••• {user.savedCard.number.slice(-4)}</p>
+                  <div className="flex justify-between items-end relative z-10 text-left">
+                    <div className="space-y-1">
+                      <p className="text-[8px] font-bold opacity-30 uppercase tracking-widest">Holder</p>
+                      <p className="text-[10px] font-black uppercase">{user.savedCard.holder}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-[8px] font-bold opacity-30 uppercase tracking-widest">Expiry</p>
+                      <p className="text-[10px] font-black uppercase">{user.savedCard.expiry}</p>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                isAddingCard && (
+                  <div className="bg-white p-10 rounded-[35px] border border-black/5 max-w-md space-y-6 animate-in zoom-in-95 shadow-sm text-left">
+                    <div className="space-y-4">
+                      <input type="text" placeholder="CARD NUMBER" maxLength={16} className="w-full bg-[#F5F5F5] p-4 rounded-xl outline-none font-black text-[11px] border-none" value={newCard.number} onChange={(e) => setNewCard({...newCard, number: e.target.value.replace(/\D/g, "")})} />
+                      <input type="text" placeholder="HOLDER SIGNATURE" className="w-full bg-[#F5F5F5] p-4 rounded-xl outline-none font-black text-[11px] border-none uppercase" value={newCard.holder} 
+                        onChange={(e) => setNewCard({...newCard, holder: e.target.value.replace(/[^a-zA-ZğüşıöçĞÜŞİÖÇ ]/g, "").toUpperCase()})} />
+                      <div className="grid grid-cols-2 gap-4">
+                        <input type="text" placeholder="MM/YY" maxLength={5} className="w-full bg-[#F5F5F5] p-4 rounded-xl outline-none font-black text-[11px] border-none" value={newCard.expiry} 
+                          onChange={(e) => {
+                            let v = e.target.value.replace(/\D/g, "");
+                            if (v.length >= 2) {
+                              let m = v.substring(0, 2);
+                              if (parseInt(m) > 12) m = "12";
+                              v = m + (v.substring(2, 4) ? "/" + v.substring(2, 4) : "");
+                            }
+                            setNewCard({ ...newCard, expiry: v });
+                          }} 
+                        />
+                        <input type="text" placeholder="CVC" maxLength={3} className="w-full bg-[#F5F5F5] p-4 rounded-xl outline-none font-black text-[11px] border-none" value={newCard.cvc} onChange={(e) => setNewCard({...newCard, cvc: e.target.value.replace(/\D/g, "")})} />
+                      </div>
+                    </div>
+                    <div className="flex gap-3">
+                      <button onClick={handleCardSave} className="flex-1 py-4 bg-black text-white rounded-full font-black text-[10px] uppercase border-none cursor-pointer">Save Card</button>
+                      <button onClick={() => setIsAddingCard(false)} className="px-6 text-[10px] font-black uppercase text-black/30 border-none bg-transparent cursor-pointer">Discard</button>
+                    </div>
+                  </div>
+                )
+              )}
+            </div>
+          )}
+
+          {activeTab === "address" && (
+            <div className="animate-fade-in-up space-y-8 text-left">
+               <div className="flex justify-between items-center">
+                <h2 className="text-2xl font-black uppercase italic tracking-tighter">Logistics</h2>
+                {!isAddingAddress && (
+                  <button onClick={() => setIsAddingAddress(true)} className="flex items-center gap-2 bg-black text-white px-5 py-2.5 rounded-full text-[10px] font-black uppercase border-none cursor-pointer hover:scale-105 transition-all shadow-md"><FiPlus /> New Location</button>
+                )}
+              </div>
+
+              {user?.address && !isAddingAddress ? (
+                <div className="bg-white p-10 rounded-[35px] border border-black/5 flex justify-between items-center shadow-sm relative overflow-hidden group">
+                  <div className="space-y-4 relative z-10 text-left">
+                    <p className="text-[9px] font-black text-shopRed uppercase tracking-[0.4em] italic m-0">{user.address.title || "PRIMARY"}</p>
+                    <h3 className="text-xl font-black italic uppercase tracking-tighter m-0">{user.address.city} / {user.address.district}</h3>
+                    <p className="text-xs font-bold text-black/40 max-w-sm leading-relaxed uppercase m-0">{user.address.fullAddress}</p>
+                  </div>
+                  <FiMapPin size={40} className="text-black/5 group-hover:scale-110 transition-transform" />
+                </div>
+              ) : (
+                isAddingAddress && (
+                  <div className="bg-white p-10 rounded-[35px] border border-black/5 max-w-xl space-y-6 animate-in zoom-in-95 shadow-sm text-left">
+                    <div className="space-y-4">
+                      <input type="text" placeholder="ADDRESS TITLE" className="w-full bg-[#F5F5F5] p-4 rounded-xl font-black text-[11px] border-none outline-none uppercase" value={newAddress.title} onChange={(e) => setNewAddress({...newAddress, title: e.target.value.toUpperCase()})} />
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="relative text-left">
+                          <select className="w-full bg-[#F5F5F5] p-4 rounded-xl font-black text-[11px] border-none outline-none appearance-none cursor-pointer" value={newAddress.city} onChange={(e) => setNewAddress({ ...newAddress, city: e.target.value })}>
+                            <option value="">SELECT CITY</option>
+                            {TURKEY_CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
+                          </select>
+                          <FiChevronRight className="absolute right-4 top-1/2 -translate-y-1/2 rotate-90 opacity-20 pointer-events-none" />
+                        </div>
+                        <input type="text" placeholder="DISTRICT" className="bg-[#F5F5F5] p-4 rounded-xl font-black text-[11px] border-none outline-none uppercase" value={newAddress.district} 
+                          onChange={(e) => setNewAddress({...newAddress, district: e.target.value.replace(/[^a-zA-ZğüşıöçĞÜŞİÖÇ ]/g, "").toUpperCase()})} />
+                      </div>
+                      <textarea placeholder="FULL DETAILS" className="w-full bg-[#F5F5F5] p-6 rounded-2xl font-black text-[11px] border-none outline-none h-32 resize-none uppercase" value={newAddress.fullAddress} onChange={(e) => setNewAddress({...newAddress, fullAddress: e.target.value.toUpperCase()})} />
+                    </div>
+                    <div className="flex gap-3">
+                      <button onClick={handleAddressSave} className="flex-1 py-4 bg-black text-white rounded-full font-black text-[10px] uppercase border-none cursor-pointer hover:scale-[1.02] transition-all">Link Location</button>
+                      <button onClick={() => setIsAddingAddress(false)} className="px-6 text-[10px] font-black uppercase text-black/30 border-none bg-transparent cursor-pointer">Cancel</button>
+                    </div>
+                  </div>
+                )
+              )}
+            </div>
+          )}
         </div>
-      ) : (
-        <div className="text-center py-40 animate-fade-in-up text-black flex flex-col items-center">
-          <FiShoppingCart
-            size={100}
-            className="mx-auto opacity-5 mb-10 text-black"
-          />
-          <h2 className="text-[40px] font-[1000] uppercase italic tracking-tighter text-black/10 mb-10 text-center leading-none">
-            Vault Empty.
-          </h2>
-          <Link to="/shop" className="no-underline">
-            <Button className="px-20 py-6 bg-shopBlack text-white rounded-full font-black uppercase italic tracking-widest text-xs border-none shadow-xl hover:scale-110 transition-all">
-              Start Shopping
-            </Button>
-          </Link>
-        </div>
-      )}
+      </div>
+    </div>
+  );
+}
+
+function IdentityItem({ icon, label, value }: { icon: React.ReactNode; label: string; value: string | undefined }) {
+  return (
+    <div className="space-y-2 text-left group">
+      <div className="flex items-center gap-2 opacity-30 group-hover:opacity-100 transition-opacity">
+        <span className="text-xs">{icon}</span>
+        <p className="text-[9px] font-black uppercase tracking-[0.3em] m-0">{label}</p>
+      </div>
+      <p className="text-xl font-black italic uppercase m-0 leading-none truncate tracking-tighter">{value || "---"}</p>
+    </div>
+  );
+}
+
+function EmptyState({ icon, text }: { icon: React.ReactNode; text: string }) {
+  return (
+    <div className="text-center py-24 opacity-10 italic">
+      <div className="text-6xl mb-4 flex justify-center">{icon}</div>
+      <p className="text-[10px] font-black uppercase tracking-[0.4em] text-center leading-none m-0">{text}</p>
     </div>
   );
 }
