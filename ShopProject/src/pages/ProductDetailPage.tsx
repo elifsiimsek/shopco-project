@@ -105,13 +105,13 @@ export default function ProductDetailPage() {
               <button
                 key={index}
                 onClick={() => setMainImage(img)}
-                className={`aspect-square bg-[#F0EEED] rounded-[15px] overflow-hidden border-2 transition-all cursor-pointer ${mainImage === img ? "border-black" : "border-transparent opacity-60 hover:opacity-100"}`}
+                className={`aspect-square bg-white rounded-[15px] overflow-hidden border-2 transition-all cursor-pointer ${mainImage === img ? "border-black" : "border-transparent opacity-60 hover:opacity-100"}`}
               >
                 <img src={img} alt="" className="w-full h-full object-cover" />
               </button>
             ))}
           </div>
-          <div className="flex-1 bg-[#F0EEED] rounded-[20px] aspect-square overflow-hidden shadow-sm">
+          <div className="flex-1 bg-white rounded-[20px] aspect-square overflow-hidden shadow-sm">
             <img
               src={mainImage || product.img}
               alt={product.name}

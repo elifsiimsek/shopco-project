@@ -5,13 +5,13 @@ export default function ImageGallery({ images }: { images: string[] }) {
         {images.map((img, i) => (
           <div
             key={i}
-            className="aspect-square bg-[#F0EEED] rounded-[20px] overflow-hidden border border-black/10"
+            className="aspect-square bg-white rounded-[20px] overflow-hidden border border-black/10"
           >
             <img src={img} className="w-full h-full object-cover" alt="Thumb" />
           </div>
         ))}
       </div>
-      <div className="flex-1 bg-[#F0EEED] rounded-[20px] overflow-hidden h-[530px]">
+      <div className="flex-1 bg-white rounded-[20px] overflow-hidden h-[530px]">
         <img
           src={images[0]}
           className="w-full h-full object-cover"

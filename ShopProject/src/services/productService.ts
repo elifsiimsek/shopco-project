@@ -9,9 +9,10 @@ export const allProducts: Product[] = [
     img: "/products/p5.png",
     category: "T-shirts",
     style: "Casual",
-    description: "This gradient graphic t-shirt is perfect for any occasion. Crafted from a soft and breathable fabric, it offers superior comfort and style.",
-    colors: ["#504A41", "#314F4A", "#31344F"],
-    sizes: ["Small", "Medium", "Large", "X-Large"]
+    description:
+      "This gradient graphic t-shirt is perfect for any occasion. Crafted from a soft and breathable fabric, it offers superior comfort and style.",
+    colors: ["bg-vault-sages", "bg-vault-slate"],
+    sizes: ["Small", "Medium", "Large", "X-Large"],
   },
   {
     id: "2",
@@ -23,9 +24,10 @@ export const allProducts: Product[] = [
     img: "/products/p6.png",
     category: "T-shirts",
     style: "Casual",
-    description: "Classic polo shirt with elegant tipping details on the collar and sleeves for a refined look.",
-    colors: ["#F50606", "#FFFFFF", "#000000"],
-    sizes: ["Medium", "Large", "X-Large"]
+    description:
+      "Classic polo shirt with elegant tipping details on the collar and sleeves for a refined look.",
+    colors: ["#F50606", "#FFFFFF", "bg-vault-shopBlack"],
+    sizes: ["Medium", "Large", "X-Large"],
   },
   {
     id: "3",
@@ -37,9 +39,10 @@ export const allProducts: Product[] = [
     img: "/products/p1.png",
     category: "T-shirts",
     style: "Casual",
-    description: "Comfortable cotton T-shirt with timeless black stripes, an essential for daily wear.",
-    colors: ["#000000", "#FFFFFF"],
-    sizes: ["Small", "Medium", "Large"]
+    description:
+      "Comfortable cotton T-shirt with timeless black stripes, an essential for daily wear.",
+    colors: ["bg-vault-shopBlack", "#FFFFFF"],
+    sizes: ["Small", "Medium", "Large"],
   },
   {
     id: "4",
@@ -51,9 +54,10 @@ export const allProducts: Product[] = [
     img: "/products/p2.png",
     category: "Jeans",
     style: "Formal",
-    description: "High-quality skinny fit jeans that combine durability with a sharp, modern silhouette.",
-    colors: ["#063AF5", "#000000"],
-    sizes: ["30", "32", "34", "36"]
+    description:
+      "High-quality skinny fit jeans that combine durability with a sharp, modern silhouette.",
+    colors: ["#063AF5", "bg-vault-shopBlack"],
+    sizes: ["30", "32", "34", "36"],
   },
   {
     id: "5",
@@ -63,9 +67,10 @@ export const allProducts: Product[] = [
     img: "/products/p3.png",
     category: "Shirts",
     style: "Formal",
-    description: "Versatile checkered shirt crafted from premium fabric, suitable for both office and social events.",
+    description:
+      "Versatile checkered shirt crafted from premium fabric, suitable for both office and social events.",
     colors: ["#F50606", "#FFFFFF"],
-    sizes: ["Medium", "Large", "X-Large"]
+    sizes: ["Medium", "Large", "X-Large"],
   },
   {
     id: "6",
@@ -77,9 +82,10 @@ export const allProducts: Product[] = [
     img: "/products/p4.png",
     category: "T-shirts",
     style: "Party",
-    description: "Bold T-shirt with distinctive sleeve stripes to make a statement at any gathering.",
-    colors: ["#F57906", "#000000"],
-    sizes: ["Small", "Medium", "Large"]
+    description:
+      "Bold T-shirt with distinctive sleeve stripes to make a statement at any gathering.",
+    colors: ["#F57906", "bg-vault-shopBlack"],
+    sizes: ["Small", "Medium", "Large"],
   },
   {
     id: "7",
@@ -91,9 +97,10 @@ export const allProducts: Product[] = [
     img: "/products/TopSelling1.png",
     category: "Shirts",
     style: "Casual",
-    description: "Elegant vertical striped shirt that offers a slimming look and breathable comfort.",
+    description:
+      "Elegant vertical striped shirt that offers a slimming look and breathable comfort.",
     colors: ["#00C12B", "#FFFFFF"],
-    sizes: ["Medium", "Large", "X-Large"]
+    sizes: ["Medium", "Large", "X-Large"],
   },
   {
     id: "8",
@@ -103,9 +110,10 @@ export const allProducts: Product[] = [
     img: "/products/TopSelling2.png",
     category: "T-shirts",
     style: "Gym",
-    description: "A t-shirt designed for those who value both style and resilience. Great for active wear.",
-    colors: ["#F57906", "#000000"],
-    sizes: ["Small", "Medium", "Large"]
+    description:
+      "A t-shirt designed for those who value both style and resilience. Great for active wear.",
+    colors: ["#F57906", "bg-vault-shopBlack"],
+    sizes: ["Small", "Medium", "Large"],
   },
   {
     id: "9",
@@ -115,9 +123,10 @@ export const allProducts: Product[] = [
     img: "/products/TopSelling3.png",
     category: "Shorts",
     style: "Casual",
-    description: "Loose fit bermuda shorts that combine comfort with a relaxed aesthetic for warm days.",
+    description:
+      "Loose fit bermuda shorts that combine comfort with a relaxed aesthetic for warm days.",
     colors: ["#06CAF5", "#F5DD06"],
-    sizes: ["30", "32", "34"]
+    sizes: ["30", "32", "34"],
   },
   {
     id: "10",
@@ -127,9 +136,10 @@ export const allProducts: Product[] = [
     img: "/products/p6.png",
     category: "Shirts",
     style: "Formal",
-    description: "A high-end formal polo designed for professional settings and premium comfort.",
-    colors: ["#000000", "#314F4A"],
-    sizes: ["Large", "X-Large", "XXL"]
+    description:
+      "A high-end formal polo designed for professional settings and premium comfort.",
+    colors: ["bg-vault-shopBlack", "bg-vault-sage"],
+    sizes: ["Large", "X-Large", "XXL"],
   },
   {
     id: "11",
@@ -139,9 +149,10 @@ export const allProducts: Product[] = [
     img: "/products/p7.png",
     category: "T-shirts",
     style: "Casual",
-    description: "Classic stripes for a bold daily outfit. Made from 100% organic cotton.",
-    colors: ["#000000", "#FFFFFF"],
-    sizes: ["Medium", "Large"]
+    description:
+      "Classic stripes for a bold daily outfit. Made from 100% organic cotton.",
+    colors: ["bg-vault-shopBlack", "#FFFFFF"],
+    sizes: ["Medium", "Large"],
   },
   {
     id: "12",
@@ -151,9 +162,10 @@ export const allProducts: Product[] = [
     img: "/products/p8.png",
     category: "T-shirts",
     style: "Casual",
-    description: "Contrasting trims for a modern sporty look, perfect for a casual weekend.",
-    colors: ["#31344F", "#FFFFFF"],
-    sizes: ["Small", "Medium", "Large"]
+    description:
+      "Contrasting trims for a modern sporty look, perfect for a casual weekend.",
+    colors: ["bg-vault-slate", "#FFFFFF"],
+    sizes: ["Small", "Medium", "Large"],
   },
   {
     id: "13",
@@ -163,9 +175,10 @@ export const allProducts: Product[] = [
     img: "/products/p9.png",
     category: "T-shirts",
     style: "Casual",
-    description: "Stay inspired with our signature One Life graphic. High-quality print on premium fabric.",
-    colors: ["#000000", "#504A41"],
-    sizes: ["Medium", "Large", "X-Large"]
+    description:
+      "Stay inspired with our signature One Life graphic. High-quality print on premium fabric.",
+    colors: ["bg-vault-shopBlack", "bg-vault-aa"],
+    sizes: ["Medium", "Large", "X-Large"],
   },
 ];
 

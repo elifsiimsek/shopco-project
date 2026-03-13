@@ -41,7 +41,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       to={`/product/${product.id}`} 
       className="group flex flex-col gap-3 no-underline text-black animate-in fade-in duration-500"
     >
-      <div className="relative aspect-square bg-[#F0EEED] rounded-[24px] overflow-hidden shadow-sm">
+      <div className="relative aspect-square bg-white rounded-[24px] overflow-hidden shadow-sm">
         <img 
           src={product.img} 
           alt={product.name} 
