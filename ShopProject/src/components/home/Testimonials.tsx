@@ -84,7 +84,7 @@ export default function Testimonials() {
               <span className="w-8 h-[1px] bg-black/10"></span> Community
             </span>
             <h2 className="text-[44px] md:text-[64px] font-[1000] uppercase tracking-[-0.06em] leading-[0.85] text-left">
-              Our Happy <br /> Customers
+              Our Happy Customers
             </h2>
           </div>
 
