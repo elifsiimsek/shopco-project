@@ -11,11 +11,29 @@ export default {
         shopRed: "#FF3333",         
         shopYellow: "#FFC633",      
         shopGreen: "#01AB31",       
+        
         shopGray: {
           light: "#F0F0F0",
           muted: "#F9F9F9",
           border: "rgba(0, 0, 0, 0.1)",
         },
+
+        vault: {
+          mud: "#4F4631",
+          sage: "#314F4A",
+          slate: "#31344F",
+          green: "#00C12B",
+          red: "#F50606",
+          yellow: "#F5DD06",
+          orange: "#F57906",
+          cyan: "#06CAF5",
+          blue: "#063AF5",
+          purple: "#7D06F5",
+          pink: "#F506A4",
+        }
+      },
+      fontFamily: {
+        satoshi: ["Satoshi", "sans-serif"],
       },
       keyframes: {
         'marquee-fixed': {
@@ -35,5 +53,20 @@ export default {
       }
     },
   },
+  safelist: [
+    'bg-vault-mud',
+    'bg-vault-sage',
+    'bg-vault-slate',
+    'bg-vault-green',
+    'bg-vault-red',
+    'bg-vault-yellow',
+    'bg-vault-orange',
+    'bg-vault-cyan',
+    'bg-vault-blue',
+    'bg-vault-purple',
+    'bg-vault-pink',
+    'bg-black',
+    'bg-white'
+  ],
   plugins: [],
 }

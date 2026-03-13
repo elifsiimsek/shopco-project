@@ -3,6 +3,7 @@ import {
   type Order,
   type Card,
   type Address,
+  type OrderItem,
 } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 import { useState } from "react";
@@ -85,7 +86,7 @@ export default function AccountPage() {
   };
 
   const handleReOrder = (order: Order) => {
-    order.items.forEach((item: any) => addToCart(item, item.quantity));
+    order.items.forEach((item: OrderItem) => addToCart(item, item.quantity));
     setNotification("Order contents added to bag! 🛍️");
   };
 
@@ -253,7 +254,7 @@ export default function AccountPage() {
                     </div>
                     <div className="p-8 md:p-10 space-y-6 text-left">
                       <div className="grid grid-cols-1 gap-4">
-                        {order.items?.map((item: any, idx: number) => (
+                        {order.items?.map((item: OrderItem, idx: number) => (
                           <div
                             key={idx}
                             className="flex items-center gap-6 bg-white p-4 rounded-3xl border border-black/[0.02]"

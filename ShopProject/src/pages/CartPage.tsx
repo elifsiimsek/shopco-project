@@ -17,7 +17,7 @@ import {
   FiGift,
 } from "react-icons/fi";
 import { useCart, type CartItem } from "../context/CartContext";
-import { useAuth, type Order } from "../context/AuthContext";
+import { useAuth, type Order, type OrderItem } from "../context/AuthContext";
 import Button from "../components/ui/Button";
 
 export default function CartPage() {
@@ -168,13 +168,23 @@ export default function CartPage() {
       });
     }
 
+    const orderItems: OrderItem[] = cart.map((item) => ({
+      id: item.id.toString(),
+      name: item.name,
+      price: item.price,
+      quantity: item.quantity,
+      img: item.img,
+      size: item.selectedSize,
+      color: item.selectedColor,
+    }));
+
     const newOrder: Order = {
       id: "#" + Math.floor(10000 + Math.random() * 90000).toString(),
       date: new Date().toLocaleDateString("tr-TR"),
       total: Math.round(total),
       itemsCount: cart.length,
       status: "Confirmed",
-      items: [...cart],
+      items: orderItems,
     };
 
     setTimeout(() => {
@@ -393,7 +403,6 @@ export default function CartPage() {
                     value={formData.expiryDate}
                     onChange={(e) => {
                       let v = e.target.value.replace(/\D/g, "");
-                      // 🛡️ AY SINIRI (MAX 12)
                       if (v.length >= 2) {
                         let month = parseInt(v.substring(0, 2));
                         if (month > 12) month = 12;

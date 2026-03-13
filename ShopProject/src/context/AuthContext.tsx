@@ -1,11 +1,28 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  type ReactNode,
+} from "react";
+
+export interface OrderItem {
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+  img: string;
+  size?: string;
+  color?: string;
+}
+
 export interface Order {
   id: string;
   date: string;
   total: number;
   itemsCount: number;
   status: string;
-  items: any[];
+  items: OrderItem[];
 }
 
 export interface Card {
@@ -24,10 +41,11 @@ export interface Address {
 export interface User {
   name: string;
   email: string;
-  birthDate: string; 
+  birthDate: string;
   address: Address | null;
   savedCard: Card | null;
   orders: Order[];
+  favorites: string[];
   hasWelcomeCoupon: boolean;
 }
 
@@ -52,6 +70,7 @@ interface AuthContextType {
   saveCard: (card: Card) => void;
   saveAddress: (address: Address) => void;
   updateProfile: (data: ProfileUpdateData) => void;
+  toggleFavorite: (productId: string) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -63,7 +82,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const saved = localStorage.getItem("shopco_user");
     if (saved) {
       try {
-        setUser(JSON.parse(saved));
+        const parsedUser: User = JSON.parse(saved);
+        setUser(parsedUser);
       } catch {
         localStorage.removeItem("shopco_user");
       }
@@ -73,10 +93,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = (userData: LoginData) => {
     const finalUser: User = {
       orders: [],
+      favorites: [],
       savedCard: null,
       address: null,
       hasWelcomeCoupon: true,
-      ...userData
+      ...userData,
     };
     setUser(finalUser);
     localStorage.setItem("shopco_user", JSON.stringify(finalUser));
@@ -88,43 +109,74 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const addOrder = (order: Order) => {
-    setUser(prev => {
+    setUser((prev) => {
       if (!prev) return null;
-      const updated = { ...prev, orders: [order, ...(prev.orders || [])] };
+      const updated: User = {
+        ...prev,
+        orders: [order, ...(prev.orders || [])],
+      };
       localStorage.setItem("shopco_user", JSON.stringify(updated));
       return updated;
     });
   };
 
   const saveCard = (card: Card) => {
-    setUser(prev => {
+    setUser((prev) => {
       if (!prev) return null;
-      const updated = { ...prev, savedCard: card };
+      const updated: User = { ...prev, savedCard: card };
       localStorage.setItem("shopco_user", JSON.stringify(updated));
       return updated;
     });
   };
 
   const saveAddress = (address: Address) => {
-    setUser(prev => {
+    setUser((prev) => {
       if (!prev) return null;
-      const updated = { ...prev, address: address };
+      const updated: User = { ...prev, address: address };
       localStorage.setItem("shopco_user", JSON.stringify(updated));
       return updated;
     });
   };
 
   const updateProfile = (data: ProfileUpdateData) => {
-    setUser(prev => {
+    setUser((prev) => {
       if (!prev) return null;
-      const updated = { ...prev, ...data };
+      const updated: User = { ...prev, ...data };
+      localStorage.setItem("shopco_user", JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  const toggleFavorite = (productId: string) => {
+    setUser((prev) => {
+      if (!prev) return null;
+
+      const currentFavs = prev.favorites || [];
+      const isFav = currentFavs.includes(productId);
+
+      const updatedFavs = isFav
+        ? currentFavs.filter((id) => id !== productId)
+        : [...currentFavs, productId];
+
+      const updated: User = { ...prev, favorites: updatedFavs };
       localStorage.setItem("shopco_user", JSON.stringify(updated));
       return updated;
     });
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, addOrder, saveCard, saveAddress, updateProfile }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        login,
+        logout,
+        addOrder,
+        saveCard,
+        saveAddress,
+        updateProfile,
+        toggleFavorite,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
