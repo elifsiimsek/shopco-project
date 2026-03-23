@@ -1,10 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  type ReactNode,
-} from "react";
+import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
 
 export interface CartItem {
   id: string | number;
@@ -66,13 +60,13 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         (item) =>
           String(item.id) === String(product.id) &&
           item.selectedSize === product.selectedSize &&
-          item.selectedColor === product.selectedColor,
+          item.selectedColor === product.selectedColor
       );
       if (existing) {
         return prev.map((item) =>
           item === existing
             ? { ...item, quantity: item.quantity + quantity }
-            : item,
+            : item
         );
       }
       return [...prev, { ...product, quantity } as CartItem];
@@ -88,8 +82,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
             String(item.id) === id &&
             item.selectedSize === size &&
             item.selectedColor === color
-          ),
-      ),
+          )
+      )
     );
   };
 
@@ -100,8 +94,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         item.selectedSize === size &&
         item.selectedColor === color
           ? { ...item, quantity: item.quantity + 1 }
-          : item,
-      ),
+          : item
+      )
     );
   };
 
@@ -113,8 +107,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         item.selectedColor === color &&
         item.quantity > 1
           ? { ...item, quantity: item.quantity - 1 }
-          : item,
-      ),
+          : item
+      )
     );
   };
 
