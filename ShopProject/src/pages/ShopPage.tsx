@@ -18,9 +18,6 @@ import { useWishlist } from "../context/WishlistContext";
 import type { Product } from "../types/product";
 
 const availableColors = [
-  { name: "Mud", code: "bg-vault-mud" },
-  { name: "Sage", code: "bg-vault-sage" },
-  { name: "Slate", code: "bg-vault-slate" },
   { name: "Green", code: "bg-vault-green" },
   { name: "Red", code: "bg-vault-red" },
   { name: "Yellow", code: "bg-vault-yellow" },
@@ -29,6 +26,8 @@ const availableColors = [
   { name: "Blue", code: "bg-vault-blue" },
   { name: "Purple", code: "bg-vault-purple" },
   { name: "Pink", code: "bg-vault-pink" },
+  { name: "White", code: "bg-white" },
+  { name: "Black", code: "bg-black" },
 ];
 const categories = ["T-shirts", "Shorts", "Shirts", "Hoodie", "Jeans"];
 const dressStyles = ["Casual", "Formal", "Party", "Gym"];

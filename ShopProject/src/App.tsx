@@ -53,7 +53,7 @@ function CouponModal() {
         </div>
         <button
           onClick={close}
-          className="w-full py-5 bg-black text-white rounded-full font-black uppercase italic tracking-widest text-xs hover:scale-105 transition-all cursor-pointer"
+          className="w-full py-5 bg-black text-white rounded-full font-black uppercase italic tracking-widest text-xs hover:scale-105 transition-all cursor-pointer border-none shadow-xl"
         >
           Claim Discount
         </button>
@@ -75,7 +75,8 @@ function NotificationHandler() {
   useEffect(() => {
     if (notification) {
       toast(notification);
-      setNotification(null);
+      const timer = setTimeout(() => setNotification(null), 100);
+      return () => clearTimeout(timer);
     }
   }, [notification, setNotification]);
   return null;
@@ -94,6 +95,7 @@ export default function App() {
         limit={1}
         hideProgressBar={true}
         closeOnClick
+        pauseOnHover={false}
       />
       <Navbar />
       <main className="flex-1 w-full overflow-x-hidden">

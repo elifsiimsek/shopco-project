@@ -34,10 +34,10 @@ export default function Brands() {
   return (
     <section
       onClick={() => navigate("/brands")}
-      className="bg-black py-8 md:py-12 overflow-hidden cursor-pointer group relative"
+      className="bg-black py-8 md:py-12 overflow-hidden cursor-pointer group relative border-y border-white/5"
     >
-      <div className="flex whitespace-nowrap animate-marquee-brands group-hover:pause">
-        {[...Array(2)].map((_, i) => (
+      <div className="flex whitespace-nowrap animate-marquee-brands group-hover:[animation-play-state:paused]">
+        {[...Array(4)].map((_, i) => (
           <div
             key={i}
             className="flex items-center gap-12 md:gap-24 px-6 md:px-12"
@@ -54,25 +54,6 @@ export default function Brands() {
           </div>
         ))}
       </div>
-
-      <style
-        dangerouslySetInnerHTML={{
-          __html: `
-            @keyframes marquee-brands {
-              0% { transform: translateX(0); }
-              100% { transform: translateX(-50%); }
-            }
-            .animate-marquee-brands {
-              display: flex;
-              width: max-content;
-              animation: marquee-brands 20s linear infinite;
-            }
-            .pause {
-              animation-play-state: paused;
-            }
-          `,
-        }}
-      />
     </section>
   );
 }

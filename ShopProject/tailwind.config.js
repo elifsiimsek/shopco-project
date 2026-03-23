@@ -1,15 +1,13 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
-    //"./index.html",
+    "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
-    "./pages/**/*.{js,ts,jsx,tsx}",
-    "./components/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {
       colors: {
-        white: "#F0EEED",
+        white: "#FFFFFF",
         shopBlack: "#000000",
         shopRed: "#FF3333",
         shopYellow: "#FFC633",
@@ -20,9 +18,10 @@ export default {
           muted: "#F9F9F9",
           border: "rgba(0, 0, 0, 0.1)",
         },
+
         vault: {
           mud: "#4F4631",
-          sage: "#314F4A",
+          white: "#FFFFFF",
           slate: "#31344F",
           green: "#00C12B",
           red: "#F50606",
@@ -32,33 +31,38 @@ export default {
           blue: "#063AF5",
           purple: "#7D06F5",
           pink: "#F506A4",
-          aa: "#504A41",
+          gray: "#504A41",
         },
       },
+
       fontFamily: {
         satoshi: ["Satoshi", "sans-serif"],
       },
+
       keyframes: {
         "marquee-fixed": {
-          "0%": { transform: "translateX(0)" },
-          "100%": { transform: "translateX(-50%)" },
+          "0%": { transform: "translate3d(0, 0, 0)" },
+          "100%": { transform: "translate3d(-50%, 0, 0)" },
         },
+
         "fade-in-up": {
-          "0%": { opacity: "0", transform: "translateY(20px)" },
-          "100%": { opacity: "1", transform: "translateY(0)" },
+          "0%": { opacity: "0", transform: "translate3d(0, 20px, 0)" },
+          "100%": { opacity: "1", transform: "translate3d(0, 0, 0)" },
         },
       },
+
       animation: {
-        "marquee-infinite": "marquee-fixed 25s linear infinite",
-        "marquee-slow": "marquee-fixed 40s linear infinite",
-        "fade-in-up": "fade-in-up 0.7s ease-out forwards",
+        "marquee-fast": "marquee-fixed 20s linear infinite",
+        "marquee-normal": "marquee-fixed 35s linear infinite",
+        "marquee-slow": "marquee-fixed 50s linear infinite",
+        "marquee-infinite": "marquee-fixed 30s linear infinite",
+        "fade-in-up": "fade-in-up 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards",
         "bounce-slow": "bounce 3s infinite",
       },
     },
   },
+
   safelist: [
-    "bg-vault-mud",
-    "bg-vault-sage",
     "bg-vault-slate",
     "bg-vault-green",
     "bg-vault-red",
@@ -68,8 +72,10 @@ export default {
     "bg-vault-blue",
     "bg-vault-purple",
     "bg-vault-pink",
+    "bg-vault-gray",
     "bg-black",
-    "bg-white",
+    "bg-white"
   ],
+
   plugins: [],
 };

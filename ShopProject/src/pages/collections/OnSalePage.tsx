@@ -32,7 +32,7 @@ export default function OnSalePage() {
               <span className="text-[10px] font-black uppercase tracking-[0.4em] italic leading-none">
                 Flash Sale Live
               </span>
-              <span className="w-1.5 h-1.5 bg-red-600 rounded-full"></span>
+              <span className="w-1.5 h-1.5 bg-vault-red rounded-full"></span>
             </div>
           ))}
         </div>
@@ -42,7 +42,7 @@ export default function OnSalePage() {
         <div className="max-w-[1440px] mx-auto flex flex-col lg:flex-row lg:items-end justify-between mb-24 gap-12 border-b border-black/5 pb-16">
           <div className="space-y-6 text-left">
             <div className="flex items-center gap-4">
-              <span className="flex h-2 w-2 rounded-full bg-red-600 animate-ping"></span>
+              <span className="flex h-2 w-2 rounded-full bg-vault-red animate-ping"></span>
               <span className="text-[10px] font-black uppercase tracking-[0.4em] text-red-600 leading-none">
                 Sale Live
               </span>
@@ -106,7 +106,7 @@ export default function OnSalePage() {
             >
               <div className="relative aspect-[3/4] bg-[#F8F8F8] rounded-[48px] overflow-hidden mb-6">
                 <div className="absolute top-4 left-4 z-20">
-                  <span className="bg-red-600 text-white px-3 py-1.5 rounded-full text-[10px] font-black uppercase">
+                  <span className="bg-vault-red text-white px-3 py-1.5 rounded-full text-[10px] font-black uppercase">
                     {product.discount || "-20%"}
                   </span>
                 </div>

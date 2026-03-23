@@ -1,5 +1,10 @@
 import { useState, useRef, useEffect } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import {
+  Link,
+  useNavigate,
+  useSearchParams,
+  useLocation,
+} from "react-router-dom";
 import {
   FiSearch,
   FiShoppingCart,
@@ -17,6 +22,7 @@ import { products } from "../../data/products";
 import type { Product } from "../../types/product";
 
 export default function Navbar() {
+  const location = useLocation();
   const [searchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState(
     searchParams.get("search") || "",
@@ -25,9 +31,11 @@ export default function Navbar() {
   const [isBannerVisible, setIsBannerVisible] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+
   const searchRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+
   const { cart } = useCart();
   const { wishlist } = useWishlist();
   const { user, logout } = useAuth();
@@ -37,6 +45,8 @@ export default function Navbar() {
     : 0;
 
   const totalFavorites = wishlist.length;
+
+  const isActive = (path: string) => location.pathname === path;
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -90,7 +100,7 @@ export default function Navbar() {
   return (
     <header className="w-full sticky top-0 z-[1000] shadow-sm bg-white font-satoshi">
       {isBannerVisible && (
-        <div className="bg-black text-white py-2.5 px-4 relative flex items-center justify-center w-full">
+        <div className="bg-black text-white py-2.5 px-4 relative flex items-center justify-center w-full min-h-[35px]">
           <p className="text-[12px] md:text-sm font-normal text-center m-0">
             Sign up and get 20% off to your first order.{" "}
             <Link
@@ -120,23 +130,25 @@ export default function Navbar() {
             </button>
             <Link
               to="/"
-              className="text-[24px] md:text-[32px] font-[1000] uppercase tracking-tighter text-black leading-none no-underline"
+              className="text-[24px] md:text-[32px] font-[1000] uppercase tracking-tighter text-black leading-none no-underline italic"
             >
               SHOP.CO
             </Link>
           </div>
 
           <ul className="hidden lg:flex items-center gap-8 text-[16px] font-bold list-none p-0 m-0">
-            <li className="relative group cursor-pointer flex items-center gap-1 py-2 text-black/60 hover:text-black transition">
+            <li
+              className={`relative group cursor-pointer flex items-center gap-1 py-2 transition ${location.pathname.startsWith("/shop") ? "text-black" : "text-black/60 hover:text-black"}`}
+            >
               <span>Shop</span>
               <FiChevronDown className="group-hover:rotate-180 transition-transform" />
               <div className="absolute top-full left-0 hidden group-hover:block w-48 bg-white border border-black/5 shadow-xl rounded-2xl p-3 z-[1001]">
                 <ul className="flex flex-col gap-1 list-none p-0 m-0 text-left">
                   {shopCategories.map((c) => (
-                    <li key={c.name} className="list-none">
+                    <li key={c.name}>
                       <Link
                         to={c.path}
-                        className="block px-4 py-3 text-black/50 hover:text-black hover:bg-[#F0F0F0] rounded-xl transition font-bold text-sm no-underline"
+                        className={`block px-4 py-3 rounded-xl transition font-bold text-sm no-underline uppercase ${location.search.includes(c.name) ? "text-black bg-[#F0F0F0]" : "text-black/50 hover:text-black hover:bg-[#F0F0F0]"}`}
                       >
                         {c.name}
                       </Link>
@@ -145,26 +157,26 @@ export default function Navbar() {
                 </ul>
               </div>
             </li>
-            <li className="list-none">
+            <li>
               <Link
                 to="/on-sale"
-                className="text-black/60 hover:text-black transition no-underline"
+                className={`transition no-underline ${isActive("/on-sale") ? "text-black" : "text-black/60 hover:text-black"}`}
               >
                 On Sale
               </Link>
             </li>
-            <li className="list-none">
+            <li>
               <Link
                 to="/new-arrivals"
-                className="text-black/60 hover:text-black transition no-underline"
+                className={`transition no-underline ${isActive("/new-arrivals") ? "text-black" : "text-black/60 hover:text-black"}`}
               >
                 New Arrivals
               </Link>
             </li>
-            <li className="list-none">
+            <li>
               <Link
                 to="/brands"
-                className="text-black/60 hover:text-black transition no-underline"
+                className={`transition no-underline ${isActive("/brands") ? "text-black" : "text-black/60 hover:text-black"}`}
               >
                 Brands
               </Link>
@@ -211,13 +223,13 @@ export default function Navbar() {
                     </div>
                   ))}
                 </div>
-                <div className="p-3 px-4 border-t border-black/5 bg-white">
+                <div className="p-3 px-4 border-t border-black/5">
                   <button
                     onClick={() => {
                       navigate(`/shop?search=${searchQuery}`);
                       setSearchResults([]);
                     }}
-                    className="w-full py-3 text-[10px] font-[1000] uppercase italic tracking-widest bg-black text-white rounded-xl cursor-pointer border-none"
+                    className="w-full py-3 text-[10px] font-black uppercase italic bg-black text-white rounded-xl cursor-pointer border-none shadow-lg"
                   >
                     View All Results
                   </button>
@@ -227,37 +239,53 @@ export default function Navbar() {
           </div>
 
           <div className="flex items-center gap-3 md:gap-5">
-            <Link to="/wishlist" className="relative p-1 no-underline">
-              <FiHeart size={24} className="text-black" />
+            <Link
+              to="/wishlist"
+              className={`relative p-1 no-underline transition ${isActive("/wishlist") ? "text-[#FF3333]" : "text-black"}`}
+            >
+              <FiHeart size={24} />
               {totalFavorites > 0 && (
                 <span className="absolute -top-1 -right-1 bg-black text-white text-[9px] font-black w-5 h-5 flex items-center justify-center rounded-full border-2 border-white">
                   {totalFavorites}
                 </span>
               )}
             </Link>
-            <Link to="/cart" className="relative p-1 no-underline">
-              <FiShoppingCart size={24} className="text-black" />
+
+            <Link
+              to="/cart"
+              className={`relative p-1 no-underline group transition ${isActive("/cart") ? "text-[#FF3333]" : "text-black"}`}
+            >
+              <FiShoppingCart
+                size={24}
+                className="group-hover:scale-110 transition-transform"
+              />
               {totalItems > 0 && (
-                <span className="absolute -top-1 -right-1 bg-[#FF3333] text-white text-[9px] font-black w-5 h-5 flex items-center justify-center rounded-full border-2 border-white">
+                <span className="absolute -top-1 -right-1 bg-[#FF3333] text-white text-[9px] font-black w-5 h-5 flex items-center justify-center rounded-full border-2 border-white animate-in zoom-in">
                   {totalItems}
                 </span>
               )}
             </Link>
+
             <div className="relative" ref={userMenuRef}>
               <button
                 onClick={handleUserClick}
                 className="p-1 bg-transparent border-none cursor-pointer flex items-center"
               >
                 {user ? (
-                  <div className="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center text-[10px] font-black italic uppercase">
+                  <div
+                    className={`w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-black italic uppercase transition ${isActive("/account") ? "bg-[#FF3333] text-white" : "bg-black text-white"}`}
+                  >
                     {user.name.charAt(0)}
                   </div>
                 ) : (
-                  <FiUser size={24} className="text-black" />
+                  <FiUser
+                    size={24}
+                    className={`transition ${isActive("/login") ? "text-[#FF3333]" : "text-black"}`}
+                  />
                 )}
               </button>
               {user && isUserMenuOpen && (
-                <div className="absolute right-0 mt-4 w-56 bg-white border border-black/5 shadow-2xl rounded-[24px] p-2 z-[1003]">
+                <div className="absolute right-0 mt-4 w-56 bg-white border border-black/5 shadow-2xl rounded-[24px] p-2 z-[1003] animate-in slide-in-from-top-2">
                   <div className="px-4 py-3 border-b border-black/5 mb-1 text-left">
                     <p className="text-[10px] font-black text-black/30 uppercase tracking-widest m-0">
                       Account
@@ -269,9 +297,10 @@ export default function Navbar() {
                   <div className="flex flex-col gap-1">
                     <Link
                       to="/account"
-                      className="flex items-center gap-3 p-3 hover:bg-[#F5F5F5] rounded-xl text-black no-underline"
+                      className={`flex items-center gap-3 p-3 rounded-xl no-underline transition ${isActive("/account") ? "bg-[#F0F0F0] text-black" : "text-black hover:bg-[#F5F5F5]"}`}
+                      onClick={() => setIsUserMenuOpen(false)}
                     >
-                      <FiUser size={16} />{" "}
+                      <FiUser size={16} />
                       <span className="text-[11px] font-black uppercase">
                         Profile
                       </span>
@@ -283,7 +312,7 @@ export default function Navbar() {
                       }}
                       className="w-full flex items-center gap-3 p-3 text-red-500 hover:bg-red-50 rounded-xl border-none bg-transparent cursor-pointer"
                     >
-                      <FiLogOut size={16} />{" "}
+                      <FiLogOut size={16} />
                       <span className="text-[11px] font-black uppercase">
                         Logout
                       </span>
@@ -300,10 +329,12 @@ export default function Navbar() {
         className={`fixed inset-0 bg-black/40 z-[2000] transition-opacity ${isMenuOpen ? "visible opacity-100" : "invisible opacity-0"}`}
       >
         <div
-          className={`fixed top-0 left-0 w-[280px] h-full bg-white transition-transform duration-300 p-8 ${isMenuOpen ? "translate-x-0" : "-translate-x-full"}`}
+          className={`fixed top-0 left-0 w-[280px] h-full bg-white transition-transform duration-300 p-8 shadow-2xl ${isMenuOpen ? "translate-x-0" : "-translate-x-full"}`}
         >
-          <div className="flex justify-between items-center mb-10">
-            <h2 className="text-2xl font-black uppercase m-0">SHOP.CO</h2>
+          <div className="flex justify-between items-center mb-10 text-left">
+            <h2 className="text-2xl font-black uppercase m-0 italic">
+              SHOP.CO
+            </h2>
             <button
               onClick={() => setIsMenuOpen(false)}
               className="bg-transparent border-none cursor-pointer"
@@ -316,7 +347,7 @@ export default function Navbar() {
               <li key={c.name}>
                 <Link
                   to={c.path}
-                  className="no-underline text-black"
+                  className={`no-underline transition ${location.search.includes(c.name) ? "text-[#FF3333]" : "text-black"}`}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {c.name}
@@ -327,7 +358,7 @@ export default function Navbar() {
             <li>
               <Link
                 to="/on-sale"
-                className="no-underline text-black"
+                className={`no-underline transition ${isActive("/on-sale") ? "text-[#FF3333]" : "text-black"}`}
                 onClick={() => setIsMenuOpen(false)}
               >
                 On Sale
@@ -336,7 +367,7 @@ export default function Navbar() {
             <li>
               <Link
                 to="/new-arrivals"
-                className="no-underline text-black"
+                className={`no-underline transition ${isActive("/new-arrivals") ? "text-[#FF3333]" : "text-black"}`}
                 onClick={() => setIsMenuOpen(false)}
               >
                 New Arrivals

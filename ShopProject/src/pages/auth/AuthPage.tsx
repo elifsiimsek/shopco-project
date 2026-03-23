@@ -1,4 +1,10 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  type ReactNode,
+} from "react";
 
 export interface Order {
   id: string;
@@ -20,7 +26,7 @@ interface User {
   phone?: string;
   city?: string;
   address?: string;
-  savedCard: Card | null; 
+  savedCard: Card | null;
   orders: Order[];
 }
 
@@ -54,7 +60,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const addOrder = (order: Order) => {
-    setUser(prev => {
+    setUser((prev) => {
       if (!prev) return null;
       const updated = { ...prev, orders: [order, ...(prev.orders || [])] };
       localStorage.setItem("shopco_user", JSON.stringify(updated));
@@ -63,7 +69,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const saveCard = (card: Card) => {
-    setUser(prev => {
+    setUser((prev) => {
       if (!prev) return null;
       const updated = { ...prev, savedCard: card };
       localStorage.setItem("shopco_user", JSON.stringify(updated));

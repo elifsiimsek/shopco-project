@@ -76,14 +76,14 @@ export default function Testimonials() {
   };
 
   return (
-    <section className="w-full bg-white pt-24 pb-24 font-satoshi overflow-hidden">
+    <section className="w-full bg-white pt-24 pb-24 font-satoshi overflow-hidden selection:bg-black selection:text-white">
       <div className="max-w-[1440px] mx-auto px-4 md:px-16">
         <div className="flex justify-between items-end mb-16">
-          <div className="space-y-4">
+          <div className="space-y-4 text-left">
             <span className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.5em] text-black/30">
               <span className="w-8 h-[1px] bg-black/10"></span> Community
             </span>
-            <h2 className="text-[44px] md:text-[64px] font-[1000] uppercase tracking-[-0.06em] leading-[0.85] text-left">
+            <h2 className="text-[44px] md:text-[64px] font-[1000] uppercase tracking-[-0.06em] leading-[0.85] text-left m-0">
               Our Happy Customers
             </h2>
           </div>
@@ -91,31 +91,26 @@ export default function Testimonials() {
           <div className="flex gap-4 mb-2">
             <button
               onClick={() => scroll("left")}
-              className="w-14 h-14 rounded-full border border-black/[0.06] flex items-center justify-center cursor-pointer hover:bg-black hover:text-white transition-all duration-300 active:scale-90 shadow-sm"
+              className="w-14 h-14 rounded-full border border-black/[0.06] flex items-center justify-center cursor-pointer hover:bg-black hover:text-white transition-all duration-500 active:scale-90 shadow-sm bg-transparent"
             >
-              <ArrowLeft size={22} strokeWidth={2} />
+              <ArrowLeft size={22} />
             </button>
             <button
               onClick={() => scroll("right")}
-              className="w-14 h-14 rounded-full border border-black/[0.06] flex items-center justify-center cursor-pointer hover:bg-black hover:text-white transition-all duration-300 active:scale-90 shadow-sm"
+              className="w-14 h-14 rounded-full border border-black/[0.06] flex items-center justify-center cursor-pointer hover:bg-black hover:text-white transition-all duration-500 active:scale-90 shadow-sm bg-transparent"
             >
-              <ArrowRight size={22} strokeWidth={2} />
+              <ArrowRight size={22} />
             </button>
           </div>
         </div>
 
         <div className="relative">
-          <div
-            className="absolute inset-0 z-20 pointer-events-none hidden md:block"
-            style={{
-              background:
-                "linear-gradient(to right, white 0%, rgba(255,255,255,0) 15%, rgba(255,255,255,0) 85%, white 100%)",
-            }}
-          />
+          <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-white to-transparent z-20 pointer-events-none hidden md:block" />
+          <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-white to-transparent z-20 pointer-events-none hidden md:block" />
 
           <div
             ref={scrollRef}
-            className="flex gap-8 overflow-x-auto no-scrollbar scroll-smooth snap-x snap-mandatory pb-12 px-2"
+            className="flex gap-8 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-12 px-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
           >
             {testimonials.map((t) => (
               <div
@@ -128,13 +123,13 @@ export default function Testimonials() {
                       key={i}
                       size={16}
                       fill="#FFC633"
-                      color="#FFC633"
+                      className="text-[#FFC633]"
                       strokeWidth={0}
                     />
                   ))}
                 </div>
 
-                <p className="text-black/50 leading-relaxed text-[16px] md:text-[17px] font-medium italic group-hover:text-black transition-colors duration-500">
+                <p className="text-black/50 leading-relaxed text-[16px] md:text-[17px] font-medium italic group-hover:text-black transition-colors duration-500 m-0">
                   "{t.text}"
                 </p>
 
@@ -142,12 +137,16 @@ export default function Testimonials() {
                   <div className="w-10 h-10 bg-black/5 rounded-full flex items-center justify-center font-black text-[10px] text-black/40 group-hover:bg-black group-hover:text-white transition-all">
                     {t.name.charAt(0)}
                   </div>
-                  <div className="flex flex-col">
-                    <div className="flex items-center gap-1.5 font-black text-[15px] uppercase tracking-tighter">
+                  <div className="flex flex-col text-left">
+                    <div className="flex items-center gap-1.5 font-black text-[15px] uppercase tracking-tighter text-black">
                       {t.name}
                       {t.verified && (
-                        <div className="bg-[#01AB31] rounded-full p-0.5">
-                          <Check size={8} color="white" strokeWidth={6} />
+                        <div className="bg-vault-green rounded-full p-0.5 flex items-center justify-center">
+                          <Check
+                            size={8}
+                            className="text-white"
+                            strokeWidth={5}
+                          />
                         </div>
                       )}
                     </div>
@@ -161,15 +160,6 @@ export default function Testimonials() {
           </div>
         </div>
       </div>
-
-      <style
-        dangerouslySetInnerHTML={{
-          __html: `
-            .no-scrollbar::-webkit-scrollbar { display: none; }
-            .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-          `,
-        }}
-      />
     </section>
   );
 }

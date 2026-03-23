@@ -26,12 +26,14 @@ export interface Order {
 }
 
 export interface Card {
+  id: string;
   number: string;
   holder: string;
   expiry: string;
 }
 
 export interface Address {
+  id: string;
   title: string;
   city: string;
   district: string;
@@ -42,34 +44,27 @@ export interface User {
   name: string;
   email: string;
   birthDate: string;
-  address: Address | null;
-  savedCard: Card | null;
+  addresses: Address[];
+  savedCards: Card[];
   orders: Order[];
   favorites: string[];
   hasWelcomeCoupon: boolean;
 }
 
-interface LoginData {
-  name: string;
-  email: string;
-  birthDate: string;
-}
-
-interface ProfileUpdateData {
-  name?: string;
-  email?: string;
-  birthDate?: string;
-  hasWelcomeCoupon?: boolean;
-}
-
 interface AuthContextType {
   user: User | null;
-  login: (userData: LoginData) => void;
+  login: (userData: { name: string; email: string; birthDate: string }) => void;
   logout: () => void;
   addOrder: (order: Order) => void;
-  saveCard: (card: Card) => void;
-  saveAddress: (address: Address) => void;
-  updateProfile: (data: ProfileUpdateData) => void;
+  saveCard: (card: Omit<Card, "id">) => void;
+  saveAddress: (address: Omit<Address, "id">) => void;
+  deleteAddress: (id: string) => void;
+  deleteCard: (id: string) => void;
+  updateAddress: (id: string, address: Omit<Address, "id">) => void;
+  updateCard: (id: string, card: Omit<Card, "id">) => void;
+  updateProfile: (
+    data: Partial<Pick<User, "name" | "email" | "birthDate">>,
+  ) => void;
   toggleFavorite: (productId: string) => void;
 }
 
@@ -82,22 +77,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const saved = localStorage.getItem("shopco_user");
     if (saved) {
       try {
-        const parsedUser: User = JSON.parse(saved);
-        setUser(parsedUser);
+        setUser(JSON.parse(saved));
       } catch {
         localStorage.removeItem("shopco_user");
       }
     }
   }, []);
 
-  const login = (userData: LoginData) => {
+  const login = (userData: {
+    name: string;
+    email: string;
+    birthDate: string;
+  }) => {
     const finalUser: User = {
+      ...userData,
       orders: [],
       favorites: [],
-      savedCard: null,
-      address: null,
+      savedCards: [],
+      addresses: [],
       hasWelcomeCoupon: true,
-      ...userData,
     };
     setUser(finalUser);
     localStorage.setItem("shopco_user", JSON.stringify(finalUser));
@@ -106,48 +104,102 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = () => {
     setUser(null);
     localStorage.removeItem("shopco_user");
+    window.location.href = "/";
   };
 
   const addOrder = (order: Order) => {
     setUser((prev) => {
       if (!prev) return null;
-      const updated: User = {
+      const updated = { ...prev, orders: [order, ...(prev.orders || [])] };
+      localStorage.setItem("shopco_user", JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  const saveCard = (card: Omit<Card, "id">) => {
+    setUser((prev) => {
+      if (!prev) return null;
+      const newCard = { ...card, id: Date.now().toString() };
+      const updated = {
         ...prev,
-        orders: [order, ...(prev.orders || [])],
+        savedCards: [newCard, ...(prev.savedCards || [])],
       };
       localStorage.setItem("shopco_user", JSON.stringify(updated));
       return updated;
     });
   };
 
-  const saveCard = (card: Card) => {
+  const saveAddress = (address: Omit<Address, "id">) => {
     setUser((prev) => {
       if (!prev) return null;
-      const updatedUser: User = { 
-        ...prev, 
-        savedCard: { ...card } 
+      const newAddress = { ...address, id: Date.now().toString() };
+      const updated = {
+        ...prev,
+        addresses: [newAddress, ...(prev.addresses || [])],
       };
-      localStorage.setItem("shopco_user", JSON.stringify(updatedUser));
-      return updatedUser;
+      localStorage.setItem("shopco_user", JSON.stringify(updated));
+      return updated;
     });
   };
 
-  const saveAddress = (address: Address) => {
+  const deleteAddress = (id: string) => {
     setUser((prev) => {
       if (!prev) return null;
-      const updatedUser: User = { 
-        ...prev, 
-        address: { ...address } 
+      const updated = {
+        ...prev,
+        addresses: prev.addresses.filter((a) => a.id !== id),
       };
-      localStorage.setItem("shopco_user", JSON.stringify(updatedUser));
-      return updatedUser;
+      localStorage.setItem("shopco_user", JSON.stringify(updated));
+      return updated;
     });
   };
 
-  const updateProfile = (data: ProfileUpdateData) => {
+  const deleteCard = (id: string) => {
     setUser((prev) => {
       if (!prev) return null;
-      const updated: User = { ...prev, ...data };
+      const updated = {
+        ...prev,
+        savedCards: prev.savedCards.filter((c) => c.id !== id),
+      };
+      localStorage.setItem("shopco_user", JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  const updateAddress = (id: string, addr: Omit<Address, "id">) => {
+    setUser((prev) => {
+      if (!prev) return null;
+      const updated = {
+        ...prev,
+        addresses: prev.addresses.map((a) =>
+          a.id === id ? { ...addr, id } : a,
+        ),
+      };
+      localStorage.setItem("shopco_user", JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  const updateCard = (id: string, crd: Omit<Card, "id">) => {
+    setUser((prev) => {
+      if (!prev) return null;
+      const updated = {
+        ...prev,
+        savedCards: prev.savedCards.map((c) =>
+          c.id === id ? { ...crd, id } : c,
+        ),
+      };
+      localStorage.setItem("shopco_user", JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  const updateProfile = (
+    data: Partial<Pick<User, "name" | "email" | "birthDate">>,
+  ) => {
+    setUser((prev) => {
+      if (!prev) return null;
+      const updated = { ...prev, ...data };
       localStorage.setItem("shopco_user", JSON.stringify(updated));
       return updated;
     });
@@ -156,12 +208,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const toggleFavorite = (productId: string) => {
     setUser((prev) => {
       if (!prev) return null;
-      const currentFavs = prev.favorites || [];
-      const isFav = currentFavs.includes(productId);
-      const updatedFavs = isFav
-        ? currentFavs.filter((id) => id !== productId)
-        : [...currentFavs, productId];
-      const updated: User = { ...prev, favorites: updatedFavs };
+      const updatedFavs = prev.favorites.includes(productId)
+        ? prev.favorites.filter((id) => id !== productId)
+        : [...prev.favorites, productId];
+      const updated = { ...prev, favorites: updatedFavs };
       localStorage.setItem("shopco_user", JSON.stringify(updated));
       return updated;
     });
@@ -176,6 +226,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         addOrder,
         saveCard,
         saveAddress,
+        deleteAddress,
+        deleteCard,
+        updateAddress,
+        updateCard,
         updateProfile,
         toggleFavorite,
       }}

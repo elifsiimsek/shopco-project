@@ -32,17 +32,54 @@ const brandData = [
   },
 ];
 
+const marqueeBrands = [
+  { name: "VERSACE", className: "tracking-[0.3em] text-[10px] md:text-[12px]" },
+  { name: "ZARA", className: "tracking-tight text-[11px] md:text-[13px]" },
+  {
+    name: "GUCCI",
+    className: "font-semibold tracking-wide text-[10px] md:text-[12px]",
+  },
+  {
+    name: "PRADA",
+    className: "font-bold tracking-widest text-[9px] md:text-[11px]",
+  },
+  {
+    name: "CALVIN KLEIN",
+    className: "font-light tracking-[0.4em] text-[8px] md:text-[10px]",
+  },
+];
+
 export default function BrandsPage() {
   return (
-    <div className="min-h-screen bg-[#FDFDFD] font-satoshi text-black pb-20">
-      <section className="px-4 md:px-16 pt-32 pb-16">
+    <div className="min-h-screen bg-white font-satoshi text-black pb-20">
+      <div className="bg-black py-3 md:py-4 overflow-hidden border-b border-white/5 group">
+        <div className="flex whitespace-nowrap animate-marquee-slow group-hover:[animation-play-state:paused]">
+          {[...Array(4)].map((_, i) => (
+            <div
+              key={i}
+              className="flex items-center gap-12 md:gap-24 px-6 md:px-12"
+            >
+              {marqueeBrands.map((brand, index) => (
+                <span
+                  key={index}
+                  className={`text-white/40 hover:text-white transition-colors duration-500 cursor-default font-serif ${brand.className}`}
+                >
+                  {brand.name}
+                </span>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <section className="px-4 md:px-16 pt-20 pb-16 text-left">
         <div className="max-w-[1200px] mx-auto">
           <span className="text-[10px] font-black uppercase tracking-[0.4em] text-black/30 block mb-4">
             Curated Portfolio
           </span>
-          <h1 className="text-[48px] md:text-[72px] font-[1000] uppercase tracking-tight leading-none">
-            Selected <br></br>
-            <span className="italic font-serif font-light text-black/20">
+          <h1 className="text-[48px] md:text-[72px] font-[1000] uppercase tracking-tight leading-none text-left">
+            Selected <br />
+            <span className="italic font-serif font-light text-black/20 text-left">
               Partners
             </span>
           </h1>
@@ -56,7 +93,7 @@ export default function BrandsPage() {
               key={brand.name}
               className={`group cursor-pointer ${index % 2 !== 0 ? "md:mt-24" : ""}`}
             >
-              <div className="relative aspect-[4/3] w-full max-w-[450px] mx-auto overflow-hidden rounded-lg bg-[#F5F5F5] mb-6">
+              <div className="relative aspect-[4/3] w-full max-w-[450px] mx-auto overflow-hidden rounded-lg bg-[#F9F9F9] mb-6">
                 <img
                   src={brand.image}
                   alt={brand.name}
@@ -64,21 +101,21 @@ export default function BrandsPage() {
                 />
               </div>
 
-              <div className="max-w-[450px] mx-auto space-y-3">
-                <div className="flex items-end justify-between border-b border-black/5 pb-2">
-                  <h2 className="text-2xl font-[1000] uppercase tracking-tighter italic">
+              <div className="max-w-[450px] mx-auto space-y-3 text-left">
+                <div className="flex items-end justify-between border-b border-black/5 pb-2 text-left">
+                  <h2 className="text-2xl font-[1000] uppercase tracking-tighter italic m-0">
                     {brand.name}
                   </h2>
                   <span className="text-[9px] font-bold text-black/30 uppercase tracking-widest">
                     {brand.sub}
                   </span>
                 </div>
-                <p className="text-black/50 text-xs leading-relaxed font-medium italic">
+                <p className="text-black/50 text-xs leading-relaxed font-medium italic m-0">
                   {brand.desc}
                 </p>
                 <Link
                   to="/shop"
-                  className="inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-widest pt-2 hover:text-black transition-colors text-black/40"
+                  className="inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-widest pt-2 hover:text-black transition-colors text-black/40 no-underline"
                 >
                   Explore <FiArrowUpRight size={12} />
                 </Link>
@@ -89,7 +126,7 @@ export default function BrandsPage() {
       </section>
 
       <section className="mt-40 text-center">
-        <button className="px-10 py-4 bg-black text-white rounded-full text-[10px] font-black uppercase tracking-[0.2em] hover:bg-black/80 transition-all shadow-lg active:scale-95">
+        <button className="px-10 py-4 bg-black text-white rounded-full text-[10px] font-black uppercase tracking-[0.2em] hover:bg-black/80 transition-all shadow-lg active:scale-95 border-none cursor-pointer">
           Inquire Partnership
         </button>
       </section>

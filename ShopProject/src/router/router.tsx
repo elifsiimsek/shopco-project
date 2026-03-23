@@ -5,11 +5,9 @@ import CartPage from "../pages/CartPage";
 import ShopPage from "../pages/ShopPage";
 import ProductDetailPage from "../pages/ProductDetailPage";
 import WishlistPage from "../pages/WishlistPage"; 
-
 import OnSalePage from "../pages/collections/OnSalePage";
 import NewArrivalsPage from "../pages/collections/NewArrivalsPage";
 import BrandsPage from "../pages/collections/BrandsPage"; 
-
 import LoginPage from "../pages/auth/LoginPage"; 
 import RegisterPage from "../pages/auth/RegisterPage";
 import AccountPage from "./../pages/AccountPage"; 
@@ -28,7 +26,7 @@ const router = createBrowserRouter([
       { path: "new-arrivals", element: <NewArrivalsPage /> },
       { path: "brands", element: <BrandsPage /> },
       
-      { path: "cart", element: <CartPage /> },
+      { path: "cart", element: <CartPage /> }, 
       { path: "wishlist", element: <WishlistPage /> }, 
 
       { path: "login", element: <LoginPage /> },
