@@ -376,7 +376,7 @@ export default function ShopPage() {
           <div className="flex justify-between items-center mb-10">
             <div className="flex flex-col gap-1 text-left">
               <h1 className="text-[32px] md:text-[40px] font-[1000] uppercase italic tracking-tighter leading-none text-shopBlack">
-                {selectedStyle || selectedCategory || "Vault Shop"}
+                {selectedStyle || selectedCategory || "Shop"}
               </h1>
               <p className="text-[12px] font-black uppercase tracking-widest text-shopBlack/20 text-left italic">
                 Archive: {filteredProducts.length} Results

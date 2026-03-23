@@ -56,6 +56,8 @@ export default {
         "marquee-normal": "marquee-fixed 35s linear infinite",
         "marquee-slow": "marquee-fixed 50s linear infinite",
         "marquee-infinite": "marquee-fixed 30s linear infinite",
+        "marquee-brands": "marquee-fixed 25s linear infinite", 
+        
         "fade-in-up": "fade-in-up 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards",
         "bounce-slow": "bounce 3s infinite",
       },
