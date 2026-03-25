@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { Check, Star, ArrowLeft, ArrowRight } from "lucide-react";
+import Title from "../title";
 
 const testimonials = [
   {
@@ -83,9 +84,7 @@ export default function Testimonials() {
             <span className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.5em] text-black/30">
               <span className="w-8 h-[1px] bg-black/10"></span> Community
             </span>
-            <h2 className="text-[44px] md:text-[64px] font-[1000] uppercase tracking-[-0.06em] leading-[0.85] text-left m-0">
-              Our Happy Customers
-            </h2>
+            <Title title="Our Happy Customers" />
           </div>
 
           <div className="flex gap-4 mb-2">

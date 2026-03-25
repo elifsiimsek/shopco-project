@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import Title from "../title";
 
 export default function DressStyle() {
   const navigate = useNavigate();
@@ -38,9 +39,7 @@ export default function DressStyle() {
   return (
     <section className="max-w-[1440px] mx-auto px-4 md:px-16 py-10 text-black font-satoshi">
       <div className="bg-[#F0F0F0] rounded-[40px] p-6 md:p-16">
-        <h2 className="text-[32px] md:text-[48px] font-[1000] text-center mb-8 md:mb-16 uppercase leading-tight tracking-tighter">
-          BROWSE BY DRESS STYLE
-        </h2>
+        <Title title="BROWSE BY DRESS STYLE" />
 
         <div className="grid grid-cols-3 gap-5">
           {styles.map((style, index) => (

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { productService } from "../services/productService";
+import { productService } from "../data/products";
 import type { Product } from "../types/product";
 
 export const useProducts = (productId?: string | number) => {

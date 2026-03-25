@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { FiArrowUpRight } from "react-icons/fi";
+import BrandsSelectedPartners from "../../sections/brands/brands-selected-partners";
 
 const brandData = [
   {
@@ -34,7 +35,10 @@ const brandData = [
 
 const marqueeBrands = [
   { name: "VERSACE", className: "tracking-[0.3em] text-[10px] md:text-[12px]" },
-  { name: "ZARA", className: "tracking-tight text-[11px] md:text-[13px]" },
+  {
+    name: "ZARA",
+    className: "tracking-tight text-[11px] md:text-[13px]",
+  },
   {
     name: "GUCCI",
     className: "font-semibold tracking-wide text-[10px] md:text-[12px]",
@@ -52,25 +56,7 @@ const marqueeBrands = [
 export default function BrandsPage() {
   return (
     <div className="min-h-screen bg-white font-satoshi text-black pb-20">
-      <div className="bg-black py-3 md:py-4 overflow-hidden border-b border-white/5 group">
-        <div className="flex whitespace-nowrap animate-marquee-slow group-hover:[animation-play-state:paused]">
-          {[...Array(4)].map((_, i) => (
-            <div
-              key={i}
-              className="flex items-center gap-12 md:gap-24 px-6 md:px-12"
-            >
-              {marqueeBrands.map((brand, index) => (
-                <span
-                  key={index}
-                  className={`text-white/40 hover:text-white transition-colors duration-500 cursor-default font-serif ${brand.className}`}
-                >
-                  {brand.name}
-                </span>
-              ))}
-            </div>
-          ))}
-        </div>
-      </div>
+      <BrandsSelectedPartners marqueeBrands={marqueeBrands} />
 
       <section className="px-4 md:px-16 pt-20 pb-16 text-left">
         <div className="max-w-[1200px] mx-auto">

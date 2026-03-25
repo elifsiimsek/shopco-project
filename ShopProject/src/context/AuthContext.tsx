@@ -1,10 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  type ReactNode,
-} from "react";
+import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
 
 export interface OrderItem {
   id: string;
@@ -62,9 +56,7 @@ interface AuthContextType {
   deleteCard: (id: string) => void;
   updateAddress: (id: string, address: Omit<Address, "id">) => void;
   updateCard: (id: string, card: Omit<Card, "id">) => void;
-  updateProfile: (
-    data: Partial<Pick<User, "name" | "email" | "birthDate">>,
-  ) => void;
+  updateProfile: (data: Partial<Pick<User, "name" | "email" | "birthDate">>) => void;
   toggleFavorite: (productId: string) => void;
 }
 
@@ -84,125 +76,74 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, []);
 
-  const login = (userData: {
-    name: string;
-    email: string;
-    birthDate: string;
-  }) => {
-    const finalUser: User = {
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem("shopco_user", JSON.stringify(user));
+    } else {
+      localStorage.removeItem("shopco_user");
+    }
+  }, [user]);
+
+  const login = (userData: { name: string; email: string; birthDate: string }) => {
+    setUser({
       ...userData,
       orders: [],
       favorites: [],
       savedCards: [],
       addresses: [],
       hasWelcomeCoupon: true,
-    };
-    setUser(finalUser);
-    localStorage.setItem("shopco_user", JSON.stringify(finalUser));
+    });
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem("shopco_user");
     window.location.href = "/";
   };
 
   const addOrder = (order: Order) => {
-    setUser((prev) => {
-      if (!prev) return null;
-      const updated = { ...prev, orders: [order, ...(prev.orders || [])] };
-      localStorage.setItem("shopco_user", JSON.stringify(updated));
-      return updated;
-    });
+    setUser((prev) => prev ? { ...prev, orders: [order, ...(prev.orders || [])] } : null);
   };
 
   const saveCard = (card: Omit<Card, "id">) => {
     setUser((prev) => {
       if (!prev) return null;
-      const newCard = { ...card, id: Date.now().toString() };
-      const updated = {
-        ...prev,
-        savedCards: [newCard, ...(prev.savedCards || [])],
-      };
-      localStorage.setItem("shopco_user", JSON.stringify(updated));
-      return updated;
+      const newCard = { ...card, id: `CRD-${Date.now()}` };
+      return { ...prev, savedCards: [newCard, ...(prev.savedCards || [])] };
     });
   };
 
   const saveAddress = (address: Omit<Address, "id">) => {
     setUser((prev) => {
       if (!prev) return null;
-      const newAddress = { ...address, id: Date.now().toString() };
-      const updated = {
-        ...prev,
-        addresses: [newAddress, ...(prev.addresses || [])],
-      };
-      localStorage.setItem("shopco_user", JSON.stringify(updated));
-      return updated;
+      const newAddress = { ...address, id: `ADR-${Date.now()}` };
+      return { ...prev, addresses: [newAddress, ...(prev.addresses || [])] };
     });
   };
 
   const deleteAddress = (id: string) => {
-    setUser((prev) => {
-      if (!prev) return null;
-      const updated = {
-        ...prev,
-        addresses: prev.addresses.filter((a) => a.id !== id),
-      };
-      localStorage.setItem("shopco_user", JSON.stringify(updated));
-      return updated;
-    });
+    setUser((prev) => prev ? { ...prev, addresses: prev.addresses.filter((a) => a.id !== id) } : null);
   };
 
   const deleteCard = (id: string) => {
-    setUser((prev) => {
-      if (!prev) return null;
-      const updated = {
-        ...prev,
-        savedCards: prev.savedCards.filter((c) => c.id !== id),
-      };
-      localStorage.setItem("shopco_user", JSON.stringify(updated));
-      return updated;
-    });
+    setUser((prev) => prev ? { ...prev, savedCards: prev.savedCards.filter((c) => c.id !== id) } : null);
   };
 
   const updateAddress = (id: string, addr: Omit<Address, "id">) => {
-    setUser((prev) => {
-      if (!prev) return null;
-      const updated = {
-        ...prev,
-        addresses: prev.addresses.map((a) =>
-          a.id === id ? { ...addr, id } : a,
-        ),
-      };
-      localStorage.setItem("shopco_user", JSON.stringify(updated));
-      return updated;
-    });
+    setUser((prev) => prev ? {
+      ...prev,
+      addresses: prev.addresses.map((a) => a.id === id ? { ...addr, id } : a)
+    } : null);
   };
 
   const updateCard = (id: string, crd: Omit<Card, "id">) => {
-    setUser((prev) => {
-      if (!prev) return null;
-      const updated = {
-        ...prev,
-        savedCards: prev.savedCards.map((c) =>
-          c.id === id ? { ...crd, id } : c,
-        ),
-      };
-      localStorage.setItem("shopco_user", JSON.stringify(updated));
-      return updated;
-    });
+    setUser((prev) => prev ? {
+      ...prev,
+      savedCards: prev.savedCards.map((c) => c.id === id ? { ...crd, id } : c)
+    } : null);
   };
 
-  const updateProfile = (
-    data: Partial<Pick<User, "name" | "email" | "birthDate">>,
-  ) => {
-    setUser((prev) => {
-      if (!prev) return null;
-      const updated = { ...prev, ...data };
-      localStorage.setItem("shopco_user", JSON.stringify(updated));
-      return updated;
-    });
+  const updateProfile = (data: Partial<Pick<User, "name" | "email" | "birthDate">>) => {
+    setUser((prev) => prev ? { ...prev, ...data } : null);
   };
 
   const toggleFavorite = (productId: string) => {
@@ -211,27 +152,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const updatedFavs = prev.favorites.includes(productId)
         ? prev.favorites.filter((id) => id !== productId)
         : [...prev.favorites, productId];
-      const updated = { ...prev, favorites: updatedFavs };
-      localStorage.setItem("shopco_user", JSON.stringify(updated));
-      return updated;
+      return { ...prev, favorites: updatedFavs };
     });
   };
 
   return (
     <AuthContext.Provider
       value={{
-        user,
-        login,
-        logout,
-        addOrder,
-        saveCard,
-        saveAddress,
-        deleteAddress,
-        deleteCard,
-        updateAddress,
-        updateCard,
-        updateProfile,
-        toggleFavorite,
+        user, login, logout, addOrder, saveCard, saveAddress,
+        deleteAddress, deleteCard, updateAddress, updateCard,
+        updateProfile, toggleFavorite,
       }}
     >
       {children}

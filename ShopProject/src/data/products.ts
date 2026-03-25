@@ -11,8 +11,7 @@ export const products: Product[] = [
     style: "Casual",
     colors: ["bg-black", "bg-white", "bg-vault-slate"],
     sizes: ["Small", "Medium", "Large", "X-Large"],
-    description:
-      "This graphic t-shirt is perfect for any occasion. Crafted from a soft and breathable fabric.",
+    description: "This graphic t-shirt is perfect for any occasion. Crafted from a soft and breathable fabric.",
     isNew: true,
   },
   {
@@ -27,8 +26,7 @@ export const products: Product[] = [
     style: "Casual",
     colors: ["bg-black", "bg-vault-blue"],
     sizes: ["30", "32", "34", "36"],
-    description:
-      "High-quality skinny fit jeans that combine durability with a sharp silhouette.",
+    description: "High-quality skinny fit jeans that combine durability with a sharp silhouette.",
     isNew: true,
   },
   {
@@ -183,3 +181,25 @@ export const products: Product[] = [
     description: "Contrasting trims for a modern sporty look.",
   },
 ];
+
+export const productService = {
+  getAllProducts: async (): Promise<Product[]> => {
+    return new Promise((resolve) => setTimeout(() => resolve(products), 300));
+  },
+
+  getProductById: async (id: string | number): Promise<Product | undefined> => {
+    return new Promise((resolve) => {
+      const found = products.find((p) => String(p.id) === String(id));
+      setTimeout(() => resolve(found), 300);
+    });
+  },
+
+  getRelatedProducts: async (currentId: string | number, limit: number = 4): Promise<Product[]> => {
+    return new Promise((resolve) => {
+      const related = products
+        .filter((p) => String(p.id) !== String(currentId))
+        .slice(0, limit);
+      setTimeout(() => resolve(related), 300);
+    });
+  }
+};
