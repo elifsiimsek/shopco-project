@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
 import { products as allProducts } from "../../data/products";
-import ProductCard from "../product/ProductCard";
+import ProductCard from "../../components/product/ProductCard"; 
 import Button from "../../components/ui/Button";
-import Title from "../title";
+import Title from "../../components/title";
 
-export default function TopSelling() {
+export default function HomeTopSelling() {
   const topSellingIds = ["5", "6", "7", "8"];
   const products = allProducts.filter((p) =>
     topSellingIds.includes(String(p.id)),
@@ -21,7 +21,7 @@ export default function TopSelling() {
       </div>
 
       <div className="flex justify-center mt-8 md:mt-14 px-4">
-        <Link to="/shop" className="w-full md:w-[218px]">
+        <Link to="/shop" className="w-full md:w-[218px] no-underline">
           <Button
             variant="outline"
             className="w-full py-4 text-black font-black border-black/10 rounded-full hover:bg-black hover:text-white transition-all uppercase text-[14px] tracking-widest"

@@ -1,4 +1,20 @@
 import type { Product } from "../types/product";
+export const availableColors = [
+  { name: "Green", code: "bg-vault-green" },
+  { name: "Red", code: "bg-vault-red" },
+  { name: "Yellow", code: "bg-vault-yellow" },
+  { name: "Orange", code: "bg-vault-orange" },
+  { name: "Cyan", code: "bg-vault-cyan" },
+  { name: "Blue", code: "bg-vault-blue" },
+  { name: "Purple", code: "bg-vault-purple" },
+  { name: "Pink", code: "bg-vault-pink" },
+  { name: "White", code: "bg-white" },
+  { name: "Black", code: "bg-black" },
+];
+
+export const categories = ["T-shirts", "Shorts", "Shirts", "Hoodie", "Jeans"];
+export const dressStyles = ["Casual", "Formal", "Party", "Gym"];
+export const sizes = ["XX-Small", "X-Small", "Small", "Medium", "Large", "X-Large", "XX-Large", "3X-Large", "4X-Large"];
 
 export const products: Product[] = [
   {
@@ -11,7 +27,7 @@ export const products: Product[] = [
     style: "Casual",
     colors: ["bg-black", "bg-white", "bg-vault-slate"],
     sizes: ["Small", "Medium", "Large", "X-Large"],
-    description: "This graphic t-shirt is perfect for any occasion. Crafted from a soft and breathable fabric.",
+    description: "This graphic t-shirt is perfect for any occasion.",
     isNew: true,
   },
   {
@@ -37,7 +53,7 @@ export const products: Product[] = [
     img: "/products/p3.png",
     category: "Shirts",
     style: "Formal",
-    colors: ["bg-vault-white", "bg-vault-red", "bg-vault-blue"],
+    colors: ["bg-white", "bg-vault-red", "bg-vault-blue"],
     sizes: ["Medium", "Large", "X-Large"],
     description: "Versatile checkered shirt crafted from premium fabric.",
     isNew: true,
@@ -93,7 +109,7 @@ export const products: Product[] = [
     img: "/products/p6.png",
     category: "T-shirts",
     style: "Casual",
-    colors: ["bg-black", "bg-vault-white", "bg-vault-pink"],
+    colors: ["bg-black", "bg-white", "bg-vault-pink"],
     sizes: ["Medium", "Large", "X-Large"],
     description: "Classic polo shirt with elegant tipping details.",
     isNew: true,

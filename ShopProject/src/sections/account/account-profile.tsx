@@ -1,19 +1,16 @@
 import { FiUser, FiEdit3 } from "react-icons/fi"; 
 import Button from "../../components/ui/Button";
-
-interface AccountProfileProps {
-  user: any;
-  isEditing: boolean;
-  setIsEditing: (val: boolean) => void;
-  editData: { birthDate: string };
-  setEditData: (data: { birthDate: string }) => void;
-  handleUpdate: () => void;
-  calculateAge: (date: string | undefined) => number | string;
-}
+import type { AccountProfileProps } from "../../types/account";
 
 export default function AccountProfile({ 
-  user, isEditing, setIsEditing, editData, setEditData, handleUpdate, calculateAge 
-}: AccountProfileProps) {
+  user, 
+  isEditing, 
+  setIsEditing, 
+  editData, 
+  setEditData, 
+  handleUpdate, 
+  calculateAge 
+}: AccountProfileProps) { 
   return (
     <div className="bg-white border border-black/5 p-8 rounded-[35px] shadow-sm max-w-2xl animate-in fade-in">
       <div className="flex justify-between items-center mb-10">
@@ -38,7 +35,9 @@ export default function AccountProfile({
 
       {isEditing && (
         <div className="mt-8 pt-8 border-t border-black/5 animate-in slide-in-from-top-4 text-left">
-          <p className="text-[10px] font-black uppercase text-black/20 mb-4 tracking-widest">Modify Origin Parameter</p>
+          <p className="text-[10px] font-black uppercase text-black/20 mb-4 tracking-widest">
+            Modify Origin Parameter
+          </p>
           <div className="flex gap-4">
             <input 
               type="date" 
@@ -46,7 +45,9 @@ export default function AccountProfile({
               value={editData.birthDate} 
               onChange={(e) => setEditData({ birthDate: e.target.value })} 
             />
-            <Button onClick={handleUpdate} className="px-8 py-4 text-[10px]">Verify identity</Button>
+            <Button onClick={handleUpdate} className="px-8 py-4 text-[10px]">
+              Verify identity
+            </Button>
           </div>
         </div>
       )}
@@ -57,8 +58,12 @@ export default function AccountProfile({
 function IdentityItem({ label, value }: { label: string; value: string | undefined }) {
   return (
     <div className="space-y-1">
-      <p className="text-[9px] font-black uppercase tracking-[0.3em] text-black/20 m-0">{label}</p>
-      <p className="text-xl font-[1000] italic uppercase m-0 tracking-tighter text-black/90 truncate">{value || "---"}</p>
+      <p className="text-[9px] font-black uppercase tracking-[0.3em] text-black/20 m-0">
+        {label}
+      </p>
+      <p className="text-xl font-[1000] italic uppercase m-0 tracking-tighter text-black/90 truncate">
+        {value || "---"}
+      </p>
     </div>
   );
 }

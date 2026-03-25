@@ -12,11 +12,12 @@ import AccountProfile from "./account-profile";
 import AccountOrders from "./account-orders";
 import AccountAddress from "./account-address";
 import AccountPayment from "./account-payment";
+import type { AccountTab, EmptyStateProps } from "../../types/account";
 
 export default function AccountView() {
   const a = useAccount();
 
-  const TABS = [
+  const TABS: AccountTab[] = [
     { id: "profile", label: "Identity", icon: <FiUser /> },
     { id: "orders", label: "Archive", icon: <FiPackage /> },
     { id: "address", label: "Logistics", icon: <FiMapPin /> },
@@ -93,7 +94,7 @@ export default function AccountView() {
         </aside>
 
         <div className="flex-1 w-full">
-          {a.activeTab === "profile" && (
+          {a.activeTab === "profile" && a.user && (
             <AccountProfile
               user={a.user}
               isEditing={a.isEditingProfile}
@@ -113,7 +114,7 @@ export default function AccountView() {
             />
           )}
 
-          {a.activeTab === "address" && (
+          {a.activeTab === "address" && a.user && (
             <AccountAddress
               user={a.user}
               isAdding={a.isAddingAddress}
@@ -121,13 +122,13 @@ export default function AccountView() {
               addrForm={a.addrForm}
               setAddrForm={a.setAddrForm}
               handleSave={a.handleSaveAddress}
-              setEditingId={a.setEditingId}
+              setEditingId={(id) => a.setEditingId(id as string | null)}
               setDeleteConfirm={a.setDeleteConfirm}
               EmptyState={EmptyState}
             />
           )}
 
-          {a.activeTab === "payment" && (
+          {a.activeTab === "payment" && a.user && (
             <AccountPayment
               user={a.user}
               isAdding={a.isAddingCard}
@@ -146,7 +147,7 @@ export default function AccountView() {
   );
 }
 
-function EmptyState({ icon, text }: any) {
+function EmptyState({ icon, text }: EmptyStateProps) {
   return (
     <div className="text-center py-24 bg-white rounded-[40px] border-2 border-dashed border-black/[0.03] animate-pulse">
       <div className="text-5xl mb-6 text-black/5 flex justify-center">

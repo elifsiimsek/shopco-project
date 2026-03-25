@@ -1,13 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 
-const AnimatedNumber = ({
-  value,
-  duration = 800,
-}: {
-  value: string;
-  duration?: number;
-}) => {
+const AnimatedNumber = ({ value, duration = 800 }: { value: string; duration?: number; }) => {
   const [count, setCount] = useState(0);
   const target = parseInt(value.replace(/[,+]/g, ""));
 
@@ -27,7 +21,7 @@ const AnimatedNumber = ({
   return <span>{count.toLocaleString()}+</span>;
 };
 
-export default function Hero() {
+export default function HomeHero() {
   const navigate = useNavigate();
 
   return (
@@ -40,8 +34,7 @@ export default function Hero() {
 
           <p className="mt-4 md:mt-6 text-black/60 text-[14px] md:text-[16px] max-w-[540px]">
             Browse through our diverse range of meticulously crafted garments,
-            designed to bring out your individuality and cater to your sense of
-            style.
+            designed to bring out your individuality and cater to your sense of style.
           </p>
 
           <button
@@ -51,37 +44,12 @@ export default function Hero() {
             Shop Now
           </button>
 
-          <div className="flex flex-wrap justify-center md:justify-start items-center gap-x-8 gap-y-6 mt-10 md:mt-14 pb-8">
-            <div className="flex flex-col items-center md:items-start">
-              <h3 className="text-[24px] md:text-[36px] font-bold">
-                <AnimatedNumber value="200" />
-              </h3>
-              <p className="text-black/50 text-[12px] md:text-sm">
-                International Brands
-              </p>
-            </div>
-
+          <div className="flex flex-wrap justify-center md:justify-start items-center gap-x-8 gap-y-6 mt-10 md:mt-14 pb-8 text-black">
+            <StatItem value="200" label="International Brands" />
             <div className="hidden md:block w-[1px] h-12 bg-black/10" />
-
-            <div className="flex flex-col items-center md:items-start">
-              <h3 className="text-[24px] md:text-[36px] font-bold">
-                <AnimatedNumber value="2000" />
-              </h3>
-              <p className="text-black/50 text-[12px] md:text-sm">
-                High-Quality Products
-              </p>
-            </div>
-
+            <StatItem value="2000" label="High-Quality Products" />
             <div className="hidden md:block w-[1px] h-12 bg-black/10" />
-
-            <div className="w-full md:w-auto flex flex-col items-center md:items-start">
-              <h3 className="text-[24px] md:text-[36px] font-bold">
-                <AnimatedNumber value="30000" />
-              </h3>
-              <p className="text-black/50 text-[12px] md:text-sm">
-                Happy Customers
-              </p>
-            </div>
+            <StatItem value="30000" label="Happy Customers" />
           </div>
         </div>
 
@@ -91,20 +59,33 @@ export default function Hero() {
             alt="fashion models"
             className="absolute bottom-0 right-[-15%] h-[100%] scale-[1.15] md:right-0 md:h-[663px] md:scale-100 md:w-auto max-w-none origin-bottom transition-all duration-700"
           />
-
           <div className="absolute right-2 md:right-10 top-[12%] w-[56px] h-[56px] md:w-[104px] md:h-[104px] z-30 animate-pulse transition-opacity duration-1000">
-            <svg viewBox="0 0 104 104" fill="black">
-              <path d="M52 0C52 28.7 23.2 52 0 52C23.2 52 52 75.2 52 104C52 75.2 80.7 52 104 52C80.7 52 52 28.7 52 0Z" />
-            </svg>
+             <StarIcon />
           </div>
-
           <div className="absolute left-4 md:left-0 top-[40%] w-[32px] h-[32px] md:w-[56px] md:h-[56px] z-30 animate-pulse delay-700">
-            <svg viewBox="0 0 104 104" fill="black" className="opacity-100">
-              <path d="M52 0C52 28.7 23.2 52 0 52C23.2 52 52 75.2 52 104C52 75.2 80.7 52 104 52C80.7 52 52 28.7 52 0Z" />
-            </svg>
+             <StarIcon />
           </div>
         </div>
       </div>
     </section>
+  );
+}
+
+function StatItem({ value, label }: { value: string; label: string }) {
+  return (
+    <div className="flex flex-col items-center md:items-start">
+      <h3 className="text-[24px] md:text-[36px] font-bold">
+        <AnimatedNumber value={value} />
+      </h3>
+      <p className="text-black/50 text-[12px] md:text-sm">{label}</p>
+    </div>
+  );
+}
+
+function StarIcon() {
+  return (
+    <svg viewBox="0 0 104 104" fill="black">
+      <path d="M52 0C52 28.7 23.2 52 0 52C23.2 52 52 75.2 52 104C52 75.2 80.7 52 104 52C80.7 52 52 28.7 52 0Z" />
+    </svg>
   );
 }

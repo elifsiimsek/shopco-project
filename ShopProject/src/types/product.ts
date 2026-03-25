@@ -1,3 +1,8 @@
+export interface PriceRange {
+  min: number;
+  max: number;
+}
+
 export interface Product {
   id: string | number;
   name: string;
@@ -12,4 +17,11 @@ export interface Product {
   sizes?: string[];
   description?: string;
   isNew?: boolean;
+  selectedSize?: string;
+  selectedColor?: string;
+}
+
+export interface DeleteConfirm {
+  id: string | number;
+  type: string;
 }

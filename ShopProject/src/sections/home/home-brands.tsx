@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-export default function Brands() {
+export default function HomeBrands() {
   const navigate = useNavigate();
 
   const brandList = [

@@ -1,17 +1,19 @@
 import { FiPackage, FiShoppingBag } from "react-icons/fi";
+import type { AccountOrdersProps, Order, OrderItem } from "../../types/account";
 
 export default function AccountOrders({
   orders,
   handleReOrder,
   EmptyState,
-}: any) {
+}: AccountOrdersProps) {
   return (
     <div className="space-y-6 animate-in fade-in">
-      <h3 className="text-lg font-[1000] uppercase italic tracking-tighter m-0">
+      <h3 className="text-lg font-[1000] uppercase italic tracking-tighter m-0 text-left">
         Archive Vault
       </h3>
+
       {orders?.length ? (
-        orders.map((order: any) => (
+        orders.map((order: Order) => (
           <div
             key={order.id}
             className="bg-white rounded-[35px] border border-black/5 p-8 shadow-sm"
@@ -37,8 +39,9 @@ export default function AccountOrders({
                 </span>
               </div>
             </div>
+
             <div className="flex flex-wrap gap-3 mb-8">
-              {order.items.map((item: any, i: number) => (
+              {order.items.map((item: OrderItem, i: number) => (
                 <div
                   key={i}
                   className="flex items-center gap-3 bg-[#F9F9F9] p-2 pr-4 rounded-2xl border border-black/[0.02]"
@@ -59,6 +62,7 @@ export default function AccountOrders({
                 </div>
               ))}
             </div>
+
             <div className="flex justify-end">
               <button
                 onClick={() => handleReOrder(order)}

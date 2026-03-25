@@ -1,6 +1,14 @@
 import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useCart } from "../../context/CartContext";
+import type { 
+  AccountTabId, 
+  AddressForm, 
+  CardForm, 
+  Order, 
+  OrderItem,
+  DeleteConfirm 
+} from "../../types/account";
 
 export function useAccount() {
   const { 
@@ -11,21 +19,22 @@ export function useAccount() {
   
   const { addToCart, setNotification } = useCart();
 
-  const [activeTab, setActiveTab] = useState("profile");
+  const [activeTab, setActiveTab] = useState<AccountTabId>("profile");
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [isAddingAddress, setIsAddingAddress] = useState(false);
   const [isAddingCard, setIsAddingCard] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [deleteConfirm, setDeleteConfirm] = useState<any>(null);
+  const [deleteConfirm, setDeleteConfirm] = useState<DeleteConfirm | null>(null);
 
   const [editData, setEditData] = useState({ birthDate: user?.birthDate || "" });
-  const [addrForm, setAddrForm] = useState({ title: "", city: "", district: "", fullAddress: "" });
-  const [cardForm, setCardForm] = useState({ number: "", holder: "", expiry: "", cvc: "" });
+  const [addrForm, setAddrForm] = useState<AddressForm>({ title: "", city: "", district: "", fullAddress: "" });
+  const [cardForm, setCardForm] = useState<CardForm>({ number: "", holder: "", expiry: "", cvc: "" });
 
-  const calculateAge = (date: string | undefined) => {
+  const calculateAge = (date: string | undefined): number | string => {
     if (!date) return "N/A";
-    const age = new Date().getFullYear() - new Date(date).getFullYear();
-    return age;
+    const birthYear = new Date(date).getFullYear();
+    const currentYear = new Date().getFullYear();
+    return currentYear - birthYear;
   };
 
   const handleProfileUpdate = () => {
@@ -73,8 +82,11 @@ export function useAccount() {
       return;
     }
 
-    if (editingId) updateCard(editingId, { number: cardForm.number, holder: cardForm.holder, expiry: cardForm.expiry });
-    else saveCard({ number: cardForm.number, holder: cardForm.holder, expiry: cardForm.expiry });
+    if (editingId) {
+      updateCard(editingId, { number: cardForm.number, holder: cardForm.holder, expiry: cardForm.expiry });
+    } else {
+      saveCard({ number: cardForm.number, holder: cardForm.holder, expiry: cardForm.expiry });
+    }
 
     setIsAddingCard(false);
     setEditingId(null);
@@ -96,22 +108,31 @@ export function useAccount() {
     setNotification("Location Established. 📍");
   };
 
-  const handleConfirmDelete = () => {
-    if (!deleteConfirm) return;
-    deleteConfirm.type === 'address' ? deleteAddress(deleteConfirm.id) : deleteCard(deleteConfirm.id);
-    setDeleteConfirm(null);
-    setNotification("Entry Purged. 🗑️");
-  };
+ const handleConfirmDelete = () => {
+  if (!deleteConfirm) return;
+  if (deleteConfirm.type === 'address') {
+    deleteAddress(String(deleteConfirm.id)); 
+  } else {
+    deleteCard(String(deleteConfirm.id));
+  }
 
-  const handleReOrder = (order: any) => {
-    order.items.forEach((item: any) => {
-      addToCart({
-        id: item.id, name: item.name, price: item.price,
-        img: item.img, selectedSize: item.size, selectedColor: item.color
-      }, item.quantity);
-    });
-    setNotification("Restored to Bag. 🛍️");
-  };
+  setDeleteConfirm(null);
+  setNotification("Entry Purged. 🗑️");
+};
+
+ const handleReOrder = (order: Order) => {
+  order.items.forEach((item: OrderItem) => {
+    addToCart({
+      id: item.id, 
+      name: item.name, 
+      price: item.price,
+      img: item.img, 
+      selectedSize: item.size, 
+      selectedColor: item.color || "Default"
+    }, item.quantity);
+  });
+  setNotification("Restored to Bag. 🛍️");
+};
 
   return {
     user, logout, activeTab, setActiveTab,

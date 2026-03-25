@@ -2,6 +2,34 @@ import { FiMapPin, FiPlus, FiEdit3, FiTrash2 } from "react-icons/fi";
 import { TURKEY_CITIES } from "../../data/cities";
 import Button from "../../components/ui/Button";
 
+interface Address {
+  id: string | number;
+  title: string;
+  city: string;
+  district: string;
+  fullAddress: string;
+}
+interface User {
+  addresses?: Address[];
+}
+interface AddressForm {
+  title: string;
+  city: string;
+  district: string;
+  fullAddress: string;
+}
+interface AccountAddressProps {
+  user: User;
+  isAdding: boolean;
+  setIsAdding: (value: boolean) => void;
+  addrForm: AddressForm;
+  setAddrForm: (value: AddressForm) => void;
+  handleSave: () => void;
+  setEditingId: (id: string | number | null) => void;
+  setDeleteConfirm: (data: { id: string | number; type: string } | null) => void;
+  EmptyState: React.FC<{ icon: React.ReactNode; text: string }>;
+}
+
 export default function AccountAddress({
   user,
   isAdding,
@@ -12,7 +40,7 @@ export default function AccountAddress({
   setEditingId,
   setDeleteConfirm,
   EmptyState,
-}: any) {
+}: AccountAddressProps) {
   return (
     <div className="space-y-8 animate-in fade-in">
       <div className="flex justify-between items-center">
@@ -30,6 +58,7 @@ export default function AccountAddress({
           <FiPlus /> New Link
         </button>
       </div>
+
       {isAdding && (
         <div className="bg-white border-2 border-dashed border-black/10 p-8 rounded-[35px] max-w-lg space-y-4 animate-in zoom-in-95 text-left">
           <div className="grid grid-cols-2 gap-4">
@@ -96,9 +125,10 @@ export default function AccountAddress({
           </div>
         </div>
       )}
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {user?.addresses?.length ? (
-          user.addresses.map((addr: any) => (
+          user.addresses.map((addr: Address) => (
             <div
               key={addr.id}
               className="group bg-white p-6 rounded-[30px] border border-black/5 hover:border-black/10 transition-all relative text-left"

@@ -1,71 +1,70 @@
 import { Link } from "react-router-dom";
 import { FiArrowUpRight } from "react-icons/fi";
-import BrandsSelectedPartners from "../../sections/brands/brands-selected-partners";
 
 const brandData = [
   {
     name: "Versace",
     sub: "Milan / Italy",
     desc: "Luxury house defined by impeccable tailoring and a heritage of bold Italian artistry.",
-    image:
-      "https://images.unsplash.com/photo-1550639524-a6f58345a2ca?q=80&w=600",
+    image: "https://images.unsplash.com/photo-1550639524-a6f58345a2ca?q=80&w=600",
   },
   {
     name: "Zara",
     sub: "Arteixo / Spain",
     desc: "A global benchmark for capturing the spirit of contemporary fashion trends with speed.",
-    image:
-      "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?q=80&w=600",
+    image: "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?q=80&w=600",
   },
   {
     name: "Gucci",
     sub: "Florence / Italy",
     desc: "Redefining the code of modern luxury through an eclectic and highly creative lens.",
-    image:
-      "https://images.unsplash.com/photo-1618932260643-eee4a2f652a6?q=80&w=600",
+    image: "https://images.unsplash.com/photo-1618932260643-eee4a2f652a6?q=80&w=600",
   },
   {
     name: "Prada",
     sub: "Milan / Italy",
     desc: "Intellectual elegance that challenges the status quo of high-fashion aesthetics.",
-    image:
-      "https://images.unsplash.com/photo-1537832816519-689ad163238b?q=80&w=600",
+    image: "https://images.unsplash.com/photo-1537832816519-689ad163238b?q=80&w=600",
   },
 ];
 
-const marqueeBrands = [
-  { name: "VERSACE", className: "tracking-[0.3em] text-[10px] md:text-[12px]" },
-  {
-    name: "ZARA",
-    className: "tracking-tight text-[11px] md:text-[13px]",
-  },
-  {
-    name: "GUCCI",
-    className: "font-semibold tracking-wide text-[10px] md:text-[12px]",
-  },
-  {
-    name: "PRADA",
-    className: "font-bold tracking-widest text-[9px] md:text-[11px]",
-  },
-  {
-    name: "CALVIN KLEIN",
-    className: "font-light tracking-[0.4em] text-[8px] md:text-[10px]",
-  },
+const marqueeList = [
+  { name: "VERSACE", className: "tracking-[0.3em]" },
+  { name: "ZARA", className: "tracking-tight" },
+  { name: "GUCCI", className: "font-semibold tracking-wide" },
+  { name: "PRADA", className: "font-bold tracking-widest" },
+  { name: "CALVIN KLEIN", className: "font-light tracking-[0.4em]" },
 ];
 
 export default function BrandsPage() {
   return (
     <div className="min-h-screen bg-white font-satoshi text-black pb-20">
-      <BrandsSelectedPartners marqueeBrands={marqueeBrands} />
+      
+      <div className="bg-black py-4 overflow-hidden border-b border-white/5 group">
+        <div className="flex whitespace-nowrap animate-marquee-slow group-hover:[animation-play-state:paused]">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="flex items-center gap-12 md:gap-24 px-6 md:px-12">
+              {marqueeList.map((brand, index) => (
+                <span
+                  key={index}
+                  className={`text-white/40 hover:text-white transition-colors duration-500 cursor-default font-serif text-[12px] md:text-[14px] ${brand.className}`}
+                >
+                  {brand.name}
+                </span>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
 
       <section className="px-4 md:px-16 pt-20 pb-16 text-left">
-        <div className="max-w-[1200px] mx-auto">
+        <div className="max-w-[1200px] mx-auto text-left">
           <span className="text-[10px] font-black uppercase tracking-[0.4em] text-black/30 block mb-4">
             Curated Portfolio
           </span>
-          <h1 className="text-[48px] md:text-[72px] font-[1000] uppercase tracking-tight leading-none text-left">
+          <h1 className="text-[48px] md:text-[72px] font-[1000] uppercase tracking-tight leading-none">
             Selected <br />
-            <span className="italic font-serif font-light text-black/20 text-left">
+            <span className="italic font-serif font-light text-black/20">
               Partners
             </span>
           </h1>
@@ -88,7 +87,7 @@ export default function BrandsPage() {
               </div>
 
               <div className="max-w-[450px] mx-auto space-y-3 text-left">
-                <div className="flex items-end justify-between border-b border-black/5 pb-2 text-left">
+                <div className="flex items-end justify-between border-b border-black/5 pb-2">
                   <h2 className="text-2xl font-[1000] uppercase tracking-tighter italic m-0">
                     {brand.name}
                   </h2>
@@ -112,7 +111,7 @@ export default function BrandsPage() {
       </section>
 
       <section className="mt-40 text-center">
-        <button className="px-10 py-4 bg-black text-white rounded-full text-[10px] font-black uppercase tracking-[0.2em] hover:bg-black/80 transition-all shadow-lg active:scale-95 border-none cursor-pointer">
+        <button className="px-10 py-4 bg-black text-white rounded-full text-[10px] font-black uppercase tracking-[0.2em] hover:bg-black/80 transition-all shadow-lg active:scale-95 border-none cursor-pointer outline-none">
           Inquire Partnership
         </button>
       </section>

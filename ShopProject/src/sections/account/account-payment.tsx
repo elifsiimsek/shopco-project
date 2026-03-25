@@ -1,5 +1,6 @@
 import { FiCreditCard, FiPlus, FiTrash2 } from "react-icons/fi";
 import Button from "../../components/ui/Button";
+import type { AccountPaymentProps, PaymentCard } from "../../types/account";
 
 export default function AccountPayment({
   user,
@@ -11,7 +12,7 @@ export default function AccountPayment({
   handleHolderInput,
   setDeleteConfirm,
   EmptyState,
-}: any) {
+}: AccountPaymentProps) { 
   return (
     <div className="space-y-8 animate-in fade-in">
       <div className="flex justify-between items-center">
@@ -21,12 +22,13 @@ export default function AccountPayment({
         {!isAdding && (user?.savedCards?.length || 0) < 3 && (
           <button
             onClick={() => setIsAdding(true)}
-            className="bg-black text-white px-6 py-3 rounded-full font-black text-[10px] uppercase border-none cursor-pointer flex items-center gap-2 shadow-xl"
+            className="bg-black text-white px-6 py-3 rounded-full font-black text-[10px] uppercase border-none cursor-pointer flex items-center gap-2 shadow-xl hover:scale-105 transition-all"
           >
             <FiPlus /> New Link
           </button>
         )}
       </div>
+
       {isAdding && (
         <div className="bg-white border-2 border-dashed border-black/10 p-8 rounded-[35px] max-w-sm space-y-4 animate-in zoom-in-95 text-left">
           <input
@@ -81,11 +83,12 @@ export default function AccountPayment({
           </Button>
         </div>
       )}
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {user?.savedCards?.map((card: any) => (
+        {user?.savedCards?.map((card: PaymentCard) => ( 
           <div
             key={card.id}
-            className="group bg-black text-white p-8 rounded-[35px] relative aspect-[1.6/1] flex flex-col justify-between shadow-2xl"
+            className="group bg-black text-white p-8 rounded-[35px] relative aspect-[1.6/1] flex flex-col justify-between shadow-2xl transition-all hover:-translate-y-1"
           >
             <button
               onClick={() => setDeleteConfirm({ id: card.id, type: "card" })}
@@ -109,7 +112,8 @@ export default function AccountPayment({
             </div>
           </div>
         ))}
-        {!user?.savedCards?.length && (
+        
+        {!user?.savedCards?.length && !isAdding && (
           <EmptyState
             icon={<FiCreditCard />}
             text="No Payment Specs Secured."

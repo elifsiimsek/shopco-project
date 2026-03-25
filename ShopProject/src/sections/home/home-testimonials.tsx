@@ -1,8 +1,15 @@
 import { useRef } from "react";
 import { Check, Star, ArrowLeft, ArrowRight } from "lucide-react";
-import Title from "../title";
+import Title from "../../components/title";
 
-const testimonials = [
+interface Testimonial {
+  id: number;
+  name: string;
+  text: string;
+  verified: boolean;
+}
+
+const TESTIMONIALS: Testimonial[] = [
   {
     id: 1,
     name: "Sarah M.",
@@ -33,52 +40,27 @@ const testimonials = [
     text: "Finally a brand that gets it! The minimalist design and the premium feel of the organic cotton t-shirts are exactly what I've been searching for.",
     verified: true,
   },
-  {
-    id: 6,
-    name: "Michael B.",
-    text: "The quality of the fabric is just next level. I was worried about the fit, but the size guide was incredibly accurate. This is now my go-to fashion spot!",
-    verified: true,
-  },
-  {
-    id: 7,
-    name: "Emily R.",
-    text: "Absolutely love the packaging and the attention to detail. It feels like a luxury experience from the moment you open the box.",
-    verified: true,
-  },
-  {
-    id: 8,
-    name: "David W.",
-    text: "Best customer service I've experienced in a long time. They helped me pick the right size and it fits like a glove. Highly recommended!",
-    verified: true,
-  },
-  {
-    id: 9,
-    name: "Olivia P.",
-    text: "The prices are unbeatable for this level of quality. I've already recommended Shop.co to all my friends. Keep up the amazing work!",
-    verified: true,
-  },
 ];
 
-export default function Testimonials() {
+export default function HomeTestimonials() {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const scroll = (direction: "left" | "right") => {
     if (scrollRef.current) {
       const { scrollLeft, clientWidth } = scrollRef.current;
-      const scrollAmount = clientWidth > 768 ? 450 : clientWidth * 0.85;
+      const scrollAmount = clientWidth > 768 ? 420 : clientWidth * 0.85;
+      
       scrollRef.current.scrollTo({
-        left:
-          direction === "left"
-            ? scrollLeft - scrollAmount
-            : scrollLeft + scrollAmount,
+        left: direction === "left" ? scrollLeft - scrollAmount : scrollLeft + scrollAmount,
         behavior: "smooth",
       });
     }
   };
 
   return (
-    <section className="w-full bg-white pt-24 pb-24 font-satoshi overflow-hidden selection:bg-black selection:text-white">
+    <section className="w-full bg-white pt-24 pb-24 font-satoshi overflow-hidden">
       <div className="max-w-[1440px] mx-auto px-4 md:px-16">
+        
         <div className="flex justify-between items-end mb-16">
           <div className="space-y-4 text-left">
             <span className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.5em] text-black/30">
@@ -90,33 +72,31 @@ export default function Testimonials() {
           <div className="flex gap-4 mb-2">
             <button
               onClick={() => scroll("left")}
-              className="w-14 h-14 rounded-full border border-black/[0.06] flex items-center justify-center cursor-pointer hover:bg-black hover:text-white transition-all duration-500 active:scale-90 shadow-sm bg-transparent"
+              className="w-12 h-12 md:w-14 md:h-14 rounded-full border border-black/[0.06] flex items-center justify-center hover:bg-black hover:text-white transition-all duration-500 active:scale-90"
             >
               <ArrowLeft size={22} />
             </button>
             <button
               onClick={() => scroll("right")}
-              className="w-14 h-14 rounded-full border border-black/[0.06] flex items-center justify-center cursor-pointer hover:bg-black hover:text-white transition-all duration-500 active:scale-90 shadow-sm bg-transparent"
+              className="w-12 h-12 md:w-14 md:h-14 rounded-full border border-black/[0.06] flex items-center justify-center hover:bg-black hover:text-white transition-all duration-500 active:scale-90"
             >
               <ArrowRight size={22} />
             </button>
           </div>
         </div>
 
-        <div className="relative">
-          <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-white to-transparent z-20 pointer-events-none hidden md:block" />
-          <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-white to-transparent z-20 pointer-events-none hidden md:block" />
-
+        <div className="relative -mx-4 md:-mx-16">
           <div
             ref={scrollRef}
-            className="flex gap-8 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-12 px-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+            className="flex gap-6 md:gap-8 overflow-x-auto scroll-smooth snap-x snap-mandatory px-4 md:px-16 pb-12 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+            style={{ cursor: 'grab' }}
           >
-            {testimonials.map((t) => (
+            {TESTIMONIALS.map((t: Testimonial) => ( 
               <div
                 key={t.id}
-                className="min-w-[320px] md:min-w-[420px] border border-black/[0.04] rounded-[32px] p-10 flex flex-col gap-6 snap-center text-left bg-[#FBFBFB] transition-all duration-700 hover:bg-white hover:shadow-[0_40px_80px_-30px_rgba(0,0,0,0.08)] hover:border-black/5 group cursor-default"
+                className="min-w-[320px] md:min-w-[400px] border border-black/[0.04] rounded-[32px] p-8 md:p-10 flex flex-col gap-6 snap-start text-left bg-[#FBFBFB] transition-all duration-700 hover:bg-white hover:shadow-[0_40px_80px_-30px_rgba(0,0,0,0.08)] group cursor-default"
               >
-                <div className="flex gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
+                <div className="flex gap-1">
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={i}
@@ -140,12 +120,8 @@ export default function Testimonials() {
                     <div className="flex items-center gap-1.5 font-black text-[15px] uppercase tracking-tighter text-black">
                       {t.name}
                       {t.verified && (
-                        <div className="bg-vault-green rounded-full p-0.5 flex items-center justify-center">
-                          <Check
-                            size={8}
-                            className="text-white"
-                            strokeWidth={5}
-                          />
+                        <div className="bg-green-500 rounded-full p-0.5 flex items-center justify-center">
+                          <Check size={8} className="text-white" strokeWidth={5} />
                         </div>
                       )}
                     </div>
@@ -156,6 +132,7 @@ export default function Testimonials() {
                 </div>
               </div>
             ))}
+            <div className="min-w-[1px] pr-4 md:pr-16" />
           </div>
         </div>
       </div>

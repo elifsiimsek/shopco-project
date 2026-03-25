@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import Title from "../title";
+import Title from "../../components/title";
 
-export default function DressStyle() {
+export default function HomeCategories() {
   const navigate = useNavigate();
 
   const styles = [
@@ -64,7 +64,6 @@ export default function DressStyle() {
               />
 
               <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10" />
-
               <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             </div>
           ))}
