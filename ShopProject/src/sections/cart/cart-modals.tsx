@@ -71,7 +71,6 @@ export const CartModals = ({
 
   return (
     <>
-      {/* 🗑 DELETE CONFIRMATION */}
       {deleteConfirm && (
         <div className="fixed inset-0 z-[6000] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in">
           <div className="bg-white w-full max-w-[380px] rounded-[32px] p-10 text-center shadow-2xl">
@@ -85,7 +84,6 @@ export const CartModals = ({
         </div>
       )}
 
-      {/* 📍 LOGISTICS MODAL */}
       {checkoutStep === "logistics" && (
         <div className="fixed inset-0 z-[5000] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 text-left animate-in fade-in text-black">
           <div className="bg-white w-full max-w-[500px] rounded-[45px] p-10 md:p-12 relative shadow-2xl">
@@ -134,7 +132,6 @@ export const CartModals = ({
         </div>
       )}
 
-      {/* 💳 PAYMENT MODAL */}
       {checkoutStep === "payment" && (
         <div className="fixed inset-0 z-[5000] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 text-left animate-in fade-in text-black">
           <div className="bg-white w-full max-w-[500px] rounded-[45px] p-10 md:p-12 relative shadow-2xl">

@@ -23,7 +23,6 @@ export default function ProductDetailPage() {
   const { addToCart, setNotification } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
 
-  // ✅ useProducts Hook entegrasyonu (knip listesinden silindi!)
   const { product, loading, error } = useProducts(id);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
   
@@ -40,7 +39,6 @@ export default function ProductDetailPage() {
       if (product.colors?.length) setSelectedColor(product.colors[0]);
       if (product.sizes?.length) setSelectedSize(product.sizes[0]);
       
-      // İlişkili ürünleri çek (service üzerinden)
       productService.getRelatedProducts(product.id).then(setRelatedProducts);
     }
   }, [product]);
@@ -85,7 +83,6 @@ export default function ProductDetailPage() {
 
   return (
     <div className="max-w-[1440px] mx-auto px-4 md:px-16 py-8 text-left font-satoshi text-black bg-white min-h-screen">
-      {/* Breadcrumb Navigation */}
       <nav className="flex items-center gap-2 text-[11px] text-black/30 mb-10 font-black uppercase tracking-[0.2em]">
         <Link to="/" className="hover:text-black transition no-underline">Home</Link>
         <ChevronRight size={12} />
@@ -94,7 +91,6 @@ export default function ProductDetailPage() {
         <span className="text-black italic">{product.name}</span>
       </nav>
 
-      {/* Main Product Info Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 mb-24">
         <ImageGallery images={[product.img, product.img, product.img]} />
 
@@ -184,7 +180,6 @@ export default function ProductDetailPage() {
         </div>
       </div>
 
-      {/* Tabs Section */}
       <div className="mt-24">
         <div className="flex border-b border-black/5 mb-12 overflow-x-auto no-scrollbar">
           {tabs.map((tab) => (
@@ -269,7 +264,6 @@ export default function ProductDetailPage() {
         </div>
       </div>
 
-      {/* Related Products */}
       <div className="mt-48 text-center">
         <Title title="You might also like" align="center" />
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10 mt-10">
@@ -277,7 +271,6 @@ export default function ProductDetailPage() {
         </div>
       </div>
 
-      {/* Review Modal */}
       {isReviewModalOpen && (
         <div className="fixed inset-0 z-[5000] flex items-center justify-center bg-black/40 backdrop-blur-md p-4 animate-in fade-in duration-300">
           <div className="bg-white w-full max-w-[500px] rounded-[45px] p-10 relative shadow-2xl border border-black/5 text-left">

@@ -9,7 +9,6 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
 
   return (
     <div className="flex flex-col-reverse md:flex-row gap-4 lg:w-[610px] animate-in fade-in duration-700">
-      {/* 📸 Thumbnail List (Küçük Resimler) */}
       <div className="flex flex-row md:flex-col gap-4 w-full md:w-[152px]">
         {images.map((img, i) => (
           <button
@@ -24,7 +23,6 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
         ))}
       </div>
 
-      {/* 🖼 Main Image Display (Büyük Resim) */}
       <div className="flex-1 bg-[#F0F0F0] rounded-[24px] overflow-hidden h-[530px] border border-black/5 shadow-sm group">
         <img
           src={selectedImage}
