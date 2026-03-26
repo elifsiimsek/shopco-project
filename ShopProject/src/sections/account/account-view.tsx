@@ -4,7 +4,8 @@ import {
   FiMapPin,
   FiCreditCard,
   FiLogOut,
-  FiActivity,
+  FiShield,
+  FiChevronRight,
   FiAlertCircle,
 } from "react-icons/fi";
 import { useAccount } from "./use-account";
@@ -25,137 +26,175 @@ export default function AccountView() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA] font-satoshi text-black text-left">
+    <div className="min-h-screen bg-[#FBFBFB] font-satoshi text-black text-left p-4 md:p-12">
       {a.deleteConfirm && (
-        <div className="fixed inset-0 z-[6000] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in">
-          <div className="bg-white w-full max-w-[380px] rounded-[40px] p-12 text-center shadow-2xl animate-in zoom-in-95">
-            <FiAlertCircle size={48} className="text-red-500 mb-6 mx-auto" />
-            <h3 className="text-2xl font-[1000] uppercase italic tracking-tighter mb-2">
-              Remove Entry?
+        <div className="fixed inset-0 z-[6000] flex items-center justify-center bg-black/20 backdrop-blur-md p-4 animate-in fade-in">
+          <div className="bg-white w-full max-w-[360px] rounded-[35px] p-10 text-center shadow-2xl border border-black/5 animate-in zoom-in-95">
+            <FiAlertCircle size={28} className="text-black mb-4 mx-auto" />
+            <h3 className="text-xl font-[1000] uppercase italic tracking-tighter mb-2 text-black">
+              Purge Entry?
             </h3>
-            <p className="text-[11px] text-black/40 font-black uppercase tracking-widest mb-8">
-              This {a.deleteConfirm.type} will be purged from the archive.
+            <p className="text-[10px] text-black/30 font-black uppercase tracking-widest mb-8">
+              Permanently remove this {a.deleteConfirm.type}?
             </p>
-            <div className="flex flex-col gap-3 mt-8">
+            <div className="flex flex-col gap-2">
               <button
                 onClick={a.handleConfirmDelete}
-                className="w-full bg-black text-white py-4 rounded-full font-black text-[11px] uppercase border-none cursor-pointer hover:bg-neutral-800 transition-all"
+                className="w-full bg-black text-white py-4 rounded-full font-black text-[10px] uppercase italic tracking-widest border-none cursor-pointer"
               >
-                Confirm Removal
+                Confirm
               </button>
               <button
                 onClick={() => a.setDeleteConfirm(null)}
-                className="w-full bg-transparent text-black/20 py-2 font-black uppercase text-[10px] border-none cursor-pointer hover:text-black"
+                className="w-full bg-transparent text-black/20 py-2 font-black uppercase text-[9px] border-none cursor-pointer hover:text-black"
               >
-                Abort
+                Cancel
               </button>
             </div>
           </div>
         </div>
       )}
 
-      <header className="bg-white border-b border-black/[0.03] py-8">
-        <div className="max-w-[1200px] mx-auto px-6 flex justify-between items-end">
-          <div className="text-left">
-            <p className="text-[9px] font-black uppercase tracking-[0.4em] text-black/20 mb-2 flex items-center gap-2">
-              <FiActivity size={12} /> Authorized Access
-            </p>
-            <h1 className="text-4xl font-[1000] uppercase italic tracking-tighter m-0">
-              Identity Control
+      <div className="max-w-[1200px] mx-auto">
+        <header className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8 border-b border-black/[0.05] pb-10">
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+              <p className="text-[9px] font-[1000] uppercase tracking-[0.4em] text-black/20">
+                System / Authorized
+              </p>
+            </div>
+            <h1 className="text-5xl md:text-7xl font-[1000] uppercase italic tracking-tighter m-0 leading-[0.85]">
+              Identity <br /> Control
             </h1>
           </div>
-          <button
-            onClick={a.logout}
-            className="text-black/30 hover:text-red-500 font-black text-[10px] uppercase tracking-widest bg-transparent border-none cursor-pointer flex items-center gap-2 transition-all pb-1"
-          >
-            Terminate <FiLogOut size={14} />
-          </button>
-        </div>
-      </header>
 
-      <main className="max-w-[1200px] mx-auto px-6 py-12 flex flex-col lg:flex-row gap-12">
-        <aside className="w-full lg:w-64 space-y-2">
-          {TABS.map((tab) => (
+          <div className="flex items-center gap-6">
+            <div className="text-right hidden md:block">
+              <p className="text-[9px] font-black uppercase tracking-widest text-black/20 mb-1">
+                Established User
+              </p>
+              <p className="text-sm font-[1000] uppercase italic tracking-tighter">
+                {a.user?.name}
+              </p>
+            </div>
+            <div className="w-16 h-16 rounded-full border border-black/5 flex items-center justify-center p-1 bg-white shadow-sm">
+              <div className="w-full h-full rounded-full bg-black flex items-center justify-center text-white font-black italic text-xl">
+                {a.user?.name?.charAt(0)}
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
+          <aside className="lg:col-span-3 space-y-1">
+            <p className="text-[9px] font-black uppercase tracking-[0.3em] text-black/20 mb-6 pl-4">
+              Navigation Protocol
+            </p>
+            {TABS.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => a.setActiveTab(tab.id)}
+                className={`w-full flex items-center justify-between p-4 rounded-2xl transition-all border-none cursor-pointer group ${
+                  a.activeTab === tab.id
+                    ? "bg-black text-white shadow-xl translate-x-2"
+                    : "bg-transparent text-black/30 hover:text-black hover:bg-black/[0.02]"
+                }`}
+              >
+                <div className="flex items-center gap-4">
+                  <span className="text-lg">{tab.icon}</span>
+                  <span className="font-black text-[10px] uppercase tracking-widest">
+                    {tab.label}
+                  </span>
+                </div>
+                {a.activeTab === tab.id && <FiChevronRight />}
+              </button>
+            ))}
             <button
-              key={tab.id}
-              onClick={() => a.setActiveTab(tab.id)}
-              className={`w-full flex items-center gap-4 p-4 rounded-2xl transition-all border-none cursor-pointer ${
-                a.activeTab === tab.id
-                  ? "bg-black text-white shadow-2xl scale-105"
-                  : "bg-white text-black/30 hover:text-black border border-black/[0.03]"
-              }`}
+              onClick={a.logout}
+              className="w-full flex items-center gap-4 p-4 mt-12 rounded-2xl text-red-500/40 hover:text-red-500 hover:bg-red-50 transition-all border-none bg-transparent cursor-pointer"
             >
-              <span className="text-lg">{tab.icon}</span>
-              <span className="font-black text-[11px] uppercase tracking-widest">
-                {tab.label}
+              <FiLogOut className="text-lg" />
+              <span className="font-black text-[10px] uppercase tracking-widest">
+                Terminate Session
               </span>
             </button>
-          ))}
-        </aside>
+          </aside>
 
-        <div className="flex-1 w-full">
-          {a.activeTab === "profile" && a.user && (
-            <AccountProfile
-              user={a.user}
-              isEditing={a.isEditingProfile}
-              setIsEditing={a.setIsEditingProfile}
-              editData={a.editData}
-              setEditData={a.setEditData}
-              handleUpdate={a.handleProfileUpdate}
-              calculateAge={a.calculateAge}
+          <main className="lg:col-span-9 bg-white rounded-[45px] p-8 md:p-16 shadow-sm border border-black/[0.02] relative overflow-hidden">
+            <FiShield
+              size={300}
+              className="absolute -right-20 -top-20 text-black/[0.01] pointer-events-none"
             />
-          )}
 
-          {a.activeTab === "orders" && (
-            <AccountOrders
-              orders={a.user?.orders}
-              handleReOrder={a.handleReOrder}
-              EmptyState={EmptyState}
-            />
-          )}
+            <div className="relative z-10">
+              {a.activeTab === "profile" && a.user && (
+                <AccountProfile
+                  user={a.user}
+                  isEditing={a.isEditingProfile}
+                  setIsEditing={a.setIsEditingProfile}
+                  editData={a.editData}
+                  setEditData={a.setEditData}
+                  handleUpdate={a.handleProfileUpdate}
+                  calculateAge={a.calculateAge}
+                />
+              )}
 
-          {a.activeTab === "address" && a.user && (
-            <AccountAddress
-              user={a.user}
-              isAdding={a.isAddingAddress}
-              setIsAdding={a.setIsAddingAddress}
-              addrForm={a.addrForm}
-              setAddrForm={a.setAddrForm}
-              handleSave={a.handleSaveAddress}
-              setEditingId={(id) => a.setEditingId(id as string | null)}
-              setDeleteConfirm={a.setDeleteConfirm}
-              EmptyState={EmptyState}
-            />
-          )}
+              {a.activeTab === "orders" && (
+                <AccountOrders
+                  orders={a.user?.orders}
+                  handleReOrder={a.handleReOrder}
+                  EmptyState={EmptyState}
+                />
+              )}
 
-          {a.activeTab === "payment" && a.user && (
-            <AccountPayment
-              user={a.user}
-              isAdding={a.isAddingCard}
-              setIsAdding={a.setIsAddingCard}
-              cardForm={a.cardForm}
-              setCardForm={a.setCardForm}
-              handleSave={a.handleSaveCard}
-              handleHolderInput={a.handleHolderInput}
-              setDeleteConfirm={a.setDeleteConfirm}
-              EmptyState={EmptyState}
-            />
-          )}
+              {a.activeTab === "address" && a.user && (
+                <AccountAddress
+                  user={a.user}
+                  isAdding={a.isAddingAddress}
+                  setIsAdding={a.setIsAddingAddress}
+                  addrForm={a.addrForm}
+                  setAddrForm={a.setAddrForm}
+                  handleSave={a.handleSaveAddress}
+                  setEditingId={a.setEditingId}
+                  setDeleteConfirm={a.setDeleteConfirm}
+                  EmptyState={EmptyState}
+                />
+              )}
+
+              {a.activeTab === "payment" && a.user && (
+                <AccountPayment
+                  user={a.user}
+                  isAdding={a.isAddingCard}
+                  setIsAdding={a.setIsAddingCard}
+                  cardForm={a.cardForm}
+                  setCardForm={a.setCardForm}
+                  handleSave={a.handleSaveCard}
+                  handleHolderInput={a.handleHolderInput}
+                  setDeleteConfirm={a.setDeleteConfirm}
+                  EmptyState={EmptyState}
+                />
+              )}
+            </div>
+          </main>
         </div>
-      </main>
+      </div>
     </div>
   );
 }
 
 function EmptyState({ icon, text }: EmptyStateProps) {
   return (
-    <div className="text-center py-24 bg-white rounded-[40px] border-2 border-dashed border-black/[0.03] animate-pulse">
-      <div className="text-5xl mb-6 text-black/5 flex justify-center">
-        {icon}
+    <div className="flex flex-col items-center justify-center py-24 text-center">
+      <div className="w-16 h-16 bg-[#F9F9F9] rounded-full flex items-center justify-center mb-6 text-black/10">
+        <span className="text-3xl">{icon}</span>
       </div>
-      <p className="text-[10px] font-black uppercase tracking-[0.4em] text-black/10 italic">
+      <p className="text-[10px] font-black uppercase tracking-[0.4em] text-black/20 italic mb-8">
         {text}
       </p>
+      <button className="text-[9px] font-black uppercase tracking-widest bg-black text-white px-8 py-3 rounded-full border-none cursor-pointer hover:scale-105 transition-all">
+        Access Archive
+      </button>
     </div>
   );
 }
