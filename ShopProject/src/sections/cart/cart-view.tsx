@@ -63,8 +63,9 @@ export default function CartView() {
         : acc,
     0,
   );
+
   const promoDiscount = isPromoApplied ? Math.round(currentSubtotal * 0.2) : 0;
-  const finalTotal = currentSubtotal - promoDiscount + 15;
+  const finalTotal = currentSubtotal - promoDiscount;
 
   const handleFinalOrder = () => {
     const orderId = `ORD-${Math.random().toString(36).substring(2, 11).toUpperCase()}`;
@@ -97,7 +98,7 @@ export default function CartView() {
     addOrder({
       id: orderId,
       date: new Date().toLocaleDateString(),
-      total: finalTotal,
+      total: finalTotal + (finalTotal > 1000 ? 0 : 15),
       itemsCount: cart.length,
       status: "Verified",
       items: orderItems,
@@ -112,14 +113,17 @@ export default function CartView() {
     return (
       <div className="min-h-screen bg-white flex flex-col items-center justify-center p-4">
         <FiShoppingBag size={80} className="mb-6 opacity-5" />
-        <h1 className="text-3xl font-[1000] uppercase italic text-black">
+        <h1 className="text-3xl font-[1000] uppercase italic text-black tracking-tighter">
           Bag Empty
         </h1>
+        <p className="text-black/40 font-medium mb-8">
+          Your vault is waiting for new pieces.
+        </p>
         <Link
           to="/shop"
-          className="bg-black text-white px-10 py-4 rounded-full font-black text-[11px] no-underline mt-4 shadow-xl"
+          className="bg-black text-white px-10 py-4 rounded-full font-black uppercase italic text-[11px] no-underline shadow-xl hover:scale-105 transition-transform"
         >
-          Vault
+          Explore Archive
         </Link>
       </div>
     );
@@ -129,17 +133,17 @@ export default function CartView() {
       <main className="max-w-[1240px] mx-auto px-4 md:px-6">
         <div className="flex items-center gap-4 mb-12">
           <FiActivity className="text-black/10 animate-pulse" size={24} />
-          <h1 className="text-[36px] md:text-[52px] font-black uppercase m-0 tracking-tighter leading-none">
-            Your Cart
+          <h1 className="text-[36px] md:text-[52px] font-[1000] uppercase italic m-0 tracking-tighter leading-none">
+            Your Bag
           </h1>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-5 items-start">
+        <div className="flex flex-col lg:flex-row gap-8 items-start">
           <CartItemList
             items={cart}
             onDecrease={decrease}
             onIncrease={increase}
-            onRemove={setDeleteConfirm}
+            onRemove={(item) => setDeleteConfirm(item)}
           />
           <CartSummary
             subtotal={currentSubtotal}
@@ -208,11 +212,7 @@ export default function CartView() {
                   <FiCheck size={28} strokeWidth={3} />
                 </div>
                 <h2 className="text-[60px] md:text-[86px] font-[1000] uppercase italic leading-[0.8] m-0 text-black">
-                  Archive
-                  <br />
-                  <span className="text-black/5 not-italic font-serif">
-                    Secured
-                  </span>
+                  Archive Secured
                 </h2>
                 <div className="flex items-center gap-3 text-black/20 font-black uppercase tracking-[0.4em] text-[10px] pt-4">
                   <FiZap size={14} /> Verified Order: {orderSuccess.id}

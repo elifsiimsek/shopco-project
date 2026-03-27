@@ -1,4 +1,5 @@
 import { useState } from "react";
+import * as Yup from "yup";
 import { useAuth } from "../../context/AuthContext";
 import { useCart } from "../../context/CartContext";
 import type {
@@ -9,6 +10,36 @@ import type {
   OrderItem,
   DeleteConfirm,
 } from "../../types/account";
+
+const addressSchema = Yup.object().shape({
+  title: Yup.string().required("TITLE REQUIRED"),
+  city: Yup.string().required("CITY REQUIRED"),
+  district: Yup.string().required("DISTRICT REQUIRED"),
+  fullAddress: Yup.string()
+    .min(10, "ADDRESS TOO SHORT")
+    .required("FULL ADDRESS REQUIRED"),
+});
+
+const cardSchema = Yup.object().shape({
+  number: Yup.string()
+    .matches(/^[0-9]{16}$/, "INVALID CARD NUMBER (16 DIGITS)")
+    .required("CARD NUMBER REQUIRED"),
+  holder: Yup.string()
+    .min(3, "INVALID HOLDER NAME")
+    .required("HOLDER NAME REQUIRED"),
+  expiry: Yup.string()
+    .matches(/^(0[1-9]|1[0-2])\/([0-9]{2})$/, "USE MM/YY FORMAT")
+    .required("EXPIRY REQUIRED")
+    .test("is-expired", "CARD EXPIRED", (value) => {
+      if (!value) return false;
+      const [m, y] = value.split("/").map(Number);
+      const expiryDate = new Date(2000 + y, m, 0);
+      return expiryDate > new Date();
+    }),
+  cvc: Yup.string()
+    .matches(/^[0-9]{3}$/, "INVALID CVC (3 DIGITS)")
+    .required("CVC REQUIRED"),
+});
 
 export function useAccount() {
   const {
@@ -22,6 +53,7 @@ export function useAccount() {
     updateCard,
     deleteCard,
   } = useAuth();
+
   const { addToCart, setNotification } = useCart();
 
   const [activeTab, setActiveTab] = useState<AccountTabId>("profile");
@@ -33,15 +65,19 @@ export function useAccount() {
     null,
   );
 
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+
   const [editData, setEditData] = useState({
     birthDate: user?.birthDate || "",
   });
+
   const [addrForm, setAddrForm] = useState<AddressForm>({
     title: "",
     city: "",
     district: "",
     fullAddress: "",
   });
+
   const [cardForm, setCardForm] = useState<CardForm>({
     number: "",
     holder: "",
@@ -56,53 +92,52 @@ export function useAccount() {
     return currentYear - birthYear;
   };
 
-  const handleSaveCard = () => {
-    const [month, year] = cardForm.expiry.split("/").map(Number);
-    const fullYear = 2000 + year;
-    const currentYear = 2026;
+  const handleSaveCard = async () => {
+    try {
+      setFormErrors({});
+      await cardSchema.validate(cardForm, { abortEarly: false });
 
-    if (!cardForm.expiry.includes("/") || cardForm.expiry.length < 5) {
-      setNotification("Format MM/YY Required. 📅");
-      return;
-    }
-    if (month < 1 || month > 12) {
-      setNotification("Invalid Month (1-12). ❌");
-      return;
-    }
-    if (fullYear < currentYear) {
-      setNotification("Archive Rejected: Card Expired. 🔞");
-      return;
-    }
-    if (fullYear > currentYear + 10) {
-      setNotification("Vault Limit: Max 10 Years. 🔒");
-      return;
-    }
-    if (cardForm.number.replace(/\s/g, "").length < 16) {
-      setNotification("Invalid Card Number Specs. ❌");
-      return;
-    }
+      if (editingId) updateCard(editingId, cardForm);
+      else saveCard(cardForm);
 
-    if (editingId) updateCard(editingId, cardForm);
-    else saveCard(cardForm);
-
-    setIsAddingCard(false);
-    setEditingId(null);
-    setCardForm({ number: "", holder: "", expiry: "", cvc: "" });
-    setNotification("Vault Pay Secured. 💳");
+      setIsAddingCard(false);
+      setEditingId(null);
+      setCardForm({ number: "", holder: "", expiry: "", cvc: "" });
+      setNotification("VAULT PAY SECURED. 💳");
+    } catch (err) {
+      if (err instanceof Yup.ValidationError) {
+        const errors: Record<string, string> = {};
+        err.inner.forEach((e) => {
+          if (e.path) errors[e.path] = e.message;
+        });
+        setFormErrors(errors);
+        setNotification(err.inner[0].message);
+      }
+    }
   };
 
-  const handleSaveAddress = () => {
-    if (!addrForm.city || !addrForm.district || !addrForm.fullAddress) {
-      setNotification("Logistics Details Missing. ❌");
-      return;
-    }
-    if (editingId) updateAddress(editingId, addrForm);
-    else saveAddress(addrForm);
+  const handleSaveAddress = async () => {
+    try {
+      setFormErrors({});
+      await addressSchema.validate(addrForm, { abortEarly: false });
 
-    setIsAddingAddress(false);
-    setEditingId(null);
-    setAddrForm({ title: "", city: "", district: "", fullAddress: "" });
-    setNotification("Location Established. 📍");
+      if (editingId) updateAddress(editingId, addrForm);
+      else saveAddress(addrForm);
+
+      setIsAddingAddress(false);
+      setEditingId(null);
+      setAddrForm({ title: "", city: "", district: "", fullAddress: "" });
+      setNotification("LOCATION ESTABLISHED. 📍");
+    } catch (err) {
+      if (err instanceof Yup.ValidationError) {
+        const errors: Record<string, string> = {};
+        err.inner.forEach((e) => {
+          if (e.path) errors[e.path] = e.message;
+        });
+        setFormErrors(errors);
+        setNotification(err.inner[0].message);
+      }
+    }
   };
 
   const handleConfirmDelete = () => {
@@ -111,7 +146,7 @@ export function useAccount() {
       deleteAddress(String(deleteConfirm.id));
     else deleteCard(String(deleteConfirm.id));
     setDeleteConfirm(null);
-    setNotification("Entry Purged. 🗑️");
+    setNotification("ENTRY PURGED. 🗑️");
   };
 
   const handleReOrder = (order: Order) => {
@@ -128,7 +163,7 @@ export function useAccount() {
         item.quantity,
       );
     });
-    setNotification("Restored to Archive Bag. 🛍️");
+    setNotification("RESTORED TO ARCHIVE BAG. 🛍️");
   };
 
   return {
@@ -143,7 +178,7 @@ export function useAccount() {
     handleProfileUpdate: () => {
       updateProfile(editData);
       setIsEditingProfile(false);
-      setNotification("Identity Re-Established. ✨");
+      setNotification("IDENTITY RE-ESTABLISHED. ✨");
     },
     calculateAge,
     isAddingAddress,
@@ -164,5 +199,6 @@ export function useAccount() {
     setDeleteConfirm,
     handleConfirmDelete,
     handleReOrder,
+    formErrors,
   };
 }

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import * as Yup from "yup";
 import { useCart } from "../../../context/CartContext";
 import { useAuth } from "../../../context/AuthContext";
 import RegisterHero from "./register-hero";
@@ -20,6 +21,32 @@ interface RegisterFormErrors {
   birthDate?: string;
 }
 
+const registerSchema = Yup.object().shape({
+  fullName: Yup.string().required("IDENTITY REQUIRED").min(3, "NAME TOO SHORT"),
+  email: Yup.string().email("INVALID ACCESS MAIL").required("MAIL REQUIRED"),
+  birthDate: Yup.date()
+    .required("DATE REQUIRED")
+    .nullable()
+    .test("age", "ACCESS DENIED: 18+ ONLY 🔞", (value) => {
+      if (!value) return false;
+      const today = new Date();
+      const birthDate = new Date(value);
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const m = today.getMonth() - birthDate.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) age--;
+      return age >= 18;
+    }),
+  password: Yup.string()
+    .min(8, "8+ CHARS REQUIRED")
+    .matches(/[A-Z]/, "UPPERCASE REQUIRED")
+    .matches(/[0-9]/, "NUMBER REQUIRED")
+    .matches(/[^A-Za-z0-9]/, "SYMBOL REQUIRED")
+    .required("SECURITY CODE REQUIRED"),
+  confirmPassword: Yup.string()
+    .oneOf([Yup.ref("password")], "CODES MISMATCH")
+    .required("VERIFICATION REQUIRED"),
+});
+
 export default function RegisterView() {
   const [formData, setFormData] = useState<RegisterFormData>({
     fullName: "",
@@ -28,10 +55,9 @@ export default function RegisterView() {
     confirmPassword: "",
     birthDate: "",
   });
-  
+
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  
   const [errors, setErrors] = useState<RegisterFormErrors>({});
 
   const { setNotification } = useCart();
@@ -43,59 +69,56 @@ export default function RegisterView() {
     number: /[0-9]/.test(formData.password),
     special: /[^A-Za-z0-9]/.test(formData.password),
   };
-  
   const strengthScore = Object.values(passwordChecks).filter(Boolean).length;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    
+
     if (errors[name as keyof RegisterFormErrors]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
-  const handleRegister = (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    const newErrors: RegisterFormErrors = {};
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if (!formData.fullName.trim()) newErrors.fullName = "IDENTITY REQUIRED";
-    if (!emailRegex.test(formData.email)) newErrors.email = "INVALID ACCESS MAIL";
-
-    const birthYear = new Date(formData.birthDate).getFullYear();
-    const currentYear = new Date().getFullYear();
-    
-    if (!formData.birthDate) {
-      newErrors.birthDate = "DATE REQUIRED";
-    } else if (currentYear - birthYear < 18) {
-      newErrors.birthDate = "ACCESS DENIED: 18+ ONLY 🔞";
-    }
-
-    if (strengthScore < 4) newErrors.password = "SECURITY PROTOCOL WEAK";
-    if (formData.password !== formData.confirmPassword)
-      newErrors.confirmPassword = "CODES MISMATCH";
-
-    setErrors(newErrors);
-    if (Object.keys(newErrors).length > 0) return;
-
     setIsLoading(true);
-    setTimeout(() => {
-      register({
-        name: formData.fullName.toUpperCase(),
-        email: formData.email,
-        password: formData.password,
-        birthDate: formData.birthDate,
-        addresses: [],
-        savedCards: [],
-        orders: [],
-        favorites: [],
-        hasWelcomeCoupon: true,
-      });
-      setNotification(`WELCOME TO THE VAULT! 🧧 USE CODE: VAULT-WELCOME-25`);
+    setErrors({});
+
+    try {
+      await registerSchema.validate(formData, { abortEarly: false });
+
+      setTimeout(() => {
+        register({
+          name: formData.fullName.toUpperCase(),
+          email: formData.email,
+          password: formData.password,
+          birthDate: formData.birthDate,
+          addresses: [],
+          savedCards: [],
+          orders: [],
+          favorites: [],
+          hasWelcomeCoupon: true,
+        });
+        setNotification(`WELCOME TO THE VAULT! 🧧`);
+        setIsLoading(false);
+        window.location.href = "/account";
+      }, 1500);
+    } catch (err) {
+      const validationErrors: RegisterFormErrors = {};
+
+      if (err instanceof Yup.ValidationError) {
+        err.inner.forEach((error) => {
+          if (error.path) {
+            validationErrors[error.path as keyof RegisterFormErrors] =
+              error.message;
+          }
+        });
+      }
+
+      setErrors(validationErrors);
       setIsLoading(false);
-      window.location.href = "/account";
-    }, 1500);
+    }
   };
 
   return (

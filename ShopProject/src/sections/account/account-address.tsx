@@ -1,4 +1,10 @@
-import { FiMapPin, FiPlus, FiEdit3, FiTrash2 } from "react-icons/fi";
+import {
+  FiMapPin,
+  FiPlus,
+  FiEdit3,
+  FiTrash2,
+  FiAlertCircle,
+} from "react-icons/fi";
 import { TURKEY_CITIES } from "../../data/cities";
 import Button from "../../components/ui/Button";
 
@@ -31,6 +37,7 @@ interface AccountAddressProps {
   setEditingId: (id: string | null) => void;
   setDeleteConfirm: (data: { id: string; type: string } | null) => void;
   EmptyState: React.FC<{ icon: React.ReactNode; text: string }>;
+  formErrors: Record<string, string>;
 }
 
 export default function AccountAddress({
@@ -43,6 +50,7 @@ export default function AccountAddress({
   setEditingId,
   setDeleteConfirm,
   EmptyState,
+  formErrors,
 }: AccountAddressProps) {
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
@@ -63,53 +71,115 @@ export default function AccountAddress({
       </div>
 
       {isAdding && (
-        <div className="bg-white border-2 border-dashed border-black/10 p-8 rounded-[35px] max-w-lg space-y-4 animate-in zoom-in-95 text-left">
+        <div className="bg-white border-2 border-dashed border-black/10 p-8 rounded-[35px] max-w-lg space-y-5 animate-in zoom-in-95 text-left">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1">
-               <label className="text-[8px] font-black text-black/20 uppercase ml-2">Protocol Label</label>
-               <input
-                 type="text"
-                 placeholder="E.G. HOME / OFFICE"
-                 className="w-full bg-[#F5F5F5] p-4 rounded-xl font-black text-xs border-none outline-none uppercase placeholder:text-black/10"
-                 value={addrForm.title}
-                 onChange={(e) => setAddrForm({ ...addrForm, title: e.target.value.toUpperCase() })}
-               />
+              <label
+                className={`text-[8px] font-black uppercase ml-2 ${formErrors.title ? "text-red-500" : "text-black/20"}`}
+              >
+                Protocol Label
+              </label>
+              <input
+                type="text"
+                placeholder="E.G. HOME / OFFICE"
+                className={`w-full bg-[#F5F5F5] p-4 rounded-xl font-black text-xs border-2 outline-none uppercase placeholder:text-black/10 transition-all ${formErrors.title ? "border-red-500/50" : "border-transparent focus:border-black/10"}`}
+                value={addrForm.title}
+                onChange={(e) =>
+                  setAddrForm({
+                    ...addrForm,
+                    title: e.target.value.toUpperCase(),
+                  })
+                }
+              />
+              {formErrors.title && (
+                <p className="text-[8px] font-black text-red-500 uppercase flex items-center gap-1 pl-2 animate-in slide-in-from-left-2">
+                  <FiAlertCircle /> {formErrors.title}
+                </p>
+              )}
             </div>
+
             <div className="space-y-1">
-               <label className="text-[8px] font-black text-black/20 uppercase ml-2">City Node</label>
-               <select
-                 className="w-full bg-[#F5F5F5] p-4 rounded-xl font-black text-xs border-none outline-none cursor-pointer appearance-none"
-                 value={addrForm.city}
-                 onChange={(e) => setAddrForm({ ...addrForm, city: e.target.value })}
-               >
-                 <option value="">SELECT CITY</option>
-                 {TURKEY_CITIES.map((c: string) => (
-                   <option key={c} value={c}>{c}</option>
-                 ))}
-               </select>
+              <label
+                className={`text-[8px] font-black uppercase ml-2 ${formErrors.city ? "text-red-500" : "text-black/20"}`}
+              >
+                City Node
+              </label>
+              <select
+                className={`w-full bg-[#F5F5F5] p-4 rounded-xl font-black text-xs border-2 outline-none cursor-pointer appearance-none transition-all ${formErrors.city ? "border-red-500/50" : "border-transparent focus:border-black/10"}`}
+                value={addrForm.city}
+                onChange={(e) =>
+                  setAddrForm({ ...addrForm, city: e.target.value })
+                }
+              >
+                <option value="">SELECT CITY</option>
+                {TURKEY_CITIES.map((c: string) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </select>
+              {formErrors.city && (
+                <p className="text-[8px] font-black text-red-500 uppercase flex items-center gap-1 pl-2">
+                  {formErrors.city}
+                </p>
+              )}
             </div>
           </div>
+
           <div className="space-y-1">
-            <label className="text-[8px] font-black text-black/20 uppercase ml-2">District Spec</label>
+            <label
+              className={`text-[8px] font-black uppercase ml-2 ${formErrors.district ? "text-red-500" : "text-black/20"}`}
+            >
+              District Spec
+            </label>
             <input
               type="text"
               placeholder="DISTRICT SPECIFICATION"
-              className="w-full bg-[#F5F5F5] p-4 rounded-xl font-black text-xs border-none outline-none uppercase placeholder:text-black/10"
+              className={`w-full bg-[#F5F5F5] p-4 rounded-xl font-black text-xs border-2 outline-none uppercase placeholder:text-black/10 transition-all ${formErrors.district ? "border-red-500/50" : "border-transparent focus:border-black/10"}`}
               value={addrForm.district}
-              onChange={(e) => setAddrForm({ ...addrForm, district: e.target.value.toUpperCase() })}
+              onChange={(e) =>
+                setAddrForm({
+                  ...addrForm,
+                  district: e.target.value.toUpperCase(),
+                })
+              }
             />
+            {formErrors.district && (
+              <p className="text-[8px] font-black text-red-500 uppercase flex items-center gap-1 pl-2">
+                {formErrors.district}
+              </p>
+            )}
           </div>
+
           <div className="space-y-1">
-            <label className="text-[8px] font-black text-black/20 uppercase ml-2">Full Archive Address</label>
+            <label
+              className={`text-[8px] font-black uppercase ml-2 ${formErrors.fullAddress ? "text-red-500" : "text-black/20"}`}
+            >
+              Full Archive Address
+            </label>
             <textarea
               placeholder="COMPLETE ARCHIVE COORDINATES"
-              className="w-full bg-[#F5F5F5] p-4 rounded-xl font-black text-xs border-none outline-none h-24 resize-none uppercase placeholder:text-black/10"
+              className={`w-full bg-[#F5F5F5] p-4 rounded-xl font-black text-xs border-2 outline-none h-24 resize-none uppercase placeholder:text-black/10 transition-all ${formErrors.fullAddress ? "border-red-500/50" : "border-transparent focus:border-black/10"}`}
               value={addrForm.fullAddress}
-              onChange={(e) => setAddrForm({ ...addrForm, fullAddress: e.target.value.toUpperCase() })}
+              onChange={(e) =>
+                setAddrForm({
+                  ...addrForm,
+                  fullAddress: e.target.value.toUpperCase(),
+                })
+              }
             />
+            {formErrors.fullAddress && (
+              <p className="text-[8px] font-black text-red-500 uppercase flex items-center gap-1 pl-2">
+                {formErrors.fullAddress}
+              </p>
+            )}
           </div>
+
           <div className="flex gap-4 pt-2">
-            <Button onClick={handleSave} className="flex-1 py-4 text-[10px] uppercase font-black tracking-widest italic border-none cursor-pointer">
+            <Button
+              onClick={handleSave}
+              className="flex-1 py-4 text-[10px] uppercase font-black tracking-widest italic border-none cursor-pointer"
+            >
               Authorize Location
             </Button>
             <button
@@ -141,7 +211,9 @@ export default function AccountAddress({
                   <FiEdit3 size={14} />
                 </button>
                 <button
-                  onClick={() => setDeleteConfirm({ id: addr.id, type: "address" })}
+                  onClick={() =>
+                    setDeleteConfirm({ id: addr.id, type: "address" })
+                  }
                   className="w-9 h-9 bg-white text-red-500 rounded-full flex items-center justify-center border border-red-500/10 shadow-sm cursor-pointer hover:bg-red-500 hover:text-white transition-all"
                 >
                   <FiTrash2 size={14} />
@@ -151,7 +223,9 @@ export default function AccountAddress({
                 {addr.title || "NODE SPEC"}
               </p>
               <h4 className="text-2xl font-[1000] uppercase italic tracking-tighter m-0 text-black">
-                {addr.city} <span className="text-black/10 not-italic mx-1">/</span> {addr.district}
+                {addr.city}{" "}
+                <span className="text-black/10 not-italic mx-1">/</span>{" "}
+                {addr.district}
               </h4>
               <p className="text-[11px] font-bold text-black/40 mt-4 uppercase italic leading-relaxed border-t border-black/[0.03] pt-4">
                 {addr.fullAddress}
