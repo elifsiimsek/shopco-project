@@ -40,28 +40,39 @@ export default function ProductDetailsView() {
 
   const handleAddToCart = () => {
     if (!product) return;
+
+    const sizeToArchive =
+      selectedSize || (product.sizes && product.sizes[0]) || "";
+    const colorToArchive =
+      selectedColor || (product.colors && product.colors[0]) || "";
+
+    if (!sizeToArchive) {
+      setNotification("PLEASE SELECT A SIZE! ⚠️");
+      return;
+    }
+
     addToCart(
       {
-        id: product.id,
+        id: String(product.id),
         name: product.name,
         price: product.price,
         oldPrice: product.oldPrice,
         img: product.img,
-        selectedSize,
-        selectedColor,
+        selectedSize: sizeToArchive,
+        selectedColor: colorToArchive,
       },
       quantity,
     );
-    setNotification("Product added to archive! 📦");
+    setNotification(`${product.name.toUpperCase()} ADDED TO BAG! 📦`);
   };
 
   const handlePostReview = () => {
     if (!user) {
-      setNotification("Please login to post a review! 🔐");
+      setNotification("PLEASE LOGIN TO POST A REVIEW! 🔐");
       return;
     }
     if (!newReview.comment.trim()) {
-      setNotification("Please write your thoughts. ✍️");
+      setNotification("PLEASE WRITE YOUR THOUGHTS. ✍️");
       return;
     }
 
@@ -88,7 +99,7 @@ export default function ProductDetailsView() {
       JSON.stringify([reviewData, ...existingReviews]),
     );
 
-    setNotification("Vault review archived! ⭐");
+    setNotification("VAULT REVIEW ARCHIVED! ⭐");
     setIsReviewModalOpen(false);
     setNewReview({ rating: 5, comment: "" });
     window.location.reload();
@@ -100,16 +111,17 @@ export default function ProductDetailsView() {
         <div className="w-12 h-12 border-4 border-black border-t-transparent rounded-full animate-spin" />
       </div>
     );
+
   if (error || !product)
     return (
       <div className="py-40 text-center font-black uppercase opacity-20 italic tracking-widest">
-        {error || "Archive Entry Not Found"}
+        {error || "ARCHIVE ENTRY NOT FOUND"}
       </div>
     );
 
   return (
     <div className="max-w-[1440px] mx-auto px-4 md:px-16 py-8 bg-white min-h-screen font-satoshi">
-      <nav className="flex items-center gap-2 text-[11px] text-black/30 mb-10 font-black uppercase tracking-[0.2em]">
+      <nav className="flex items-center gap-2 text-[10px] text-black/30 mb-10 font-black uppercase tracking-[0.2em]">
         <Link
           to="/"
           className="hover:text-black transition no-underline text-black/30"

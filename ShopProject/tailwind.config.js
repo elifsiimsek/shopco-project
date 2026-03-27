@@ -63,21 +63,5 @@ export default {
       },
     },
   },
-
-  safelist: [
-    "bg-vault-slate",
-    "bg-vault-green",
-    "bg-vault-red",
-    "bg-vault-yellow",
-    "bg-vault-orange",
-    "bg-vault-cyan",
-    "bg-vault-blue",
-    "bg-vault-purple",
-    "bg-vault-pink",
-    "bg-vault-gray",
-    "bg-black",
-    "bg-white"
-  ],
-
   plugins: [],
 };

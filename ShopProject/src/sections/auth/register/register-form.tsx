@@ -2,9 +2,25 @@ import { Link } from "react-router-dom";
 import { FiArrowRight, FiEye, FiEyeOff, FiAlertCircle } from "react-icons/fi";
 import Button from "../../../components/ui/Button";
 
+interface RegisterFormData {
+  fullName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  birthDate: string;
+}
+
+interface RegisterFormErrors {
+  fullName?: string;
+  email?: string;
+  password?: string;
+  confirmPassword?: string;
+  birthDate?: string;
+}
+
 interface Props {
-  formData: any;
-  errors: any;
+  formData: RegisterFormData;
+  errors: RegisterFormErrors;
   isLoading: boolean;
   showPassword: boolean;
   strengthScore: number;
@@ -38,9 +54,11 @@ export default function RegisterForm({
         </h2>
 
         <form onSubmit={onSubmit} className="space-y-6" noValidate>
-          
           <div className="relative">
-            <label htmlFor="fullName" className="text-[9px] font-black text-black/30 uppercase tracking-widest mb-1 block cursor-pointer">
+            <label
+              htmlFor="fullName"
+              className="text-[9px] font-black text-black/30 uppercase tracking-widest mb-1 block cursor-pointer"
+            >
               Full Identity
             </label>
             <input
@@ -62,7 +80,10 @@ export default function RegisterForm({
 
           <div className="grid grid-cols-2 gap-8">
             <div className="relative">
-              <label htmlFor="birthDate" className="text-[9px] font-black text-black/30 uppercase tracking-widest mb-1 block cursor-pointer">
+              <label
+                htmlFor="birthDate"
+                className="text-[9px] font-black text-black/30 uppercase tracking-widest mb-1 block cursor-pointer"
+              >
                 Birth Date
               </label>
               <input
@@ -75,14 +96,17 @@ export default function RegisterForm({
                 className={`w-full py-3 bg-transparent border-b-2 outline-none font-bold transition-all ${errors.birthDate ? "border-red-500 text-red-500" : "border-black/5 focus:border-black text-black"}`}
               />
               {errors.birthDate && (
-                <span className="absolute -bottom-5 left-0 text-[9px] font-bold text-red-500">
+                <span className="absolute -bottom-5 left-0 text-[9px] font-bold text-red-500 leading-none">
                   {errors.birthDate}
                 </span>
               )}
             </div>
 
             <div className="relative">
-              <label htmlFor="email" className="text-[9px] font-black text-black/30 uppercase tracking-widest mb-1 block cursor-pointer">
+              <label
+                htmlFor="email"
+                className="text-[9px] font-black text-black/30 uppercase tracking-widest mb-1 block cursor-pointer"
+              >
                 Access Email
               </label>
               <input
@@ -96,7 +120,7 @@ export default function RegisterForm({
                 className={`w-full py-3 bg-transparent border-b-2 outline-none font-bold transition-all ${errors.email ? "border-red-500 text-red-500" : "border-black/5 focus:border-black text-black"}`}
               />
               {errors.email && (
-                <span className="absolute -bottom-5 left-0 text-[9px] font-bold text-red-500">
+                <span className="absolute -bottom-5 left-0 text-[9px] font-bold text-red-500 leading-none">
                   {errors.email}
                 </span>
               )}
@@ -105,7 +129,10 @@ export default function RegisterForm({
 
           <div className="space-y-3">
             <div className="relative">
-              <label htmlFor="password" className="text-[9px] font-black text-black/30 uppercase tracking-widest mb-1 block cursor-pointer">
+              <label
+                htmlFor="password"
+                className="text-[9px] font-black text-black/30 uppercase tracking-widest mb-1 block cursor-pointer"
+              >
                 Security Code
               </label>
               <div className="relative">
@@ -147,15 +174,42 @@ export default function RegisterForm({
             </div>
 
             <div className="flex gap-3 text-[8px] font-black uppercase tracking-tighter">
-              <span className={passwordChecks.length ? "text-green-500" : "text-black/10"}>8+ CHARS</span>
-              <span className={passwordChecks.upper ? "text-green-500" : "text-black/10"}>UPPERCASE</span>
-              <span className={passwordChecks.number ? "text-green-500" : "text-black/10"}>NUMBER</span>
-              <span className={passwordChecks.special ? "text-green-500" : "text-black/10"}>SYMBOL</span>
+              <span
+                className={
+                  passwordChecks.length ? "text-green-500" : "text-black/10"
+                }
+              >
+                8+ CHARS
+              </span>
+              <span
+                className={
+                  passwordChecks.upper ? "text-green-500" : "text-black/10"
+                }
+              >
+                UPPERCASE
+              </span>
+              <span
+                className={
+                  passwordChecks.number ? "text-green-500" : "text-black/10"
+                }
+              >
+                NUMBER
+              </span>
+              <span
+                className={
+                  passwordChecks.special ? "text-green-500" : "text-black/10"
+                }
+              >
+                SYMBOL
+              </span>
             </div>
           </div>
 
           <div className="relative">
-            <label htmlFor="confirmPassword" className="text-[9px] font-black text-black/30 uppercase tracking-widest mb-1 block cursor-pointer">
+            <label
+              htmlFor="confirmPassword"
+              className="text-[9px] font-black text-black/30 uppercase tracking-widest mb-1 block cursor-pointer"
+            >
               Verify Code
             </label>
             <input

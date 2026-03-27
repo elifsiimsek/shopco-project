@@ -14,8 +14,8 @@ import { useCart } from "../../../context/CartContext";
 import { useWishlist } from "../../../context/WishlistContext";
 import { useAuth } from "../../../context/AuthContext";
 import { products } from "../../../data/products";
+import type { Product } from "../../../types/product"; 
 
-// Sections Parçaları
 import NavbarBanner from "./navbar-banner";
 import NavbarSearchResults from "./navbar-search-results";
 import NavbarMobileMenu from "./navbar-mobile-menu";
@@ -28,7 +28,7 @@ export default function NavbarView() {
   const { user, logout } = useAuth();
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [searchResults, setSearchResults] = useState<Product[]>([]); 
   const [isBannerVisible, setIsBannerVisible] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -47,6 +47,7 @@ export default function NavbarView() {
     const handleClickOutside = (e: MouseEvent) => {
       if (searchRef.current && !searchRef.current.contains(e.target as Node))
         setSearchResults([]);
+      
       if (
         userMenuRef.current &&
         !userMenuRef.current.contains(e.target as Node)
@@ -62,7 +63,7 @@ export default function NavbarView() {
     if (query.length >= 2) {
       const filtered = products
         .filter(
-          (p) =>
+          (p: Product) =>
             p.name.toLowerCase().includes(query) ||
             p.category?.toLowerCase().includes(query),
         )
@@ -90,8 +91,9 @@ export default function NavbarView() {
       {isBannerVisible && (
         <NavbarBanner onClose={() => setIsBannerVisible(false)} />
       )}
-      <nav className="w-full border-b border-black/[0.04] bg-white">
+      <nav className="w-full border-b border-black/[0.04] bg-white text-black">
         <div className="max-w-[1440px] mx-auto px-6 md:px-16 h-[64px] md:h-[80px] flex items-center justify-between gap-6 relative">
+          
           <div className="flex items-center gap-4 md:gap-6">
             <button
               onClick={() => setIsMenuOpen(true)}
@@ -105,6 +107,7 @@ export default function NavbarView() {
             >
               SHOP.CO
             </Link>
+            
             <ul className="hidden lg:flex items-center gap-8 text-[16px] font-normal list-none p-0 m-0">
               <li className="relative group cursor-pointer flex items-center gap-1 py-4">
                 <span
@@ -117,6 +120,7 @@ export default function NavbarView() {
                   Shop
                 </span>
                 <FiChevronDown className="group-hover:rotate-180 transition-transform opacity-40" />
+                
                 <div className="absolute top-[80%] left-0 hidden group-hover:block w-48 bg-white border border-black/5 shadow-xl rounded-2xl p-3 z-[1010] mt-0">
                   <ul className="flex flex-col gap-1 list-none p-0 m-0 text-left text-black">
                     {shopCategories.map((c) => (
@@ -158,6 +162,7 @@ export default function NavbarView() {
               </li>
             </ul>
           </div>
+
           <div
             ref={searchRef}
             className="flex-1 hidden lg:block relative max-w-[450px]"
@@ -184,6 +189,7 @@ export default function NavbarView() {
               />
             )}
           </div>
+
           <div className="flex items-center gap-4 md:gap-6">
             <button
               onClick={() => setIsSearchOpen(true)}
@@ -213,6 +219,7 @@ export default function NavbarView() {
                 </span>
               )}
             </Link>
+
             <div className="relative" ref={userMenuRef}>
               <button
                 onClick={() =>
@@ -235,9 +242,7 @@ export default function NavbarView() {
                     className="flex items-center gap-3 p-3 text-black no-underline hover:bg-[#F5F5F5] rounded-xl"
                   >
                     <FiUser size={16} />
-                    <span className="text-[11px] font-bold uppercase">
-                      Profile
-                    </span>
+                    <span className="text-[11px] font-bold uppercase">Profile</span>
                   </Link>
                   <button
                     onClick={() => {
@@ -247,14 +252,13 @@ export default function NavbarView() {
                     className="w-full flex items-center gap-3 p-3 text-red-500 hover:bg-red-50 rounded-xl border-none bg-transparent cursor-pointer transition-colors"
                   >
                     <FiLogOut size={16} />
-                    <span className="text-[11px] font-bold uppercase">
-                      Logout
-                    </span>
+                    <span className="text-[11px] font-bold uppercase">Logout</span>
                   </button>
                 </div>
               )}
             </div>
           </div>
+
           <div
             className={`fixed inset-x-0 top-[64px] bottom-0 bg-white z-[1001] lg:hidden p-6 transition-transform duration-300 origin-top shadow-2xl ${isSearchOpen ? "scale-y-100" : "scale-y-0"}`}
           >
@@ -293,6 +297,7 @@ export default function NavbarView() {
           </div>
         </div>
       </nav>
+      
       <NavbarMobileMenu
         isOpen={isMenuOpen}
         onClose={() => setIsMenuOpen(false)}

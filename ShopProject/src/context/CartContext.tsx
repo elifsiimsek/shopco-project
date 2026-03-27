@@ -18,9 +18,9 @@ export interface AddProductData extends Omit<CartItem, "quantity"> {
 interface CartContextType {
   cart: CartItem[];
   addToCart: (product: AddProductData, quantity: number) => void;
-  removeFromCart: (id: string, size?: string, color?: string) => void;
-  increase: (id: string, size?: string, color?: string) => void;
-  decrease: (id: string, size?: string, color?: string) => void;
+  removeFromCart: (id: string | number, size?: string, color?: string) => void;
+  increase: (id: string | number, size?: string, color?: string) => void;
+  decrease: (id: string | number, size?: string, color?: string) => void;
   clearCart: () => void;
   notification: string | null;
   setNotification: (msg: string | null) => void;
@@ -47,13 +47,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem("shopco_cart", JSON.stringify(cart));
   }, [cart]);
 
-  useEffect(() => {
-    if (notification) {
-      const timer = setTimeout(() => setNotification(null), 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [notification]);
-
   const addToCart = (product: AddProductData, quantity: number) => {
     setCart((prev) => {
       const existing = prev.find(
@@ -62,6 +55,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
           item.selectedSize === product.selectedSize &&
           item.selectedColor === product.selectedColor
       );
+
       if (existing) {
         return prev.map((item) =>
           item === existing
@@ -71,15 +65,15 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       }
       return [...prev, { ...product, quantity } as CartItem];
     });
-    setNotification(`${product.name} added to bag! 🛍️`);
+    setNotification(`${product.name.toUpperCase()} added to bag! 🛍️`);
   };
 
-  const removeFromCart = (id: string, size?: string, color?: string) => {
+  const removeFromCart = (id: string | number, size?: string, color?: string) => {
     setCart((prev) =>
       prev.filter(
         (item) =>
           !(
-            String(item.id) === id &&
+            String(item.id) === String(id) &&
             item.selectedSize === size &&
             item.selectedColor === color
           )
@@ -87,10 +81,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     );
   };
 
-  const increase = (id: string, size?: string, color?: string) => {
+  const increase = (id: string | number, size?: string, color?: string) => {
     setCart((prev) =>
       prev.map((item) =>
-        String(item.id) === id &&
+        String(item.id) === String(id) &&
         item.selectedSize === size &&
         item.selectedColor === color
           ? { ...item, quantity: item.quantity + 1 }
@@ -99,17 +93,27 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     );
   };
 
-  const decrease = (id: string, size?: string, color?: string) => {
-    setCart((prev) =>
-      prev.map((item) =>
-        String(item.id) === id &&
+  const decrease = (id: string | number, size?: string, color?: string) => {
+    setCart((prev) => {
+      const itemToUpdate = prev.find(
+        (item) =>
+          String(item.id) === String(id) &&
+          item.selectedSize === size &&
+          item.selectedColor === color
+      );
+
+      if (itemToUpdate && itemToUpdate.quantity === 1) {
+        return prev.filter(item => item !== itemToUpdate);
+      }
+
+      return prev.map((item) =>
+        String(item.id) === String(id) &&
         item.selectedSize === size &&
-        item.selectedColor === color &&
-        item.quantity > 1
+        item.selectedColor === color
           ? { ...item, quantity: item.quantity - 1 }
           : item
-      )
-    );
+      );
+    });
   };
 
   const clearCart = () => setCart([]);
