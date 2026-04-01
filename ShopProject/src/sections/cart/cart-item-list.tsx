@@ -30,11 +30,12 @@ export const CartItemList = ({
         <div className="flex-1 flex flex-col justify-between py-1 text-left relative z-10">
           <div className="flex justify-between items-start">
             <div>
-              <h4 className="text-[16px] md:text-[20px] font-bold m-0 leading-tight uppercase tracking-tighter">
+              <h4 className="text-[16px] md:text-[20px] font-bold m-0 leading-tight tracking-wide">
                 {item.name}
               </h4>
-              <p className="text-[12px] text-black/60 mt-1 uppercase font-bold">
-                Size: <span className="text-black">{item.selectedSize}</span> |
+              <p className="text-[13px] text-black/60 mt-1 ">
+                Size: <span className="text-black">{item.selectedSize}</span>{" "}
+                <br />
                 Color:{" "}
                 <span className="text-black">
                   {item.selectedColor?.replace("bg-", "")}

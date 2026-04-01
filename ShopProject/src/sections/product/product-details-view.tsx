@@ -1,33 +1,102 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ChevronRight } from "lucide-react";
+import {
+  ChevronRight,
+  Star,
+  Check,
+  SlidersHorizontal,
+  Trash2,
+  ChevronDown,
+  MoreHorizontal,
+} from "lucide-react";
 import { useCart } from "../../context/CartContext";
 import { useWishlist } from "../../context/WishlistContext";
 import { useAuth } from "../../context/AuthContext";
 import { useProducts } from "../../hooks/useProducts";
 import { productService } from "../../data/products";
-import ProductCard from "../../components/product/ProductCard";
 import ImageGallery from "../../components/product/ImageGallery";
-import Title from "../../components/title";
-import type { Product } from "../../types/product";
-
-import ProductInfo from "./product-info";
-import ProductTabs from "./product-tabs";
 import ReviewModal from "./review-modal";
+import ProductInfo from "./product-info";
+
+import ProductDetailsTab from "./tabs/product-details";
+import ProductFaqsTab from "./tabs/product-faqs";
 
 export default function ProductDetailsView() {
   const { id } = useParams<{ id: string }>();
   const { addToCart, setNotification } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
   const { user } = useAuth();
-  const { product, loading, error } = useProducts(id);
+  const { product, loading } = useProducts(id);
 
-  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
+  const [productReviews, setProductReviews] = useState<any[]>([]);
+  const [_, setRelatedProducts] = useState<any[]>([]);
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
+  const [activeTab, setActiveTab] = useState("Rating & Reviews");
+  const [sortOption, setSortOption] = useState("Latest");
+  const [isSortOpen, setIsSortOpen] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(4);
   const [newReview, setNewReview] = useState({ rating: 5, comment: "" });
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const defaultReviews = [
+    {
+      id: "1",
+      name: "Samantha D.",
+      email: "sam@vault.com",
+      date: "AUGUST 14, 2023",
+      comment:
+        "I absolutely love this t-shirt! The design is unique and the fabric feels so comfortable. As a fellow designer, I appreciate the attention to detail. It's become my favorite go-to shirt.",
+      rating: 5,
+    },
+    {
+      id: "2",
+      name: "Alex M.",
+      email: "alex@vault.com",
+      date: "AUGUST 15, 2023",
+      comment:
+        "The t-shirt exceeded my expectations! The colors are vibrant and the print quality is top-notch. Being a UI/UX designer myself, I'm quite picky about aesthetics, and this t-shirt definitely gets a thumbs up from me.",
+      rating: 5,
+    },
+    {
+      id: "3",
+      name: "Ethan R.",
+      email: "ethan@vault.com",
+      date: "AUGUST 16, 2023",
+      comment:
+        "This t-shirt is a must-have for anyone who appreciates good design. The minimalistic yet stylish pattern caught my eye, and the fit is perfect. I can see the designer's touch in every aspect of this shirt.",
+      rating: 4,
+    },
+    {
+      id: "4",
+      name: "Olivia P.",
+      email: "olivia@vault.com",
+      date: "AUGUST 17, 2023",
+      comment:
+        "As a UI/UX enthusiast, I value simplicity and functionality. This t-shirt not only represents those principles but also feels great to wear. It's evident that the designer poured their creativity into making this t-shirt stand out.",
+      rating: 4,
+    },
+    {
+      id: "5",
+      name: "Liam K.",
+      email: "liam@vault.com",
+      date: "AUGUST 18, 2023",
+      comment:
+        "This t-shirt is a fusion of comfort and creativity. The fabric is soft, and the design speaks volumes about the designer's skill. It's like wearing a piece of art that reflects my passion for both design and fashion.",
+      rating: 5,
+    },
+    {
+      id: "6",
+      name: "Ava H.",
+      email: "ava@vault.com",
+      date: "AUGUST 19, 2023",
+      comment:
+        "I'm not just wearing a t-shirt; I'm wearing a piece of design philosophy. The intricate details and thoughtful layout of this design make this shirt a conversation starter.",
+      rating: 5,
+    },
+  ];
 
   useEffect(() => {
     if (product) {
@@ -35,46 +104,36 @@ export default function ProductDetailsView() {
       if (product.colors?.length) setSelectedColor(product.colors[0]);
       if (product.sizes?.length) setSelectedSize(product.sizes[0]);
       productService.getRelatedProducts(product.id).then(setRelatedProducts);
+      const saved = localStorage.getItem(`reviews_${product.id}`);
+      setProductReviews(
+        saved ? JSON.parse(saved) : (product as any).reviews || defaultReviews,
+      );
     }
-  }, [product]);
+  }, [product, id]);
 
-  const handleAddToCart = () => {
-    if (!product) return;
+  const sortedReviews = useMemo(() => {
+    let list = [...productReviews];
+    if (sortOption === "Oldest")
+      list.sort(
+        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+      );
+    else
+      list.sort(
+        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+      );
+    return list;
+  }, [productReviews, sortOption]);
 
-    const sizeToArchive =
-      selectedSize || (product.sizes && product.sizes[0]) || "";
-    const colorToArchive =
-      selectedColor || (product.colors && product.colors[0]) || "";
-
-    if (!sizeToArchive) {
-      setNotification("PLEASE SELECT A SIZE! ⚠️");
+  const handleWriteReviewClick = () => {
+    if (!user) {
+      setNotification("PLEASE LOGIN TO SHARE YOUR EXPERIENCE! 🔐");
       return;
     }
-
-    addToCart(
-      {
-        id: String(product.id),
-        name: product.name,
-        price: product.price,
-        oldPrice: product.oldPrice,
-        img: product.img,
-        selectedSize: sizeToArchive,
-        selectedColor: colorToArchive,
-      },
-      quantity,
-    );
-    setNotification(`${product.name.toUpperCase()} ADDED TO BAG! 📦`);
+    setIsReviewModalOpen(true);
   };
 
   const handlePostReview = () => {
-    if (!user) {
-      setNotification("PLEASE LOGIN TO POST A REVIEW! 🔐");
-      return;
-    }
-    if (!newReview.comment.trim()) {
-      setNotification("PLEASE WRITE YOUR THOUGHTS. ✍️");
-      return;
-    }
+    if (!user) return; 
 
     const reviewData = {
       id: `REV-${Date.now()}`,
@@ -87,85 +146,215 @@ export default function ProductDetailsView() {
           year: "numeric",
         })
         .toUpperCase(),
-      comment: newReview.comment.toUpperCase(),
+      comment: newReview.comment,
       rating: newReview.rating,
     };
 
-    const existingReviews = JSON.parse(
-      localStorage.getItem(`reviews_${product?.id}`) || "[]",
-    );
-    localStorage.setItem(
-      `reviews_${product?.id}`,
-      JSON.stringify([reviewData, ...existingReviews]),
-    );
-
-    setNotification("VAULT REVIEW ARCHIVED! ⭐");
+    const updated = [reviewData, ...productReviews];
+    setProductReviews(updated);
+    if (product)
+      localStorage.setItem(`reviews_${product.id}`, JSON.stringify(updated));
     setIsReviewModalOpen(false);
     setNewReview({ rating: 5, comment: "" });
-    window.location.reload();
   };
 
   if (loading)
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="w-12 h-12 border-4 border-black border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
-
-  if (error || !product)
-    return (
-      <div className="py-40 text-center font-black uppercase opacity-20 italic tracking-widest">
-        {error || "ARCHIVE ENTRY NOT FOUND"}
+      <div className="min-h-screen flex items-center justify-center bg-white font-black uppercase opacity-10 tracking-widest text-3xl">
+        Syncing Vault...
       </div>
     );
 
   return (
-    <div className="max-w-[1440px] mx-auto px-4 md:px-16 py-8 bg-white min-h-screen font-satoshi">
-      <nav className="flex items-center gap-2 text-[10px] text-black/30 mb-10 font-black uppercase tracking-[0.2em]">
+    <div className="max-w-[1440px] mx-auto px-4 md:px-16 py-8 bg-white min-h-screen font-satoshi text-left">
+      <nav className="flex items-center gap-2 text-[10px] text-black/30 mb-10 font-black uppercase tracking-widest">
         <Link
           to="/"
-          className="hover:text-black transition no-underline text-black/30"
+          className="no-underline text-black/30 hover:text-black transition"
         >
           Home
         </Link>
         <ChevronRight size={12} />
-        <Link
-          to="/shop"
-          className="hover:text-black transition no-underline text-black/30"
-        >
-          Shop
-        </Link>
-        <ChevronRight size={12} />
-        <span className="text-black italic">{product.name}</span>
+        <span className="text-black">{product?.name}</span>
       </nav>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 mb-24">
-        <ImageGallery images={[product.img, product.img, product.img]} />
-        <ProductInfo
-          product={product}
-          selectedColor={selectedColor}
-          setSelectedColor={setSelectedColor}
-          selectedSize={selectedSize}
-          setSelectedSize={setSelectedSize}
-          quantity={quantity}
-          setQuantity={setQuantity}
-          onAddToCart={handleAddToCart}
-          onToggleWishlist={toggleWishlist}
-          isFavorite={isInWishlist(product.id)}
-        />
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 mb-24 items-start">
+        <div className="lg:col-span-6">
+          {product && (
+            <ImageGallery images={[product.img, product.img, product.img]} />
+          )}
+        </div>
+        <div className="lg:col-span-6">
+          {product && (
+            <ProductInfo
+              product={product}
+              selectedColor={selectedColor}
+              setSelectedColor={setSelectedColor}
+              selectedSize={selectedSize}
+              setSelectedSize={setSelectedSize}
+              quantity={quantity}
+              setQuantity={setQuantity}
+              onAddToCart={() =>
+                addToCart(
+                  { ...product, id: product.id, selectedSize, selectedColor },
+                  quantity,
+                )
+              }
+              onToggleWishlist={() => toggleWishlist(product)}
+              isFavorite={isInWishlist(product.id)}
+            />
+          )}
+        </div>
       </div>
 
-      <ProductTabs
-        product={product}
-        setIsReviewModalOpen={setIsReviewModalOpen}
-      />
-
-      <div className="mt-48 text-center">
-        <Title title="You might also like" align="center" />
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10 mt-10">
-          {relatedProducts.map((p) => (
-            <ProductCard key={p.id} product={p} />
+      <div className="mt-24">
+        <div className="flex border-b border-black/[0.08] mb-12 overflow-x-auto no-scrollbar">
+          {["Product Details", "Rating & Reviews", "FAQs"].map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`flex-1 pb-6 text-[16px] uppercase tracking-widest border-b-2 transition-all whitespace-nowrap px-8 ${activeTab === tab ? "text-black border-black font-black " : "text-black/20 border-transparent font-bold"}`}
+            >
+              {tab}
+            </button>
           ))}
+        </div>
+
+        <div className="min-h-[500px]">
+          {activeTab === "Rating & Reviews" && (
+            <div className="animate-in fade-in duration-500">
+              <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-10">
+                <div className="flex items-center gap-2">
+                  <h3 className="text-2xl font-black uppercase  tracking-tighter">
+                    All Reviews
+                  </h3>
+                  <span className="text-black/20 font-bold">
+                    ({productReviews.length})
+                  </span>
+                </div>
+                <div className="flex items-center gap-3 w-full md:w-auto justify-end">
+                  <button className="p-3 bg-[#F0F0F0] rounded-full hover:bg-black/5 transition-all border-none cursor-pointer">
+                    <SlidersHorizontal size={20} />
+                  </button>
+                  <div className="relative" ref={dropdownRef}>
+                    <button
+                      onClick={() => setIsSortOpen(!isSortOpen)}
+                      className="flex items-center gap-4 bg-[#F0F0F0] px-6 py-3 rounded-full font-bold text-[14px] cursor-pointer border-none uppercase"
+                    >
+                      {sortOption}{" "}
+                      <ChevronDown
+                        size={16}
+                        className={isSortOpen ? "rotate-180" : ""}
+                      />
+                    </button>
+                    {isSortOpen && (
+                      <div className="absolute top-full right-0 mt-2 w-40 bg-white border border-black/5 rounded-2xl shadow-2xl z-50 overflow-hidden">
+                        {["Latest", "Oldest"].map((opt) => (
+                          <button
+                            key={opt}
+                            onClick={() => {
+                              setSortOption(opt);
+                              setIsSortOpen(false);
+                            }}
+                            className="w-full text-left px-6 py-3 hover:bg-[#F0F0F0] font-bold text-sm border-none bg-white cursor-pointer transition-colors"
+                          >
+                            {opt}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  <button
+                    onClick={handleWriteReviewClick}
+                    className="bg-black text-white px-8 py-3 rounded-full font-black uppercase text-[11px] shadow-xl hover:scale-[1.02] active:scale-95 transition-all border-none cursor-pointer whitespace-nowrap"
+                  >
+                    Write a Review
+                  </button>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start h-auto">
+                {sortedReviews.slice(0, visibleCount).map((review: any) => (
+                  <div
+                    key={review.id}
+                    className="p-8 border border-black/[0.08] rounded-[32px] bg-white relative group hover:shadow-xl transition-all h-auto overflow-visible"
+                  >
+                    <div className="absolute top-8 right-8 flex items-center gap-2">
+                      {user?.email === review.email && (
+                        <button
+                          onClick={() => {
+                            const updated = productReviews.filter(
+                              (r) => r.id !== review.id,
+                            );
+                            setProductReviews(updated);
+                            if (product)
+                              localStorage.setItem(
+                                `reviews_${product.id}`,
+                                JSON.stringify(updated),
+                              );
+                          }}
+                          className="p-2 text-red-500 bg-red-50 rounded-full hover:bg-red-500 hover:text-white transition-all border-none cursor-pointer"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      )}
+                      <MoreHorizontal
+                        size={20}
+                        className="text-black/10 group-hover:text-black cursor-pointer"
+                      />
+                    </div>
+                    <div className="flex text-[#FFC633] mb-4 scale-110 origin-left">
+                      {[...Array(5)].map((_, s) => (
+                        <Star
+                          key={s}
+                          size={16}
+                          fill={
+                            s < Math.floor(review.rating) ? "#FFC633" : "none"
+                          }
+                          strokeWidth={s < Math.floor(review.rating) ? 0 : 2}
+                        />
+                      ))}
+                    </div>
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="font-black text-[18px] ">
+                        {review.name}
+                      </span>
+                      <div className="bg-green-500 rounded-full p-0.5 flex items-center justify-center shadow-sm">
+                        <Check
+                          size={8}
+                          className="text-white"
+                          strokeWidth={5}
+                        />
+                      </div>
+                    </div>
+                    <p className="text-black/50 text-[15px] leading-relaxed m-0 break-words overflow-visible h-auto">
+                      "
+                      {review.comment.charAt(0).toUpperCase() +
+                        review.comment.slice(1).toLowerCase()}
+                      "
+                    </p>
+                    <p className="mt-8 text-[11px] font-black text-black/20 uppercase tracking-widest border-t border-black/[0.03] pt-6">
+                      Posted on {review.date}
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              {visibleCount < sortedReviews.length && (
+                <div className="flex justify-center mt-12">
+                  <button
+                    onClick={() => setVisibleCount((prev) => prev + 2)}
+                    className="px-14 py-4 border border-black/10 rounded-full bg-white font-black tracking-widest text-[12px] hover:bg-black hover:text-white transition-all shadow-sm active:scale-95 cursor-pointer"
+                  >
+                    Load More Reviews
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
+          {activeTab === "Product Details" && <ProductDetailsTab />}
+          {activeTab === "FAQs" && <ProductFaqsTab />}
         </div>
       </div>
 

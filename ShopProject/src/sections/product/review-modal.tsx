@@ -27,7 +27,7 @@ export default function ReviewModal({
           <X size={24} />
         </button>
         <div className="space-y-8">
-          <h2 className="text-3xl font-[1000] uppercase italic tracking-tighter text-black">
+          <h2 className="text-3xl font-[1000] uppercase tracking-tighter text-black">
             Post Review
           </h2>
           <div className="flex gap-2 justify-center py-6 bg-[#FBFBFB] rounded-[25px] border border-black/5">

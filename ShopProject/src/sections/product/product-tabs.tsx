@@ -1,117 +1,40 @@
-import { useState, useEffect } from "react";
+import { useState, useMemo } from "react";
 import {
   Star,
   Check,
-  HelpCircle,
+  ChevronDown,
   SlidersHorizontal,
-  Trash2,
+  Info,
+  HelpCircle,
 } from "lucide-react";
-import { FiShield } from "react-icons/fi";
-import { useAuth } from "../../context/AuthContext";
-import type { Product } from "../../types/product";
-
-interface Review {
-  id: string;
-  name: string;
-  email: string;
-  date: string;
-  comment: string;
-  rating: number;
-}
-
-interface ProductTabsProps {
-  product: Product;
-  setIsReviewModalOpen: (val: boolean) => void;
-}
 
 export default function ProductTabs({
   product,
   setIsReviewModalOpen,
-}: ProductTabsProps) {
+  reviews = [],
+}: any) {
   const [activeTab, setActiveTab] = useState("Rating & Reviews");
-  const { user } = useAuth();
-  const [productReviews, setProductReviews] = useState<Review[]>([]);
-  const tabs = ["Product Details", "Rating & Reviews", "FAQs"];
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
 
-  useEffect(() => {
-    const savedReviews = localStorage.getItem(`reviews_${product.id}`);
-    if (savedReviews) {
-      setProductReviews(JSON.parse(savedReviews));
-    } else {
-      const initialReviews: Review[] = [
-        {
-          id: "1",
-          name: "SAMANTHA D.",
-          email: "sam@example.com",
-          date: "MARCH 12, 2026",
-          comment: "THE QUALITY IS BEYOND ARCHIVE STANDARDS. PERFECT FIT.",
-          rating: 5,
-        },
-        {
-          id: "2",
-          name: "ETHAN K.",
-          email: "ethan@example.com",
-          date: "FEBRUARY 28, 2026",
-          comment:
-            "FINALLY A BRAND THAT UNDERSTANDS SILHOUETTE. DEEP COLOR TONES.",
-          rating: 5,
-        },
-        {
-          id: "3",
-          name: "OLIVIA M.",
-          email: "olivia@example.com",
-          date: "MARCH 02, 2026",
-          comment:
-            "THE FABRIC QUALITY IS AMAZING AND THE FIT IS PERFECT. I WILL DEFINITELY ORDER AGAIN.",
-          rating: 4,
-        },
-        {
-          id: "4",
-          name: "JACOB L.",
-          email: "jacob@example.com",
-          date: "MARCH 05, 2026",
-          comment:
-            "FAST DELIVERY AND GREAT PACKAGING. THE COLORS LOOK EVEN BETTER IN REAL LIFE.",
-          rating: 5,
-        },
-      ];
-      setProductReviews(initialReviews);
-      localStorage.setItem(
-        `reviews_${product.id}`,
-        JSON.stringify(initialReviews),
-      );
-    }
-  }, [product.id]);
-
-  const handleDeleteReview = (reviewId: string) => {
-    const updated = productReviews.filter((r) => r.id !== reviewId);
-    setProductReviews(updated);
-    localStorage.setItem(`reviews_${product.id}`, JSON.stringify(updated));
-  };
-
-  const faqs = [
-    {
-      q: "How should I maintain the garment's identity?",
-      a: "To preserve the vault-grade quality, wash cold inside out and hang dry.",
-    },
-    {
-      q: "Is this item part of a limited release?",
-      a: "Correct. Every piece in the 2026 Archive is produced in strictly limited runs.",
-    },
-    {
-      q: "What defines the Blueprint Material?",
-      a: "It is a custom-engineered 280 GSM organic cotton, designed for a structured fit.",
-    },
-  ];
+  const sortedReviews = useMemo(() => {
+    const list = Array.isArray(reviews) ? reviews : [];
+    return [...list].sort(
+      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+    );
+  }, [reviews]);
 
   return (
-    <div className="mt-24">
-      <div className="flex border-b border-black/5 mb-12 overflow-x-auto no-scrollbar">
-        {tabs.map((tab) => (
+    <div className="mt-16 font-satoshi text-left max-w-[1240px] mx-auto px-4 md:px-0">
+      <div className="flex border-b border-black/[0.08] mb-10">
+        {["Product Details", "Rating & Reviews", "FAQs"].map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`flex-1 pb-6 text-sm font-black uppercase tracking-widest border-b-2 transition-all min-w-[150px] cursor-pointer ${activeTab === tab ? "text-black border-black italic" : "text-black/20 border-transparent hover:text-black/40"}`}
+            className={`flex-1 pb-6 text-[16px] md:text-[20px] transition-all border-b-2 uppercase tracking-tight cursor-pointer ${
+              activeTab === tab
+                ? "text-black border-black font-bold"
+                : "text-black/20 border-transparent font-medium hover:text-black"
+            }`}
           >
             {tab}
           </button>
@@ -120,68 +43,61 @@ export default function ProductTabs({
 
       <div className="min-h-[400px]">
         {activeTab === "Rating & Reviews" && (
-          <div className="animate-in slide-in-from-bottom-4 duration-500 text-left">
-            <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-10">
-              <h3 className="text-xl md:text-2xl font-[1000] uppercase italic tracking-tighter text-black">
-                Verified Experiences{" "}
-                <span className="text-black/20 text-sm not-italic ml-2">
-                  ({productReviews.length})
+          <div className="animate-in fade-in duration-500">
+            <div className="flex justify-between items-center mb-8">
+              <div className="flex items-center gap-2">
+                <h3 className="text-[20px] md:text-[24px] font-black tracking-tighter">
+                  All Reviews
+                </h3>
+                <span className="text-black/30 text-sm font-bold">
+                  ({reviews.length})
                 </span>
-              </h3>
-              <div className="flex gap-3">
-                <button className="p-4 bg-[#F0F0F0] rounded-full border-none cursor-pointer">
+              </div>
+              <div className="flex items-center gap-3">
+                <button className="w-11 h-11 flex items-center justify-center bg-[#F0F0F0] rounded-full border-none cursor-pointer hover:bg-black/5 transition-all">
                   <SlidersHorizontal size={18} />
                 </button>
+                <div className="hidden md:flex items-center gap-4 bg-[#F0F0F0] px-5 py-3 rounded-full font-bold text-[14px] cursor-pointer">
+                  Latest <ChevronDown size={16} />
+                </div>
                 <button
-                  onClick={() => {
-                    if (!user) alert("Please login to post a review!");
-                    else setIsReviewModalOpen(true);
-                  }}
-                  className="bg-black text-white px-8 py-4 rounded-full font-[1000] uppercase italic tracking-widest text-[10px] shadow-xl border-none cursor-pointer"
+                  onClick={() => setIsReviewModalOpen(true)}
+                  className="bg-black text-white px-8 py-3 rounded-full font-black  text-[12px] tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-lg"
                 >
-                  Post Review
+                  Write Review
                 </button>
               </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {productReviews.map((review) => (
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              {sortedReviews.map((review: any) => (
                 <div
                   key={review.id}
-                  className="p-8 border border-black/5 rounded-[30px] space-y-4 bg-white text-left transition-all hover:border-black/20 relative group"
+                  className="p-8 border border-black/[0.08] rounded-[24px] bg-white transition-all hover:shadow-xl relative group"
                 >
-                  <div className="flex justify-between items-start">
-                    <div className="flex text-[#FFC633] gap-1">
-                      {[...Array(5)].map((_, s) => (
-                        <Star
-                          key={s}
-                          size={14}
-                          fill={s < review.rating ? "#FFC633" : "none"}
-                          strokeWidth={s < review.rating ? 0 : 2}
-                          color="#EAEAEA"
-                        />
-                      ))}
-                    </div>
-                    {user?.email === review.email && (
-                      <button
-                        onClick={() => handleDeleteReview(review.id)}
-                        className="text-black/10 hover:text-red-500 transition-colors border-none bg-transparent cursor-pointer"
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                    )}
+                  <div className="flex text-[#FFC633] mb-4 scale-95 origin-left">
+                    {[...Array(5)].map((_, s) => (
+                      <Star
+                        key={s}
+                        size={16}
+                        fill={s < review.rating ? "#FFC633" : "none"}
+                        strokeWidth={s < review.rating ? 0 : 2}
+                      />
+                    ))}
                   </div>
-                  <p className="font-[1000] text-lg uppercase italic tracking-tighter flex items-center gap-2 m-0 text-black">
-                    {review.name}{" "}
-                    <Check
-                      size={14}
-                      className="bg-green-500 text-white rounded-full p-0.5"
-                    />
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="font-black text-[16px] md:text-[18px] tracking-tight">
+                      {review.name}
+                    </span>
+                    <div className="bg-green-500 rounded-full p-0.5 flex items-center justify-center">
+                      <Check size={8} className="text-white" strokeWidth={5} />
+                    </div>
+                  </div>
+                  <p className="text-black/50 text-[14px] md:text-[15px] leading-relaxed m-0 first-letter:capitalize">
+                    "{review.comment.toLowerCase()}"
                   </p>
-                  <p className="text-black/50 text-[13px] font-medium leading-relaxed italic m-0">
-                    "{review.comment}"
-                  </p>
-                  <p className="text-black/20 text-[9px] font-black uppercase tracking-widest pt-2 m-0">
-                    ESTABLISHED {review.date}
+                  <p className="mt-6 text-[11px] font-black text-black/20 tracking-[0.2em] border-t border-black/[0.03] pt-5">
+                    Posted on {review.date}
                   </p>
                 </div>
               ))}
@@ -190,52 +106,86 @@ export default function ProductTabs({
         )}
 
         {activeTab === "Product Details" && (
-          <div className="grid md:grid-cols-2 gap-8 animate-in slide-in-from-bottom-4 duration-500 text-left">
-            <div className="space-y-6">
-              <IdentitySpec label="Collection Identity" value="2026 ARCHIVE" />
-              <IdentitySpec
-                label="Blueprint Material"
-                value="100% ORGANIC COTTON"
-              />
-              <IdentitySpec label="Weight Class" value="280 GSM PREMIUM" />
-              <IdentitySpec
-                label="Style Specification"
-                value={product.style?.toUpperCase() || "CASUAL"}
-              />
-            </div>
-            <div className="bg-black text-white p-10 rounded-[35px] flex flex-col justify-center relative overflow-hidden shadow-2xl">
-              <h4 className="text-3xl font-[1000] uppercase italic tracking-tighter mb-4 text-white">
-                VAULT QUALITY
-              </h4>
-              <p className="text-white/40 text-[12px] uppercase font-bold tracking-widest leading-loose m-0">
-                Every stitch is a signature of our archive. We don't follow
-                trends.
-              </p>
-              <FiShield
-                size={160}
-                className="absolute -right-8 -bottom-8 opacity-5 rotate-12 text-white"
-              />
+          <div className="animate-in fade-in duration-500 max-w-4xl">
+            <div className="grid md:grid-cols-2 gap-12 items-start">
+              <div className="space-y-1">
+                <h4 className="text-[18px] font-black tracking-tighter mb-6 flex items-center gap-3 text-black">
+                  <Info size={20} className="text-black/20" /> Technical
+                  identity
+                </h4>
+                <div className="space-y-4">
+                  <SpecRow
+                    label="Fabric Blueprint"
+                    value="100% GOTS Organic Cotton"
+                  />
+                  <SpecRow label="Weight Class" value="280 GSM Heavyweight" />
+                  <SpecRow label="Silhouette" value="Boxy / Drop Shoulder" />
+                  <SpecRow
+                    label="Style Code"
+                    value={`ARCH-${product?.id || "2026"}`}
+                  />
+                  <SpecRow label="Manufacturing" value="Premium Garment Dye" />
+                </div>
+              </div>
+              <div className="bg-black text-white p-10 rounded-[32px] flex flex-col justify-center relative overflow-hidden shadow-2xl min-h-[280px]">
+                <h4 className="text-3xl font-black italic uppercase tracking-tighter mb-4 text-white">
+                  Vault Standard
+                </h4>
+                <p className="text-white/40 text-[12px] font-bold tracking-widest leading-loose uppercase m-0">
+                  Each stitch is a signature of our archive, engineered for a
+                  lifetime of silhouette integrity. We don't follow trends.
+                </p>
+                <div className="absolute -right-10 -bottom-10 opacity-5 rotate-12 bg-white/20 p-20 rounded-full"></div>
+              </div>
             </div>
           </div>
         )}
 
         {activeTab === "FAQs" && (
-          <div className="space-y-4 animate-in slide-in-from-bottom-4 duration-400 text-left">
-            {faqs.map((faq, i) => (
+          <div className="animate-in fade-in duration-500 space-y-3 max-w-3xl">
+            {[
+              {
+                q: "How should I maintain the garment's identity?",
+                a: "To preserve the archive quality, wash cold (30°C) inside out with similar colors. Avoid tumble drying to maintain fabric density.",
+              },
+              {
+                q: "Is the fit true to the size specification?",
+                a: "The blueprint is designed for a boxy, oversized silhouette. Stay true to your size for the intended archive look, or size down for standard.",
+              },
+              {
+                q: "Global shipping and vault delivery?",
+                a: "Standard delivery takes 3-5 business days. Once your order is archived, you will receive a digital tracking code via email.",
+              },
+              {
+                q: "What is your return policy for archives?",
+                a: "We accept returns within 14 days of delivery, provided the security seal and original packaging are intact.",
+              },
+            ].map((faq, i) => (
               <div
                 key={i}
-                className="p-8 border border-black/5 rounded-[25px] bg-[#FBFBFB] group hover:border-black/20 transition-all"
+                className={`border rounded-[20px] transition-all duration-300 ${openFaqIndex === i ? "border-black bg-white shadow-xl" : "border-black/5 bg-[#FBFBFB] hover:border-black/20"}`}
+                onClick={() => setOpenFaqIndex(openFaqIndex === i ? null : i)}
               >
-                <h4 className="text-sm font-black uppercase tracking-widest mb-3 flex items-center gap-3 text-black">
-                  <HelpCircle
+                <button className="w-full p-6 flex justify-between items-center bg-transparent border-none cursor-pointer">
+                  <span className="text-[14px] md:text-[15px] font-black  tracking-wide text-black text-left flex items-center gap-3">
+                    <HelpCircle
+                      size={18}
+                      className={`transition-opacity ${openFaqIndex === i ? "opacity-100" : "opacity-20"}`}
+                    />{" "}
+                    {faq.q}
+                  </span>
+                  <ChevronDown
                     size={18}
-                    className="opacity-20 group-hover:opacity-100"
-                  />{" "}
-                  {faq.q}
-                </h4>
-                <p className="text-[13px] text-black/50 font-medium italic m-0 leading-relaxed">
-                  "{faq.a}"
-                </p>
+                    className={`transition-transform duration-500 ${openFaqIndex === i ? "rotate-180 text-black" : "text-black/20"}`}
+                  />
+                </button>
+                <div
+                  className={`transition-all duration-500 ease-in-out overflow-hidden ${openFaqIndex === i ? "max-h-[200px] opacity-100" : "max-h-0 opacity-0"}`}
+                >
+                  <p className="px-14 pb-8 text-[14px] text-black/50 font-medium  border-l-2 border-black/10 ml-6 leading-relaxed">
+                    "{faq.a}"
+                  </p>
+                </div>
               </div>
             ))}
           </div>
@@ -245,13 +195,13 @@ export default function ProductTabs({
   );
 }
 
-function IdentitySpec({ label, value }: { label: string; value: string }) {
+function SpecRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex justify-between items-center border-b border-black/[0.03] pb-3 text-left">
-      <span className="text-[9px] font-black uppercase text-black/30 tracking-widest">
+    <div className="flex justify-between items-center border-b border-black/[0.04] pb-4 group hover:border-black transition-colors">
+      <span className="text-[11px] font-black text-black/30 tracking-[0.15em]">
         {label}
       </span>
-      <span className="text-[11px] font-black uppercase text-black">
+      <span className="text-[14px] font-bold text-black">
         {value}
       </span>
     </div>

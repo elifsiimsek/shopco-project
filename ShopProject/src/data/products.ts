@@ -25,7 +25,7 @@ export const products: Product[] = [
     img: "/products/p1.png",
     category: "T-shirts",
     style: "Casual",
-    colors: ["bg-black", "bg-white", "bg-vault-slate"],
+    colors: ["bg-black", "bg-vault-slate"],
     sizes: ["Small", "Medium", "Large", "X-Large"],
     description: "This graphic t-shirt is perfect for any occasion.",
     isNew: true,

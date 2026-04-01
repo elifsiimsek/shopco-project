@@ -103,7 +103,7 @@ export default function NavbarView() {
             </button>
             <Link
               to="/"
-              className="text-[24px] md:text-[32px] font-[1000] uppercase tracking-tighter text-black leading-none no-underline italic"
+              className="text-[24px] md:text-[32px] font-[1000] uppercase tracking-tighter text-black leading-none no-underline"
             >
               SHOP.CO
             </Link>

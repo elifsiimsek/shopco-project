@@ -23,16 +23,16 @@ export const CartSummary = ({
   onCheckout,
   promoError,
 }: CartSummaryProps) => {
-  const deliveryFee = total > 1000 || total === 0 ? 0 : 15;
+  const deliveryFee = total > 500 || total === 0 ? 0 : 15;
   const finalTotal = total + (total > 0 ? deliveryFee : 0);
 
-  const freeShippingThreshold = 1000;
+  const freeShippingThreshold = 500;
   const awayFromFreeShipping = freeShippingThreshold - total;
 
   return (
     <div className="w-full lg:w-[450px] sticky top-10">
       <div className="bg-white border border-black/[0.08] p-8 rounded-[32px] shadow-sm space-y-6 text-left">
-        <h2 className="text-2xl font-[1000] uppercase italic tracking-tighter m-0">
+        <h2 className="text-2xl font-[600] tracking-tighter m-0">
           Order Summary
         </h2>
 
@@ -91,7 +91,7 @@ export const CartSummary = ({
           <div className="h-[1px] bg-black/[0.08] my-1" />
 
           <div className="flex justify-between items-center pt-2 text-black">
-            <span className="text-xl font-black uppercase italic tracking-tighter">
+            <span className="font-black tracking-tighter">
               Total
             </span>
             <span className="text-3xl font-[1000] tracking-tighter">
@@ -111,14 +111,14 @@ export const CartSummary = ({
               <input
                 type="text"
                 placeholder="Add promo code"
-                className="bg-transparent border-none outline-none text-[14px] w-full text-black font-black uppercase tracking-widest placeholder:text-black/20"
+                className="bg-transparent border-none outline-none text-[14px] w-full text-black font-black tracking-widest placeholder:text-black/20"
                 value={promoInput}
                 onChange={(e) => setPromoInput(e.target.value.toUpperCase())}
               />
             </div>
             <button
               onClick={onApply}
-              className="px-8 py-4 rounded-full font-[1000] text-[12px] uppercase italic bg-black text-white cursor-pointer hover:bg-neutral-800 transition-all active:scale-95"
+              className="px-8 py-4 rounded-full font-[700] text-[12px] bg-black text-white cursor-pointer hover:bg-neutral-800 transition-all active:scale-95"
             >
               Apply
             </button>
@@ -132,7 +132,7 @@ export const CartSummary = ({
 
         <button
           onClick={onCheckout}
-          className="w-full bg-black text-white py-6 rounded-full font-[1000] uppercase italic text-sm flex items-center justify-center gap-3 border-none cursor-pointer shadow-xl hover:opacity-90 transition-all active:scale-[0.98] group"
+          className="w-full bg-black text-white py-6 rounded-full font-[700] text-sm flex items-center justify-center gap-5 border-none cursor-pointer shadow-xl hover:opacity-90 transition-all active:scale-[0.98] group"
         >
           Go to Checkout
           <FiArrowRight

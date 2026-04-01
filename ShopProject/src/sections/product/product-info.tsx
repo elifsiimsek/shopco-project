@@ -28,9 +28,9 @@ export default function ProductInfo({
   isFavorite,
 }: ProductInfoProps) {
   return (
-    <div className="flex flex-col gap-4 text-left">
+    <div className="flex flex-col text-left">
       <div className="flex justify-between items-start">
-        <h1 className="text-[32px] md:text-[44px] font-[1000] uppercase italic tracking-tighter leading-tight m-0">
+        <h1 className="text-[32px] md:text-[44px] font-[1000] uppercase tracking-tighter leading-tight m-0">
           {product.name}
         </h1>
         <button
@@ -60,7 +60,7 @@ export default function ProductInfo({
         </span>
       </div>
       <div className="flex items-center gap-4 mt-2">
-        <span className="text-[32px] md:text-[40px] font-[1000] tracking-tighter italic">
+        <span className="text-[32px] md:text-[40px] font-[1000] tracking-tighter">
           ${product.price}
         </span>
         {product.oldPrice && (
@@ -68,7 +68,7 @@ export default function ProductInfo({
             <span className="text-[28px] font-black text-black/10 line-through tracking-tighter">
               ${product.oldPrice}
             </span>
-            <span className="bg-[#FF3333]/10 text-[#FF3333] px-3 py-1 rounded-full text-[10px] font-[1000] uppercase italic">
+            <span className="bg-[#FF3333]/10 text-[#FF3333] px-3 py-1 rounded-full text-[10px] font-[1000]">
               -
               {Math.round(
                 ((product.oldPrice - product.price) / product.oldPrice) * 100,
@@ -82,8 +82,8 @@ export default function ProductInfo({
         {product.description}
       </p>
       <div className="space-y-4 pt-4">
-        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-black/30">
-          Select Visual Identity
+        <p className="text-[12px] font-black tracking-wide text-black/30">
+          Select Colors
         </p>
         <div className="flex gap-3">
           {(product.colors || []).map((color) => (
@@ -104,9 +104,9 @@ export default function ProductInfo({
           ))}
         </div>
       </div>
-      <div className="space-y-4 border-b border-black/5 pb-10 pt-4">
-        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-black/30">
-          Choose Identity Size
+      <div className="space-y-4 border-b border-black/5 pb-10 pt-7">
+        <p className="text-[10px] font-black uppercase tracking-wide text-black/30">
+          Choose Size{" "}
         </p>
         <div className="flex flex-wrap gap-2">
           {(product.sizes || []).map((size) => (
@@ -138,7 +138,7 @@ export default function ProductInfo({
         </div>
         <Button
           onClick={onAddToCart}
-          className="flex-1 py-4 bg-black text-white font-[1000] rounded-full uppercase italic tracking-widest text-[11px] shadow-2xl hover:scale-[1.01] border-none cursor-pointer"
+          className="flex-1 py-4 bg-black text-white font-[1000] rounded-full tracking-widest text-[15px] shadow-2xl hover:scale-[1.01] border-none cursor-pointer"
         >
           Add to Cart
         </Button>

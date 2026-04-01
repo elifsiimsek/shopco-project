@@ -67,7 +67,7 @@ export default function ShopFilters({
         className={`fixed lg:sticky top-0 lg:top-24 left-0 h-full lg:h-[calc(100vh-140px)] w-[85%] sm:w-[350px] lg:w-[310px] bg-white z-[1000] lg:z-10 transition-transform duration-500 lg:translate-x-0 lg:border lg:rounded-[20px] flex flex-col overflow-hidden shadow-2xl lg:shadow-none ${isOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
         <div className="flex justify-between items-center border-b p-6 bg-white shrink-0">
-          <h2 className="text-xl font-[1000] uppercase italic tracking-tighter">
+          <h2 className="text-xl font-[1000] uppercase tracking-tighter">
             Filters
           </h2>
           <button
@@ -99,7 +99,7 @@ export default function ShopFilters({
               onClick={() =>
                 setOpenStates({ ...openStates, price: !openStates.price })
               }
-              className="w-full flex items-center justify-between mb-8 bg-transparent border-none cursor-pointer text-black font-[1000] uppercase italic tracking-tighter"
+              className="w-full flex items-center justify-between mb-8 bg-transparent border-none cursor-pointer text-black font-[1000] uppercase tracking-tighter"
             >
               Price {openStates.price ? <FiChevronUp /> : <FiChevronDown />}
             </button>
@@ -159,7 +159,7 @@ export default function ShopFilters({
               onClick={() =>
                 setOpenStates({ ...openStates, colors: !openStates.colors })
               }
-              className="w-full flex items-center justify-between mb-4 bg-transparent border-none cursor-pointer text-black font-[1000] uppercase italic tracking-tighter"
+              className="w-full flex items-center justify-between mb-4 bg-transparent border-none cursor-pointer text-black font-[1000] uppercase tracking-tighter"
             >
               Colors {openStates.colors ? <FiChevronUp /> : <FiChevronDown />}
             </button>
@@ -188,7 +188,7 @@ export default function ShopFilters({
               onClick={() =>
                 setOpenStates({ ...openStates, size: !openStates.size })
               }
-              className="w-full flex items-center justify-between mb-4 bg-transparent border-none cursor-pointer text-black font-[1000] uppercase italic tracking-tighter"
+              className="w-full flex items-center justify-between mb-4 bg-transparent border-none cursor-pointer text-black font-[1000] uppercase tracking-tighter"
             >
               Size {openStates.size ? <FiChevronUp /> : <FiChevronDown />}
             </button>
@@ -212,7 +212,7 @@ export default function ShopFilters({
               onClick={() =>
                 setOpenStates({ ...openStates, style: !openStates.style })
               }
-              className="w-full flex items-center justify-between mb-4 bg-transparent border-none cursor-pointer text-black font-[1000] uppercase italic tracking-tighter"
+              className="w-full flex items-center justify-between mb-4 bg-transparent border-none cursor-pointer text-black font-[1000] uppercase tracking-tighter"
             >
               Dress Style{" "}
               {openStates.style ? <FiChevronUp /> : <FiChevronDown />}
@@ -236,7 +236,7 @@ export default function ShopFilters({
         <div className="p-6 bg-white border-t shrink-0 flex flex-col gap-3">
           <button
             onClick={onClose}
-            className="w-full rounded-full py-4 bg-black text-white font-black uppercase tracking-widest text-[11px] shadow-2xl border-none cursor-pointer"
+            className="w-full rounded-full py-4 bg-black text-white font-black uppercase tracking-widest text-[10px] border-none cursor-pointer"
           >
             Apply Filters
           </button>

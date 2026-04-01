@@ -52,7 +52,7 @@ export default function FooterNewsletter({ onSubscribe }: Props) {
       <div className="bg-black rounded-[20px] py-9 px-6 md:px-16 flex flex-col lg:flex-row items-center justify-between gap-8 shadow-2xl border border-white/5">
         {!isSubscribed ? (
           <>
-            <h2 className="text-white text-[32px] md:text-[40px] font-[1000] uppercase italic tracking-tighter leading-[1.1] text-left w-full lg:max-w-[550px]">
+            <h2 className="text-white text-[32px] md:text-[40px] font-[1000] uppercase tracking-tighter leading-[1.1] text-left w-full lg:max-w-[550px]">
               STAY UP TO DATE ABOUT OUR LATEST OFFERS
             </h2>
             <div className="w-full lg:w-[350px] flex flex-col gap-3">
@@ -87,7 +87,7 @@ export default function FooterNewsletter({ onSubscribe }: Props) {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-white text-black py-3.5 rounded-full font-[1000] uppercase italic text-[15px] hover:bg-gray-100 transition-all flex items-center justify-center gap-2 border-none cursor-pointer active:scale-95 disabled:opacity-50"
+                  className="w-full bg-white text-black py-3.5 rounded-full font-[600] text-[15px] hover:bg-gray-100 transition-all flex items-center justify-center gap-2 border-none cursor-pointer active:scale-95 disabled:opacity-50"
                 >
                   {isSubmitting ? (
                     <FiLoader className="animate-spin" />

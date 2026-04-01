@@ -14,8 +14,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { wishlist, toggleWishlist } = useWishlist();
 
   const isFavorite = wishlist.some(
-    (item) => String(item.id) === String(product.id),
+    (item) => String(item.id) === String(product.id)
   );
+
+  const discountPercentage =
+    product.oldPrice && product.oldPrice > product.price
+      ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)
+      : null;
 
   const handleQuickAdd = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -57,7 +62,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         >
           <Heart
             size={18}
-            fill={isFavorite ? "text-black" : "none"}
+            fill={isFavorite ? "black" : "none"}
             strokeWidth={isFavorite ? 0 : 2}
           />
         </button>
@@ -71,7 +76,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       </div>
 
       <div className="flex flex-col gap-1.5 text-left px-1">
-        <h3 className="font-[1000] text-base md:text-xl uppercase italic tracking-tighter leading-tight">
+        <h3 className="font-[700] text-base md:text-xl tracking-tighter leading-tight">
           {product.name}
         </h3>
 
@@ -92,13 +97,20 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         </div>
 
         <div className="flex items-center gap-3 mt-1">
-          <span className="text-xl md:text-2xl font-[1000] italic tracking-tighter text-black">
+          <span className="text-xl md:text-2xl font-[1000] tracking-tighter text-black">
             ${product.price}
           </span>
           {product.oldPrice && (
-            <span className="text-xl md:text-2xl font-black text-black/10 line-through tracking-tighter">
-              ${product.oldPrice}
-            </span>
+            <>
+              <span className="text-xl md:text-2xl font-black text-black/10 line-through tracking-tighter">
+                ${product.oldPrice}
+              </span>
+              {discountPercentage && (
+                <span className="bg-[#FF3333]/10 text-[#FF3333] px-3 py-1 rounded-full text-[10px] md:text-[12px] font-black tracking-tighter">
+                  -{discountPercentage}%
+                </span>
+              )}
+            </>
           )}
         </div>
       </div>

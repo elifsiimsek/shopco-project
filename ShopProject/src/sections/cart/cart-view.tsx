@@ -133,8 +133,8 @@ export default function CartView() {
       <main className="max-w-[1240px] mx-auto px-4 md:px-6">
         <div className="flex items-center gap-4 mb-12">
           <FiActivity className="text-black/10 animate-pulse" size={24} />
-          <h1 className="text-[36px] md:text-[52px] font-[1000] uppercase italic m-0 tracking-tighter leading-none">
-            Your Bag
+          <h1 className="text-[36px] md:text-[52px] font-[900] uppercase m-0 tracking-tighter leading-none">
+            Your Cart
           </h1>
         </div>
 
