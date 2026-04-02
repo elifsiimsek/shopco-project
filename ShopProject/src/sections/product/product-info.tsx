@@ -105,7 +105,7 @@ export default function ProductInfo({
         </div>
       </div>
       <div className="space-y-4 border-b border-black/5 pb-10 pt-7">
-        <p className="text-[10px] font-black uppercase tracking-wide text-black/30">
+        <p className="text-[12px] font-black tracking-wide text-black/30">
           Choose Size{" "}
         </p>
         <div className="flex flex-wrap gap-2">
@@ -113,7 +113,7 @@ export default function ProductInfo({
             <button
               key={size}
               onClick={() => setSelectedSize(size)}
-              className={`px-8 py-3 rounded-full text-[11px] font-[1000] uppercase tracking-widest transition-all cursor-pointer border-none ${selectedSize === size ? "bg-black text-white shadow-xl" : "bg-[#F0F0F0] text-black/40 hover:bg-black/5"}`}
+              className={`px-8 py-3 rounded-full text-[11px] font-[1000] tracking-widest transition-all cursor-pointer border-none ${selectedSize === size ? "bg-black text-white shadow-xl" : "bg-[#F0F0F0] text-black/40 hover:bg-black/5"}`}
             >
               {size}
             </button>

@@ -101,7 +101,7 @@ export default function FooterNewsletter({ onSubscribe }: Props) {
         ) : (
           <div className="w-full py-4 flex flex-col items-center justify-center gap-2 text-white animate-in zoom-in duration-500">
             <FiCheckCircle size={48} />
-            <span className="font-[1000] text-2xl italic uppercase tracking-tighter text-white">
+            <span className="font-[1000] text-2xl tracking-tighter text-white">
               YOU'RE ON THE LIST!
             </span>
           </div>

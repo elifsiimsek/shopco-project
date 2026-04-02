@@ -24,7 +24,7 @@ export default function HomeTopSelling() {
         <Link to="/shop" className="w-full md:w-[218px] no-underline">
           <Button
             variant="outline"
-            className="w-full py-4 text-black font-black border-black/10 rounded-full hover:bg-black hover:text-white transition-all uppercase text-[14px] tracking-widest"
+            className="w-full py-4 text-black font-black border-black/10 rounded-full hover:bg-black hover:text-white transition-all text-[15px] tracking-widest"
           >
             View All
           </Button>

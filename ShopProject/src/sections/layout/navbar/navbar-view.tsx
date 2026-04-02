@@ -127,7 +127,7 @@ export default function NavbarView() {
                       <li key={c.name}>
                         <Link
                           to={c.path}
-                          className="block px-4 py-3 rounded-xl hover:bg-[#F0F0F0] transition-all font-bold text-sm no-underline text-black/60 hover:text-black uppercase"
+                          className="block px-4 py-3 rounded-xl hover:bg-[#F0F0F0] transition-all font-bold text-sm no-underline text-black/60 hover:text-black"
                         >
                           {c.name}
                         </Link>

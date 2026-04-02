@@ -105,7 +105,7 @@ export default function HomeTestimonials() {
                     {[...Array(5)].map((_, i) => (
                       <Star
                         key={i}
-                        size={18}
+                        size={21}
                         fill="#FFC633"
                         className="text-[#FFC633]"
                         strokeWidth={0}
@@ -114,11 +114,11 @@ export default function HomeTestimonials() {
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <span className="font-[1000] text-[18px] md:text-[22px] tracking-tighter text-black">
+                    <span className="font-[600] text-[18px] md:text-[20px] tracking-tighter text-black">
                       {t.name}
                     </span>
                     {t.verified && (
-                      <div className="w-5 h-5 bg-[#01AB31] rounded-full flex items-center justify-center shadow-sm">
+                      <div className="w-4 h-4 bg-[#01AB31] rounded-full flex items-center justify-center shadow-sm">
                         <Check
                           size={12}
                           className="text-white"
@@ -128,7 +128,7 @@ export default function HomeTestimonials() {
                     )}
                   </div>
 
-                  <p className="text-black/60 leading-relaxed text-[15px] md:text-[16px] font-medium m-0">
+                  <p className="text-black/60 leading-relaxed text-[15px] md:text-[14px] font-medium m-0">
                     "{t.text}"
                   </p>
                 </div>

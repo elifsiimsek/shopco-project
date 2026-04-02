@@ -8,12 +8,30 @@ import {
   HelpCircle,
 } from "lucide-react";
 
+interface Review {
+  id: string;
+  name: string;
+  rating: number;
+  comment: string;
+  date: string;
+}
+
+interface Product {
+  id: string;
+}
+
+interface ProductTabsProps {
+  product: Product | null;
+  setIsReviewModalOpen: (isOpen: boolean) => void;
+  reviews?: Review[];
+}
+
 export default function ProductTabs({
   product,
   setIsReviewModalOpen,
   reviews = [],
-}: any) {
-  const [activeTab, setActiveTab] = useState("Rating & Reviews");
+}: ProductTabsProps) {
+  const [activeTab, setActiveTab] = useState<string>("Rating & Reviews");
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
 
   const sortedReviews = useMemo(() => {
@@ -30,7 +48,7 @@ export default function ProductTabs({
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`flex-1 pb-6 text-[16px] md:text-[20px] transition-all border-b-2 uppercase tracking-tight cursor-pointer ${
+            className={`flex-1 pb-6 text-[16px] md:text-[20px] transition-all border-b-2 tracking-tight cursor-pointer ${
               activeTab === tab
                 ? "text-black border-black font-bold"
                 : "text-black/20 border-transparent font-medium hover:text-black"
@@ -54,15 +72,15 @@ export default function ProductTabs({
                 </span>
               </div>
               <div className="flex items-center gap-3">
-                <button className="w-11 h-11 flex items-center justify-center bg-[#F0F0F0] rounded-full border-none cursor-pointer hover:bg-black/5 transition-all">
+                <button className="w-11 h-11 flex items-center justify-center bg-[#F0F0F0] rounded-full border-none cursor-pointer hover:bg-black/5 transition-all text-black">
                   <SlidersHorizontal size={18} />
                 </button>
-                <div className="hidden md:flex items-center gap-4 bg-[#F0F0F0] px-5 py-3 rounded-full font-bold text-[14px] cursor-pointer">
+                <div className="hidden md:flex items-center gap-4 bg-[#F0F0F0] px-5 py-3 rounded-full font-bold text-[14px] cursor-pointer text-black">
                   Latest <ChevronDown size={16} />
                 </div>
                 <button
                   onClick={() => setIsReviewModalOpen(true)}
-                  className="bg-black text-white px-8 py-3 rounded-full font-black  text-[12px] tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-lg"
+                  className="bg-black text-white px-8 py-3 rounded-full font-black text-[12px] tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-lg border-none cursor-pointer"
                 >
                   Write Review
                 </button>
@@ -70,7 +88,7 @@ export default function ProductTabs({
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              {sortedReviews.map((review: any) => (
+              {sortedReviews.map((review) => (
                 <div
                   key={review.id}
                   className="p-8 border border-black/[0.08] rounded-[24px] bg-white transition-all hover:shadow-xl relative group"
@@ -86,7 +104,7 @@ export default function ProductTabs({
                     ))}
                   </div>
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="font-black text-[16px] md:text-[18px] tracking-tight">
+                    <span className="font-black text-[16px] md:text-[18px] tracking-tight text-black">
                       {review.name}
                     </span>
                     <div className="bg-green-500 rounded-full p-0.5 flex items-center justify-center">
@@ -110,8 +128,7 @@ export default function ProductTabs({
             <div className="grid md:grid-cols-2 gap-12 items-start">
               <div className="space-y-1">
                 <h4 className="text-[18px] font-black tracking-tighter mb-6 flex items-center gap-3 text-black">
-                  <Info size={20} className="text-black/20" /> Technical
-                  identity
+                  <Info size={20} className="text-black/20" /> Technical identity
                 </h4>
                 <div className="space-y-4">
                   <SpecRow
@@ -128,10 +145,10 @@ export default function ProductTabs({
                 </div>
               </div>
               <div className="bg-black text-white p-10 rounded-[32px] flex flex-col justify-center relative overflow-hidden shadow-2xl min-h-[280px]">
-                <h4 className="text-3xl font-black italic uppercase tracking-tighter mb-4 text-white">
+                <h4 className="text-3xl font-black tracking-tighter mb-4 text-white">
                   Vault Standard
                 </h4>
-                <p className="text-white/40 text-[12px] font-bold tracking-widest leading-loose uppercase m-0">
+                <p className="text-white/40 text-[12px] font-bold tracking-widest leading-loose">
                   Each stitch is a signature of our archive, engineered for a
                   lifetime of silhouette integrity. We don't follow trends.
                 </p>
@@ -163,26 +180,36 @@ export default function ProductTabs({
             ].map((faq, i) => (
               <div
                 key={i}
-                className={`border rounded-[20px] transition-all duration-300 ${openFaqIndex === i ? "border-black bg-white shadow-xl" : "border-black/5 bg-[#FBFBFB] hover:border-black/20"}`}
+                className={`border rounded-[20px] transition-all duration-300 cursor-pointer ${
+                  openFaqIndex === i
+                    ? "border-black bg-white shadow-xl"
+                    : "border-black/5 bg-[#FBFBFB] hover:border-black/20"
+                }`}
                 onClick={() => setOpenFaqIndex(openFaqIndex === i ? null : i)}
               >
                 <button className="w-full p-6 flex justify-between items-center bg-transparent border-none cursor-pointer">
-                  <span className="text-[14px] md:text-[15px] font-black  tracking-wide text-black text-left flex items-center gap-3">
+                  <span className="text-[14px] md:text-[15px] font-black tracking-wide text-black text-left flex items-center gap-3">
                     <HelpCircle
                       size={18}
-                      className={`transition-opacity ${openFaqIndex === i ? "opacity-100" : "opacity-20"}`}
+                      className={`transition-opacity ${
+                        openFaqIndex === i ? "opacity-100" : "opacity-20"
+                      }`}
                     />{" "}
                     {faq.q}
                   </span>
                   <ChevronDown
                     size={18}
-                    className={`transition-transform duration-500 ${openFaqIndex === i ? "rotate-180 text-black" : "text-black/20"}`}
+                    className={`transition-transform duration-500 ${
+                      openFaqIndex === i ? "rotate-180 text-black" : "text-black/20"
+                    }`}
                   />
                 </button>
                 <div
-                  className={`transition-all duration-500 ease-in-out overflow-hidden ${openFaqIndex === i ? "max-h-[200px] opacity-100" : "max-h-0 opacity-0"}`}
+                  className={`transition-all duration-500 ease-in-out overflow-hidden ${
+                    openFaqIndex === i ? "max-h-[200px] opacity-100" : "max-h-0 opacity-0"
+                  }`}
                 >
-                  <p className="px-14 pb-8 text-[14px] text-black/50 font-medium  border-l-2 border-black/10 ml-6 leading-relaxed">
+                  <p className="px-14 pb-8 text-[14px] text-black/50 font-medium border-l-2 border-black/10 ml-6 leading-relaxed">
                     "{faq.a}"
                   </p>
                 </div>
@@ -197,7 +224,7 @@ export default function ProductTabs({
 
 function SpecRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex justify-between items-center border-b border-black/[0.04] pb-4 group hover:border-black transition-colors">
+    <div className="flex justify-between items-center border-b border-black/[0.04] pb-4 group hover:border-black transition-colors py-2">
       <span className="text-[11px] font-black text-black/30 tracking-[0.15em]">
         {label}
       </span>

@@ -25,7 +25,7 @@ export default function ProductDetailsTab() {
         <div className="space-y-1">
           <SpecItem label="Fabric Blueprint" value="100% GOTS Organic Cotton" />
           <SpecItem label="Weight Class" value="280 GSM Heavyweight" />
-          <SpecItem label="Silhouette" value="Drop Shoulder / Boxy Fit" />
+          <SpecItem label="Silhouette" value="Boxy Fit" />
           <SpecItem label="Manufacturing" value="Premium Garment Dye" />
         </div>
       </div>
