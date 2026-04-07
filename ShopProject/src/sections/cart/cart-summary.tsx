@@ -1,9 +1,9 @@
 import { FiTag, FiArrowRight, FiAlertCircle } from "react-icons/fi";
 
 interface CartSummaryProps {
-  subtotal: number;
-  savings: number;
-  discount: number;
+  subtotal: number; 
+  savings: number;  
+  discount: number; 
   total: number;
   promoInput: string;
   setPromoInput: (val: string) => void;
@@ -28,6 +28,13 @@ export const CartSummary = ({
 
   const freeShippingThreshold = 500;
   const awayFromFreeShipping = freeShippingThreshold - total;
+
+  const grossPrice = subtotal + savings + discount;
+
+  const calculatePercentage = (amount: number) => {
+    if (grossPrice === 0 || amount === 0) return 0;
+    return Math.round((amount / grossPrice) * 100);
+  };
 
   return (
     <div className="w-full lg:w-[450px] sticky top-10">
@@ -55,13 +62,13 @@ export const CartSummary = ({
           <div className="flex justify-between items-center text-black/60 text-lg font-medium">
             <span>Subtotal</span>
             <span className="text-black font-bold">
-              ${(subtotal + savings).toLocaleString()}
+              ${grossPrice.toLocaleString()}
             </span>
           </div>
 
           {savings > 0 && (
             <div className="flex justify-between items-center text-black/60 text-lg font-medium">
-              <span>Product Discount</span>
+              <span>Discount (-{calculatePercentage(savings)}%)</span>
               <span className="text-shopRed font-bold">
                 -${savings.toLocaleString()}
               </span>
@@ -70,7 +77,7 @@ export const CartSummary = ({
 
           {discount > 0 && (
             <div className="flex justify-between items-center text-black/60 text-lg font-medium">
-              <span>Promo Discount (-20%)</span>
+              <span>Promo Discount (-{calculatePercentage(discount)}%)</span>
               <span className="text-shopRed font-bold">
                 -${discount.toLocaleString()}
               </span>
@@ -91,9 +98,7 @@ export const CartSummary = ({
           <div className="h-[1px] bg-black/[0.08] my-1" />
 
           <div className="flex justify-between items-center pt-2 text-black">
-            <span className="font-black tracking-tighter">
-              Total
-            </span>
+            <span className="font-black tracking-tighter">Total</span>
             <span className="text-3xl font-[1000] tracking-tighter">
               ${finalTotal.toLocaleString()}
             </span>
