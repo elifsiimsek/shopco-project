@@ -111,10 +111,10 @@ export default function ProductTabs({
                       <Check size={8} className="text-white" strokeWidth={5} />
                     </div>
                   </div>
-                  <p className="text-black/50 text-[14px] md:text-[15px] leading-relaxed m-0 first-letter:capitalize">
+                  <p className="text-black/60 text-[14px] md:text-[15px] leading-relaxed m-0 first-letter:capitalize">
                     "{review.comment.toLowerCase()}"
                   </p>
-                  <p className="mt-6 text-[11px] font-black text-black/20 tracking-[0.2em] border-t border-black/[0.03] pt-5">
+                  <p className="mt-6 text-[15px] text-black/70 tracking-[0.2em] border-t pt-5">
                     Posted on {review.date}
                   </p>
                 </div>

@@ -246,7 +246,7 @@ export default function ProductDetailsView() {
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`flex-1 pb-6 text-[16px] tracking-widest border-b-2 transition-all whitespace-nowrap px-8 ${activeTab === tab ? "text-black border-black font-black" : "text-black/20 border-transparent font-bold"}`}
+              className={`flex-1 pb-6 text-[16px] tracking-widest border-b-2 transition-all whitespace-nowrap px-8 ${activeTab === tab ? "text-black border-black" : "text-black/20 border-transparent font-bold"}`}
             >
               {tab}
             </button>
@@ -261,7 +261,7 @@ export default function ProductDetailsView() {
                   <h3 className="text-2xl font-black tracking-tighter text-black">
                     All Reviews
                   </h3>
-                  <span className="text-black/20 font-bold">
+                  <span className="text-black/50 font-bold">
                     ({productReviews.length})
                   </span>
                 </div>
@@ -272,7 +272,7 @@ export default function ProductDetailsView() {
                   <div className="relative" ref={dropdownRef}>
                     <button
                       onClick={() => setIsSortOpen(!isSortOpen)}
-                      className="flex items-center gap-4 bg-[#F0F0F0] px-6 py-3 rounded-full font-bold text-[14px] cursor-pointer border-none text-black"
+                      className="flex items-center gap-4 bg-[#F0F0F0] px-6 py-3 rounded-full font-[400] text-[16px] cursor-pointer border-none text-black"
                     >
                       {sortOption}{" "}
                       <ChevronDown
@@ -299,7 +299,7 @@ export default function ProductDetailsView() {
                   </div>
                   <button
                     onClick={handleWriteReviewClick}
-                    className="bg-black text-white px-8 py-3 rounded-full font-black text-[12px] shadow-xl hover:scale-[1.02] active:scale-95 transition-all border-none cursor-pointer whitespace-nowrap tracking-widest"
+                    className="bg-black text-white px-8 py-3 rounded-full text-[16px] font-[400] shadow-xl hover:scale-[1.02] active:scale-95 transition-all border-none cursor-pointer whitespace-nowrap"
                   >
                     Write a Review
                   </button>
@@ -310,7 +310,7 @@ export default function ProductDetailsView() {
                 {sortedReviews.slice(0, visibleCount).map((review) => (
                   <div
                     key={review.id}
-                    className="p-8 border border-black/[0.08] rounded-[32px] bg-[#FBFBFB] relative group hover:bg-white hover:shadow-xl transition-all h-full flex flex-col justify-between text-left"
+                    className="p-8 border border-black/[0.08] rounded-[32px] bg-white relative group hover:bg-white hover:shadow-xl transition-all h-full flex flex-col justify-between text-left"
                   >
                     <div>
                       <div className="absolute top-8 right-8 flex items-center gap-2">
@@ -358,7 +358,7 @@ export default function ProductDetailsView() {
                         "
                       </p>
                     </div>
-                    <p className="mt-8 text-[11px] font-black text-black/20 tracking-widest border-t border-black/[0.03] pt-6 text-black">
+                    <p className="mt-8 text-[11px] font-black text-black/20 tracking-widest text-black">
                       Posted on {review.date}
                     </p>
                   </div>
@@ -369,7 +369,7 @@ export default function ProductDetailsView() {
                 <div className="flex justify-center mt-12">
                   <button
                     onClick={() => setVisibleCount((prev) => prev + 2)}
-                    className="px-14 py-4 border border-black/10 rounded-full bg-white font-black tracking-widest text-[12px] hover:bg-black hover:text-white transition-all shadow-sm active:scale-95 cursor-pointer text-black"
+                    className="px-14 py-4 border border-black/10 rounded-full bg-white text-[16px] font-[400] hover:bg-black hover:text-white transition-all active:scale-95 cursor-pointer text-black"
                   >
                     Load More Reviews
                   </button>

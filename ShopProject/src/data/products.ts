@@ -141,7 +141,7 @@ export const products: Product[] = [
     style: "Casual",
     colors: ["bg-vault-green", "bg-black"],
     sizes: ["Small", "Medium", "Large", "X-Large"],
-    description: "Stay inspired with our signature One Life graphic.",
+    description: "This graphic t-shirt which is perfect for any occasion. Crafted from a soft and breathable fabric, it offers superior comfort and style.",
     isNew: true,
   },
   {

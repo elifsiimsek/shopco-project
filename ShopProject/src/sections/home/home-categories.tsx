@@ -49,7 +49,7 @@ export default function HomeCategories() {
               className={`relative h-[190px] md:h-[289px] bg-white rounded-[20px] overflow-hidden cursor-pointer group transition-all duration-500 ${style.gridSpan}`}
             >
               <div className="absolute top-6 left-6 md:top-8 md:left-10 z-20 transition-all duration-500 group-hover:-translate-y-2">
-                <h3 className="text-[24px] md:text-[33px] font-black leading-none tracking-tighter transition-all duration-500 group-hover:text-white">
+                <h3 className="text-[24px] md:text-[36px] font-[700] leading-none transition-all duration-500 group-hover:text-white">
                   {style.title}
                 </h3>
                 <p className="mt-2 text-[10px] md:text-[12px] font-bold tracking-widest text-white/0 group-hover:text-white/70 transition-all duration-500 leading-relaxed max-w-[180px]">

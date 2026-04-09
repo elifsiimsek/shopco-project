@@ -21,7 +21,7 @@ export default function HomeNewArrivals() {
         <Link to="/shop" className="w-full md:w-auto no-underline">
           <Button
             variant="outline"
-            className="w-full md:px-14 py-4 text-black font-black border-black/10 rounded-full hover:bg-black hover:text-white transition-all text-[15px]"
+            className="w-full md:px-14 py-4 text-black font-[400] border-black/10 rounded-full hover:bg-black hover:text-white transition-all text-[16px]"
           >
             View All
           </Button>

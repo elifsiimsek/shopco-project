@@ -60,12 +60,12 @@ export default function ProductInfo({
         </span>
       </div>
       <div className="flex items-center gap-4 mt-2">
-        <span className="text-[32px] md:text-[40px] font-[1000] tracking-tighter">
+        <span className="text-[32px] md:text-[40px] font-[700] tracking-tighter">
           ${product.price}
         </span>
         {product.oldPrice && (
           <div className="flex items-center gap-3">
-            <span className="text-[28px] font-black text-black/10 line-through tracking-tighter">
+            <span className="md text-[40px] text-black/10 font-[700] line-through tracking-tighter">
               ${product.oldPrice}
             </span>
             <span className="bg-[#FF3333]/10 text-[#FF3333] px-3 py-1 rounded-full text-[10px] font-[1000]">
@@ -82,10 +82,10 @@ export default function ProductInfo({
         {product.description}
       </p>
       <div className="space-y-4 pt-4">
-        <p className="text-[12px] font-black tracking-wide text-black/30">
+        <p className="text-[15px] tracking-wide text-black/50">
           Select Colors
         </p>
-        <div className="flex gap-3">
+        <p className="flex gap-3 leading-relaxed border-b border-black/5 pb-8 mt-1">
           {(product.colors || []).map((color) => (
             <button
               key={color}
@@ -102,10 +102,10 @@ export default function ProductInfo({
               )}
             </button>
           ))}
-        </div>
+        </p>
       </div>
       <div className="space-y-4 border-b border-black/5 pb-10 pt-7">
-        <p className="text-[12px] font-black tracking-wide text-black/30">
+        <p className="text-[15px] tracking-wide text-black/50">
           Choose Size{" "}
         </p>
         <div className="flex flex-wrap gap-2">
@@ -113,7 +113,7 @@ export default function ProductInfo({
             <button
               key={size}
               onClick={() => setSelectedSize(size)}
-              className={`px-8 py-3 rounded-full text-[11px] font-[1000] tracking-widest transition-all cursor-pointer border-none ${selectedSize === size ? "bg-black text-white shadow-xl" : "bg-[#F0F0F0] text-black/40 hover:bg-black/5"}`}
+              className={`px-8 py-3 rounded-full text-[14px] font-[100] tracking-widest transition-all cursor-pointer border-none ${selectedSize === size ? "bg-black text-white shadow-xl" : "bg-[#F0F0F0] text-black/40 hover:bg-black/5"}`}
             >
               {size}
             </button>
@@ -138,7 +138,7 @@ export default function ProductInfo({
         </div>
         <Button
           onClick={onAddToCart}
-          className="flex-1 py-4 bg-black text-white font-[1000] rounded-full tracking-widest text-[15px] shadow-2xl hover:scale-[1.01] border-none cursor-pointer"
+          className="flex-1 py-4 bg-black text-white font-[90] rounded-full tracking-widest text-[17px] shadow-2xl hover:scale-[1.01] border-none cursor-pointer"
         >
           Add to Cart
         </Button>

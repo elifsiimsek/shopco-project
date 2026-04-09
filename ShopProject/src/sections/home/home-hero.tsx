@@ -39,7 +39,7 @@ export default function HomeHero() {
 
           <button
             onClick={() => navigate("/shop")}
-            className="mt-6 md:mt-8 w-full md:w-auto bg-black text-white px-12 py-4 rounded-full font-bold uppercase hover:bg-black/80 transition-all active:scale-95 shadow-lg"
+            className="mt-6 md:mt-8 w-full md:w-auto bg-black text-white px-12 py-4 rounded-full hover:bg-black/80 transition-all active:scale-95 shadow-lg"
           >
             Shop Now
           </button>
